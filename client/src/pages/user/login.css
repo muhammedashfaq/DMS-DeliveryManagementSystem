@@ -1,0 +1,125 @@
+*{
+    margin: 0;
+    padding:0;
+}
+
+section{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    filter: grayscale(80%);
+    background: url('./login.jpg') no-repeat;
+    background-position: center;
+    background-size: cover;
+    border: 2px solid black;
+}
+
+.login_border{
+    border: 1px solid rgba(231, 231, 221, 0.664);
+}
+.inputbox{
+    background-color: rgba(23, 96, 96, 0.418);
+    position: relative;
+    margin: 30px 0;
+    width: 300px;
+    border-bottom: 2px solid #fff;    
+}
+
+.inputbox label{
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    transform: translateY(-50%);
+    color: #fff;
+    font-size: 1rem;
+    transition: 0.5s;
+
+}
+input:focus+label{
+    top:-5px
+
+}
+input:valid+label{
+    top:-5px
+}
+
+.inputbox input{
+    width:100%;
+    height: 50px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    padding: 0 35px 0 5px;
+    color: #fff;
+}
+
+.input ion-icon{
+    position: absolute;
+    right: 8px;
+    color: #fff;
+    font-size: 1rem;
+    top: 20px;
+    background-color: brown;
+}
+
+.forget{
+    display: flex;
+    justify-content: space-evenly;
+    margin: 10px 0 15px;
+    font-size: 0.9rem;
+    color: #fff;
+}
+
+.forget label :nth-child(2){
+    order: 1;
+}
+
+.forget label{
+    display: flex;
+    align-items: center;
+}
+
+.forget label input[type="checkbox"]
+{
+    margin-right: 6px;
+
+}
+.forget label a{
+    text-decoration: none;
+    color: #fff;
+}
+.forget label a:hover{
+    text-decoration: underline;
+
+}
+
+.buttonc{
+    width:100%;
+    height: 40px;
+    border-radius: 40px;
+    background: #fff;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+
+}
+
+.register{
+    font-size: 0.9rem;
+    text-align: center;
+    margin: 25px 0 20px;
+
+}
+.register p a{
+    text-decoration: non;
+    color: #fff;
+    font-weight: 600;
+
+}
+
+.register p a:hover{
+    text-decoration: underline;
+}

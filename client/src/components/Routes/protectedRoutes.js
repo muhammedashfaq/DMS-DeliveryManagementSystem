@@ -2,9 +2,8 @@ import React from 'react'
 import {Navigate} from "react-router-dom"
 
 
-const ProtectedRoutes = (props) => {
+export const ProtectedRoutesUser = (props) => {
 
-    console.log('aaaaaaaa');
 
     if(localStorage.getItem('token')){
         return props.children
@@ -14,5 +13,15 @@ const ProtectedRoutes = (props) => {
 
   
 }
+export const ProtectedRoutesAdmin = (props) => {
 
-export default ProtectedRoutes
+
+    if(localStorage.getItem('token')){
+        return props.children
+    }else{
+        return <Navigate to='/admin' />
+    }
+
+  
+}
+

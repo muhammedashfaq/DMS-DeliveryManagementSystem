@@ -1,9 +1,29 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import {Navigate, useNavigate} from 'react-router-dom'
+import {Navigate, useNavigate,Link,useLocation} from 'react-router-dom'
 import { hideloading, showloading } from "../../redux/alertSlice";
 
 const Header = () => {
+	const location =useLocation()
+
+	const menu=[
+		{
+			name:"Track",
+			path:"/track",
+		
+		},
+		{
+			name:"BookShipment",
+			path:"/book",
+		
+		},
+		{
+			name:"Contact",
+			path:"/contact",
+		
+		},
+
+	]
     const dispatch=useDispatch()
 
     const navigate=useNavigate()
@@ -13,15 +33,18 @@ const Header = () => {
     <img src='./images/adminlogin/logo.png' />
 
 		<ul className="items-stretch hidden space-x-1 md:flex  ">
+
+			{menu?.map((menuitem)=>{
+				const isActive = location.pathname===menuitem.path
+				return(
+
 			<li className="flex">
-				<a rel="noopener noreferrer" href="#" className="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent">Track</a>
+				<Link to={menuitem.path}  rel="noopener noreferrer" href="#" className={`flex items-center px-4 -mb-1  border-b-4 border-white font-semibold ${isActive && "border-b-4 border-white font-semibold"}`}>{menuitem.name}</Link>
 			</li>
-			<li className="flex">
-				<a rel="noopener noreferrer" href="#" className="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent">BookShipment</a>
-			</li>
-			<li className="flex">
-				<a rel="noopener noreferrer" href="#" className="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent dark:text-violet-400 dark:border-violet-400">UserName</a>
-			</li>
+				)
+			})}
+
+			
 			<li className="flex">
 				<a rel="noopener noreferrer" href="#" className="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent" onClick={()=>{localStorage.clear()
                     
@@ -34,9 +57,7 @@ const Header = () => {
                     
                     }}>Logout</a>
 			</li>
-            <li className="flex">
-				<a rel="noopener noreferrer" href="#" className="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent">Contact</a>
-			</li>
+          
 		</ul>
 		<button className="flex justify-end p-4 md:hidden">
 			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">

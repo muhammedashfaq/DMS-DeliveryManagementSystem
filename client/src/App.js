@@ -6,14 +6,19 @@ import Register from './pages/user/register'
 import Otp from './pages/user/otp'
 import Forget from './pages/user/forget'
 import Dlogin from './pages/driver/login'
-import Alogin from './pages/admin/login'
+import Adminlogin from './pages/admin/login'
 import AdminHome from './pages/admin/Home/Home'
 import Home from './pages/user/Home/Home'
+// import UserDetails from './pages/admin/Home/userDetails'
+// import DriverDetails from './pages/admin/Home/driverDetails'
+// import ShipmentDetails from './pages/admin/Home/shipmentDetails'
+
+
 import Reset from './pages/user/forget2'
 import { Toaster } from 'react-hot-toast'
 import { useSelector } from 'react-redux'
-import ProtectedRoutes from './components/Routes/protectedRoutes'
-import PublicRoutes from './components/Routes/publicRoutes'
+import {ProtectedRoutesUser,ProtectedRoutesAdmin} from './components/Routes/protectedRoutes'
+import {PublicRoutesUser,PublicRoutesAdmin} from './components/Routes/publicRoutes'
 const App = () => {
   const{loading}=useSelector(state=>state.alerts)
   return (
@@ -30,18 +35,24 @@ const App = () => {
   reverseOrder={false}
 />
     <Routes>
-         <Route path='/' element={<PublicRoutes> <Landingpage/> </PublicRoutes> }/>
-         <Route path='/login' element={ <PublicRoutes> <Login/> </PublicRoutes>   }/>
-         <Route path='/register' element={ <PublicRoutes><Register/> </PublicRoutes>}/>
-         <Route path='/Home' element={ <ProtectedRoutes>  <Home />   </ProtectedRoutes>   }/>
+         <Route path='/' element={<PublicRoutesUser> <Landingpage/> </PublicRoutesUser> }/>
+         <Route path='/login' element={ <PublicRoutesUser> <Login/> </PublicRoutesUser>   }/>
+         <Route path='/register' element={ <PublicRoutesUser><Register/> </PublicRoutesUser>}/>
+         <Route path='/Home' element={ <ProtectedRoutesUser>  <Home />   </ProtectedRoutesUser>   }/>
          <Route path='/otp' element={<Otp/>}/> 
          <Route path='/forget' element={<Forget/>}/>
          <Route path='/reset' element={<Reset />}/>
 
          
          <Route path='/dlogin' element={<Dlogin/>}/>
-         <Route path='/admin' element={<Alogin/>}/>
-         <Route path='/adminhome' element={<AdminHome/>}/>
+
+         <Route path='/admin' element={<PublicRoutesAdmin><Adminlogin /></PublicRoutesAdmin>}/>
+         <Route path='/adminhome*' element={<ProtectedRoutesAdmin><AdminHome/> </ProtectedRoutesAdmin>}/>
+         {/* <Route path='/user_details' element={<ProtectedRoutesAdmin><UserDetails/> </ProtectedRoutesAdmin>}/>
+         <Route path='/driver_details' element={<ProtectedRoutesAdmin><DriverDetails/> </ProtectedRoutesAdmin>}/>
+         <Route path='/shipment_details' element={<ProtectedRoutesAdmin><ShipmentDetails/> </ProtectedRoutesAdmin>}/>
+ */}
+
 
 
 

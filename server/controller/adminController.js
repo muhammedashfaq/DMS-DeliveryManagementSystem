@@ -65,7 +65,18 @@ const adminLogin = async (req, res) => {
     }
   };
   
+const userlistLoad = async(req,res)=>{
+  try {
+    console.log('hhaha');
+    const userData= await User.find({})
+    res.status(200).send({message:"fetched",success:true,data:userData})
+    
+  } catch (error) {
+      console.log(error)
+      res.status(500).send({message:"Error",success:false,error})
 
+  }
+}
 
 
 
@@ -76,5 +87,6 @@ const adminLogin = async (req, res) => {
 
 module.exports={
     adminLogin,
-    admindetails
+    admindetails,
+    userlistLoad
 }

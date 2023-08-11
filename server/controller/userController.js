@@ -47,7 +47,6 @@ const registerpage = async (req, res) => {
     const userData = await newUser.save();
     if (userData) {
       const otpGenarated = Math.floor(1000 + Math.random() * 9999);
-
       savedOtp = otpGenarated;
       useremail = req.body.email;
 

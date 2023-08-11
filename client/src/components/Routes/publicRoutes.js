@@ -1,7 +1,7 @@
 import React from 'react'
 import { Navigate } from 'react-router-dom'
 
-const PublicRoutes = (props) => {
+export const PublicRoutesUser = (props) => {
     if(localStorage.getItem('token')){
         return <Navigate to='/home' />
     }else{
@@ -9,4 +9,11 @@ const PublicRoutes = (props) => {
     }
 }
 
-export default PublicRoutes
+export const PublicRoutesAdmin = (props) => {
+    if(localStorage.getItem('token')){
+        return <Navigate to='/adminhome' />
+    }else{
+        return   props.children 
+    }
+}
+

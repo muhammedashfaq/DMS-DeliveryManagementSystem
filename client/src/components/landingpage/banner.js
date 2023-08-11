@@ -28,7 +28,7 @@ const banner = () => {
     </div>
 </div>  */}
 
-      <div className="flex flex-col md:flex-row justify-between items-center p-4 md:p-8 bg-white rounded-lg shadow-lg fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      <div className="flex flex-col md:flex-row justify-between items-center p-4 md:p-8 bg-white rounded-lg shadow-lg absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <div className="md:w-1/2 bg-white p-4 md:p-8 rounded-lg shadow-lg mx-4 my-8">
           <h1 className="text-center font-bold text-xl mb-2">
             Track Your Shipment

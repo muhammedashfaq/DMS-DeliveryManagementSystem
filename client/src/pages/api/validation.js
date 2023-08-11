@@ -77,3 +77,29 @@ export   const forgetValidate = (password,cpassword) => {
   }
   return error
 };
+
+export const adminloginvalidate=(email,password)=>{
+
+    const error={}
+    if(!email){
+      error.email="Email is Required"
+    }else if(!/\S+@\S+\.\S+/.test(email))
+  {
+    error.email="Email Not Matched "
+  }else{
+    error.email=""
+  }
+    
+  if(!password){
+    error.password="password is Required"
+  }else if(password.length < 8)
+  {
+  error.password="password  Not Matched "
+  }else{
+  error.password = ""
+  }
+  
+  return error
+  
+  }
+

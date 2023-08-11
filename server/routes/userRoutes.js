@@ -12,4 +12,5 @@ router.post('/forget',userController.forgetMail)
 router.post('/reset',userController.resetPassword)
 
 
+
  module.exports =router

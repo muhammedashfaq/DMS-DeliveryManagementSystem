@@ -19,9 +19,13 @@ isVerified:{
     type:Boolean,
     default:false
 },
-islocked:{
+isBlocked:{
     type:Boolean,
     default:false
+},isAdmin:{
+    type:Boolean,
+    default:false
+
 }
 
 

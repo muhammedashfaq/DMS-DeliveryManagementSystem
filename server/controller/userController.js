@@ -75,9 +75,13 @@ const loginpage = async (req, res) => {
       if (!isMatch) {
         res.status(200).send({ message: "incorrect password", success: false });
       } else {
+
+
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
           expiresIn: "1d",
         });
+
+
         res
           .status(200)
           .send({ message: "successfully logged", success: true, data: token });
@@ -110,6 +114,8 @@ const userdetails = async (req, res) => {
       .send({ message: "error getting info", success: false, error });
   }
 };
+
+
 
 const otpVerification = async (req, res) => {
   try {
@@ -159,6 +165,10 @@ const resetPassword =async (req,res)=>{
     
   }
 }
+
+
+
+
 module.exports = {
   registerpage,
   loginpage,

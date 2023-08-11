@@ -40,8 +40,8 @@ const App = () => {
 
          
          <Route path='/dlogin' element={<Dlogin/>}/>
-         <Route path='/alogin' element={<Alogin/>}/>
-         <Route path='/ahome' element={<AdminHome/>}/>
+         <Route path='/admin' element={<Alogin/>}/>
+         <Route path='/adminhome' element={<AdminHome/>}/>
 
 
 

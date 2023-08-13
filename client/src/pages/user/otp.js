@@ -48,7 +48,7 @@ const Otp = () => {
   };
   return (
     <div className="w-full  h-screen	flex justify-center  	">
-      <div className="bg-gradient-to-r from-cyan-500 to-blue-500 h-56	 w-96	m-5	rounded-lg	border-solid border-2 border-sky-500">
+      <div className="bg-gradient-to-r from-cyan-500 to-blue-500 h-max w-96	m-5	rounded-lg 	border-solid border-2 border-sky-500 ">
         <h2
           className="text-center font-bold text-3xl m-2 
  "
@@ -56,9 +56,12 @@ const Otp = () => {
           {" "}
           OTP
         </h2>
-        <p className="text-justify px-2">
+        <div className="w-72 h-max text-center    ml-8 mb-2">
+        <p className=" px-2 text-white text-center">
           We Emailed you the OTP ,Enter the otp below and confirm
         </p>
+
+        </div>
         <form onSubmit={handlesubmit}>
           <div className="align-middle px-12 py-2">
             <input
@@ -70,14 +73,14 @@ const Otp = () => {
               onChange={(e) => setOtp(e.target.value)}
               
               />
-              {otp.otp && (
-                  <Alert variant="filled" severity="error">
+               {otp.otp && (
+                  <Alert className="w-56 " variant="filled" severity="error">
                     {otp.otp}
                   </Alert>
                 )}
           </div>
           <div className="flex justify-center items-center mt-3 ">
-            <button className="bg-blue-500 text-white px-4 py-2 rounded">
+            <button className="bg-blue-500 text-white px-4  py-2 rounded">
               submit
             </button>
           </div>

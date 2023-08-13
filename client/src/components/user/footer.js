@@ -2,8 +2,8 @@ import React from 'react'
 
 const footer = () => {
   return (
-<footer className="px-4 divide-y bg-blue-950 dark:text-gray-100 fixed bottom-0 w-full h-60">
-	<div className="container flex flex-col justify-between py-10 mx-auto space-y-8 lg:flex-row lg:space-y-0">
+<footer className="px-4 divide-y bg-blue-950 dark:text-gray-100  w-full h-max        ">
+	<div className="container flex flex-col justify-between py-8 mx-auto space-y-8 lg:flex-row lg:space-y-0">
 		<div className="lg:w-1/3">
 			
                     <img src='./images/adminlogin/logo.png' />
@@ -73,7 +73,7 @@ const footer = () => {
 			</div>
 		</div>
 	</div>
-	<div className="py-6 text-sm text-center dark:text-gray-400">© 1968 Company Co. All rights reserved.</div>
+	<div className="py-2 text-sm text-center dark:text-gray-400">© HorizonEnterprizes™ All rights reserved.</div>
 </footer>  )
 }
 

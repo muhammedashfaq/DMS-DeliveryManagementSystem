@@ -15,7 +15,7 @@ const body = () => {
       Our Services
       </h1>
 
-      <div className="grid grid-cols-3 gap-4  m-4 bg-violet-950"> 
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4   m-4 bg-violet-950 "> 
 
 <a href="#" className=" flex flex-col items-center bg-slate-600 border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
     <img className="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-l-lg" src="./images/landingpage/express.jpg" alt="" />
@@ -44,12 +44,12 @@ const body = () => {
 
               </div>
 
-        <div className="container mx-auto flex flex-col items-center pb-6 mb-4 md:p-10 md:px-12">
+        <div className="container mx-auto flex flex-col items-center pb-6 mb-4 md:p-10 md:px-12 ">
           <h1 className="text-4xl font-semibold  text-center border-b-4 border-red-800 ">
           Testimonials
           </h1>
         </div>
-        <div className="container mx-auto grid grid-cols-1 gap-8 lg:gap-20 md:px-10 md:pb-10 lg:grid-cols-2">
+        <div className="container mx-auto grid grid-cols-1 gap-8 lg:gap-20 md:px-10 md:pb-10 lg:grid-cols-2 ">
           <div className="flex flex-col items-center mx-12 lg:mx-0">
             <div className="relative text-center">
               <svg
@@ -62,9 +62,7 @@ const body = () => {
                 <path d="M280,416h38.4L496,246.857V16H280ZM312,48H464V233.143L312,377.905Z"></path>
               </svg>
               <p className="px-6 py-1 text-lg italic">
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                Voluptatibus quibusdam, eligendi exercitationem molestias
-                possimus facere.
+              I want to compliment to your excellent service as your entire team always went to great lengths to help me to enhance my business. I have always received quality service at your FC. Team knows just what to do to solve my issues quickly and always come with solution-oriented approach. Such service builds great working relationships.
               </p>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -77,7 +75,7 @@ const body = () => {
               </svg>
             </div>
             <span className="w-12 h-1 my-2 rounded-lg dark:bg-violet-400"></span>
-            <p>Leroy Jenkins</p>
+            <p>Mohammad Alam (Hyderabad)</p>
           </div>
           <div className="flex flex-col items-center max-w-lg mx-12 lg:mx-0">
             <div className="relative text-center">
@@ -96,10 +94,7 @@ const body = () => {
                 ></path>
               </svg>
               <p className="px-6 py-1 text-lg italic">
-                Accusantium illum cupiditate harum asperiores iusto quos quasi
-                quis quae! Fugit doloribus, voluptatum quidem magnam velit
-                excepturi nobis, reprehenderit ducimus incidunt quisquam quae
-                veritatis, quos iure harum.
+              <mark>HL</mark> courier service is one of the best professional courier services.I book most of my personal couriers through <mark>HL</mark> and parcels reach on time. They provide tracking update so risk of losing the parcel gets minimized. Their delivery is fast and very secure. I am happy with their service and recommend them.
               </p>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -117,7 +112,7 @@ const body = () => {
               </svg>
             </div>
             <span className="w-12 h-1 my-2 rounded-lg dark:bg-violet-400"></span>
-            <p>Leroy Jenkins</p>
+            <p>Ativeer (Chennai)</p>
           </div>
         </div>
       </div>

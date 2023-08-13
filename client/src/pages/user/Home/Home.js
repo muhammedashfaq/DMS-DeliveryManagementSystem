@@ -26,7 +26,8 @@ const Home = () => {
     <div className='w-full h-full'>
       <Header />
 
-      <Footer />
+
+      {/* <Footer /> */}
 
     </div>
   )

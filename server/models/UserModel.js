@@ -26,6 +26,9 @@ isBlocked:{
     type:Boolean,
     default:false
 
+},token:{
+    type:String,
+    default:""
 }
 
 

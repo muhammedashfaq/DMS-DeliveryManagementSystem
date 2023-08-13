@@ -2,36 +2,30 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const User = require("../models/UserModel");
 const jwt = require("jsonwebtoken");
+const randomString = require("randomstring");
+const nodemailer = require("nodemailer");
+const {
+  sendForgetymail,
+  sendVerifymail,
+  securePassword,
+} = require("../config/nodemailer");
 
-const sendVerifymail= require('../config/nodemailer')
+
 var savedOtp;
 var useremail;
 
-
-const securePassword = async (password) => {
-  try {
-    // const salt = await bcrypt.genSalt(10);
-
-    const passwordHash = await bcrypt.hash(password, 10);
-    return passwordHash;
-  } catch (error) {
-    console.log(error.message);
-  }
-};
-
 const registerpage = async (req, res) => {
   try {
-    console.log("Incoming request body:", req.body);
-
     if (
       !req.body.email ||
       !req.body.password ||
       !req.body.username ||
-      !req.body.cpassword
+      !req.body.cpassword ||
+      req.body.cpassword !== req.body.password
     ) {
       return res
         .status(400)
-        .send({ message: "All Fields are required.", success: false });
+        .send({ message: "Fields are required.", success: false });
     }
     const userExist = await User.findOne({ email: req.body.email });
     if (userExist) {
@@ -49,8 +43,9 @@ const registerpage = async (req, res) => {
       const otpGenarated = Math.floor(1000 + Math.random() * 9999);
       savedOtp = otpGenarated;
       useremail = req.body.email;
+      console.log("Incoming request body:");
 
-       sendVerifymail(req.body.username, req.body.email, otpGenarated);
+      sendVerifymail(req.body.username, req.body.email, otpGenarated);
     }
     res.status(200).send({ message: "user created ", success: true });
   } catch (error) {
@@ -74,12 +69,9 @@ const loginpage = async (req, res) => {
       if (!isMatch) {
         res.status(200).send({ message: "incorrect password", success: false });
       } else {
-
-
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
           expiresIn: "1d",
         });
-
 
         res
           .status(200)
@@ -114,8 +106,6 @@ const userdetails = async (req, res) => {
   }
 };
 
-
-
 const otpVerification = async (req, res) => {
   try {
     if (req.body.otp == savedOtp) {
@@ -135,38 +125,64 @@ const otpVerification = async (req, res) => {
     res.status(500).send({ message: "somthing went wrong ", success: false });
   }
 };
-const forgetMail = async(req,res)=>{
+const forgetMail = async (req, res) => {
   try {
-    if(!req.body.email){
+    const token = req.body.token;
+    if (!req.body.email) {
       return res
         .status(400)
         .send({ message: "Fields are required.", success: false });
-
     }
+    const userData = await User.findOne({ email: req.body.email });
+    if (userData) {
+      if (userData.isVerified) {
+        await User.updateOne(
+          { email: req.body.email },
+          { $set: { token: token } }
+        );
 
-    
-    
+        sendForgetymail(userData.username, req.body.email, token);
+
+        res.status(200).send({ message: "We Send ResetLink in Your Email", success: true });
+      } else {
+        res.status(200).send({ message: "error", success: false });
+      }
+    } else {
+      res.status(200).send({ message: "error", success: false });
+    }
   } catch (error) {
-    
+    console.log(error);
+    res.status(500).send({ message: "somthing went wrong ", success: false });
   }
-}
-const resetPassword =async (req,res)=>{
-  try {
+};
 
-    if(!req.body.password||req.body.cpassword ){
+const resetPassword = async (req, res) => {
+  try {
+    if (!req.body.password || !req.body.cpassword) {
       return res
         .status(400)
         .send({ message: "Fields are required.", success: false });
-
     }
-    
+
+    const token = req.params.token;
+    const userData = await User.findOne({ token: token });
+    if (userData) {
+      const newpassword = req.body.password;
+      const spassowrd = await securePassword(newpassword);
+
+      await User.findOneAndUpdate(
+        { email: userData.email },
+        { $set: { password: spassowrd, token: "" } }
+      );
+      res.status(200).send({ message: "done", success: true });
+    } else {
+      res.status(200).send({ message: "error", success: false });
+    }
   } catch (error) {
-    
+    console.log(error);
+    res.status(500).send({ message: "somthing went wrong ", success: false });
   }
-}
-
-
-
+};
 
 module.exports = {
   registerpage,
@@ -174,5 +190,5 @@ module.exports = {
   userdetails,
   otpVerification,
   resetPassword,
-  forgetMail
+  forgetMail,
 };

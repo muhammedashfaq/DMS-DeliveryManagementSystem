@@ -1,7 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { Modal } from "./modal";
 
-const banner = () => {
+const Banner = () => {
+
+  const [showMymodal, setshowMymodal] = useState(false);
+
+  const handleclose=()=>{
+    setshowMymodal(false)
+  }
+
   return (
     <div className=" w-full h-96 ">
       <img
@@ -33,8 +41,8 @@ const banner = () => {
           <h1 className="text-center font-bold text-xl mb-2">
             Track Your Shipment
           </h1>
-          <p className="text-center mb-4">Click to Track shipment here</p>
-          <button className="bg-blue-950 text-white w-full py-2 rounded-full relative bottom-0">
+          <p className="text-center mb-4"> Click to Track shipment here</p>
+          <button className="bg-blue-950 text-white w-full py-2 rounded-full relative bottom-0" onClick={()=>{setshowMymodal(true)}}>
             Track Shipment
           </button>
         </div>
@@ -48,8 +56,9 @@ const banner = () => {
           </button></Link>
         </div>
       </div>
+      <Modal onClose={handleclose} visible={showMymodal}  />
     </div>
   );
 };
 
-export default banner;
+export default Banner;

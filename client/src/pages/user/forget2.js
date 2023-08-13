@@ -2,12 +2,17 @@ import React, { useState } from "react";
 import { forgetValidate } from "../api/validation";
 import { Alert } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { hideloading, showloading } from "../../redux/alertSlice";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { BiSolidLock } from "react-icons/bi";
 
 const Forget2 = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const randomString = searchParams.get("randomstring");
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -21,9 +26,12 @@ const Forget2 = () => {
       e.preventDefault();
       const error = forgetValidate(password, cpassword);
       setError(error);
+      if (Object.keys(error).length === 0) {
+        alert("done");
+      }
 
       dispatch(showloading());
-      const response = await axios.post("/reset", {
+      const response = await axios.post(`/reset/${randomString}`, {
         password: password,
         cpassword: cpassword,
       });
@@ -42,9 +50,6 @@ const Forget2 = () => {
     }
   };
 
-
-
-
   return (
     <div className="w-full  h-screen	flex justify-center 	">
       <div className="bg-gradient-to-r from-cyan-500 to-blue-500 h-max	 w-96	m-5	rounded-lg	border-solid border-2 border-sky-500">
@@ -55,7 +60,11 @@ const Forget2 = () => {
           Reset Your Rassword Here
         </h2>
         <form onSubmit={handleSubmit}>
-          <div className=" mt-4 mx-4">
+          <div className=" mt-4 mx-4 flex items-center relative">
+          <p className="absolute right-0 mr-2">
+            {/* icon */}
+            <BiSolidLock />
+            </p>
             <input
               className="w-full	h-10 rounded-md"
               placeholder="Enter Newpassword"
@@ -65,13 +74,19 @@ const Forget2 = () => {
                 setPassword(e.target.value);
               }}
             />
-            {errors.password && (
+        
+          </div>
+          {errors.password && (
               <Alert variant="filled" severity="error">
                 {errors.password}
               </Alert>
             )}
-          </div>
-          <div className=" mt-4 mx-4">
+          <div className=" mt-4 mx-4 flex items-center relative">
+          <p className="absolute right-0 mr-2 ">
+            {/* icon */}
+            <BiSolidLock />
+            </p>
+            
             <input
               className="w-full	h-10 rounded-md"
               placeholder="Confirm Password"
@@ -81,12 +96,14 @@ const Forget2 = () => {
                 setCpassword(e.target.value);
               }}
             />
+        
+          </div>  
+          
             {errors.cpassword && (
               <Alert variant="filled" severity="error">
                 {errors.cpassword}
               </Alert>
             )}
-          </div>
           <div class="flex justify-center items-center mt-3 ">
             <button class="bg-blue-500 text-white px-4 py-2 rounded">
               submit

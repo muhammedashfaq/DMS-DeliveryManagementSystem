@@ -1,55 +1,50 @@
-// import React from 'react'
-// import AppBar from '@mui/material/AppBar';
-// import Box from '@mui/material/Box';
-// import Toolbar from '@mui/material/Toolbar';
-// import Typography from '@mui/material/Typography';
-// import Button from '@mui/material/Button';
-// import IconButton from '@mui/material/IconButton';
-// import MenuIcon from '@mui/icons-material/Menu';
-// const header = () => {
-//     return (
-//         <Box sx={{ flexGrow: 3 }}>
-//           <AppBar position="static">
-//             <Toolbar>
-//               <IconButton
-//                 size="large"
-//                 edge="start"
-//                 color="inhebrit"
-//                 aria-label="menu"
-//                 sx={{ mr: 2 }}
-//               >
-//                 <MenuIcon />
-//               </IconButton>
-//               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-//                 News
-//               </Typography>
-//               <Button color="inherit">Login</Button>
-//             </Toolbar>
-//           </AppBar>
-//         </Box>
-//       );
-// }
 
-// export default header
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 const navigation = [
-    { name: 'Dashboard', href: '#', current: true },
-    { name: 'Team', href: '#', current: false },
-    { name: 'Projects', href: '#', current: false },
-    { name: 'Calendar', href: '#', current: false },
+    // { name: 'Dashboard', href: '#', current: true },
+    { name: 'Home', href: '#', current: true },
+    { name: 'Careers', href: '#', current: false },
+    { name: 'Contact Us', href: '#', current: false },
   ]
+
+
 
   function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
   }
-const header = () => {
+const Header = () => {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+
+ 
     return (
-        <Disclosure as="nav" className="bg-white h-20">
+      <Disclosure
+      as="nav"
+      className={`h-20 sticky top-0 z-10 transition duration-300 ${
+        scrolled ? 'bg-blue-950 text-white' : 'bg-white text-black'
+      }`}
+    >
           {({ open }) => (
             <>
               <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -67,44 +62,56 @@ const header = () => {
                     </Disclosure.Button>
                   </div>
                   <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                    <div className="flex flex-shrink-0 items-center">
-                      <img
-                        className="h-11 w-auto"
+                    <div className="flex flex-shrink-0 items-center ">
+
+                          {scrolled? <img
+                        className="h-20 w-auto"
+                        src="./images/adminlogin/logo.png"
+                        alt="Your Company"
+                      />: <img
+                        className="h-20 w-auto"
                         src="./images/landingpage/logo.png"
                         alt="Your Company"
-                      />
+                      />}
+
+               
                     </div>
-                    <div className="hidden sm:ml-6 sm:block">
-                      <div className="flex space-x-4">
+                    <div className=" sm:ml-6 sm:block">
+            
+                    </div>
+                  </div>
+                  <div className="flex space-x-4">
                         {navigation.map((item) => (
-                          <a
-                            key={item.name}
-                            href={item.href}
-                            className={classNames(
-                              item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                              'rounded-md px-3 py-2 text-sm font-medium'
-                            )}
+
+                          <a 
+                          href={item.href}
+                          key={item.name}
+                          className={classNames(
+                            'rounded-md px-3 py-2 text-sm font-medium',
+                            'text-gray-300 hover:bg-gray-700 hover:text-white',
+                            // Use the above line for differentiating styles between hover and non-hover states
+                            { 'bg-gray-900 text-white': item.current }
+                          )}
                             aria-current={item.current ? 'page' : undefined}
-                          >
+                            >
                             {item.name}
                           </a>
                         ))}
                       </div>
-                    </div>
-                  </div>
+                       
                   <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                    <button
+                    {/* <button
                       type="button"
                       className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                     >
                       <span className="absolute -inset-1.5" />
                       <span className="sr-only">View notifications</span>
                       <BellIcon className="h-6 w-6" aria-hidden="true" />
-                    </button>
+                    </button> */}
     
                     {/* Profile dropdown */}
                     <Menu as="div" className="relative ml-3">
-                      <div>
+                      {/* <div>
                         <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                           <span className="absolute -inset-1.5" />
                           <span className="sr-only">Open user menu</span>
@@ -114,7 +121,7 @@ const header = () => {
                             alt=""
                           />
                         </Menu.Button>
-                      </div>
+                      </div> */}
                       <Transition
                         as={Fragment}
                         enter="transition ease-out duration-100"
@@ -186,4 +193,4 @@ const header = () => {
       )
 }
 
-export default header
+export default Header

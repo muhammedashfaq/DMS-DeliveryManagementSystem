@@ -7,6 +7,7 @@ import { toast } from "react-hot-toast";
 import { hideloading, showloading } from "../../redux/alertSlice";
 import { Alert } from "@mui/material";
 import { loginValidate } from "../api/validation";
+import { BiEnvelope, BiSolidLock } from "react-icons/bi";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -15,9 +16,9 @@ const Login = () => {
     email: "",
     password: "",
   });
-  
+
   const [errors, setError] = useState([]);
-  
+
   const handleInputchange = (event) => {
     const { name, value } = event.target;
     setFormData((prevFormData) => ({
@@ -54,7 +55,6 @@ const Login = () => {
     }
   };
 
-
   return (
     <section>
       <div className="relative w-96 h-auto  transparent rounded-xl flex justify-center backdrop-blur-sm items-center login_border">
@@ -64,7 +64,10 @@ const Login = () => {
               Login
             </h2>
             <div className="inputbox">
-              <ion-icon name="person-circle-outline"></ion-icon>
+              <p className="absolute right-0 mt-4 mr-2 ">
+                {/* icon */}
+                <BiEnvelope />
+              </p>
 
               <input
                 placeholder="Email"
@@ -80,7 +83,10 @@ const Login = () => {
               )}
             </div>
             <div className="inputbox">
-              {/* icon */}
+              <p className="absolute right-0 mt-4 mr-2 ">
+                {/* icon */}
+                <BiSolidLock />
+              </p>
               <input
                 placeholder="password"
                 type="password"

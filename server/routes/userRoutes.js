@@ -9,7 +9,7 @@ const userController =require('../controller/userController')
 router.post('/get-userinfo-id',authmiddleware,userController.userdetails)
 router.post('/otp',userController.otpVerification)
 router.post('/forget',userController.forgetMail)
-router.post('/reset',userController.resetPassword)
+router.post('/reset/:token',userController.resetPassword)
 
 
 

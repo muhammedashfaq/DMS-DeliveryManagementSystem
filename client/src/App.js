@@ -9,6 +9,8 @@ import Dlogin from './pages/driver/login'
 import Adminlogin from './pages/admin/login'
 import AdminHome from './pages/admin/Home/Home'
 import Home from './pages/user/Home/Home'
+
+import DriverHome from './pages/driver/home'
 // import UserDetails from './pages/admin/Home/userDetails'
 // import DriverDetails from './pages/admin/Home/driverDetails'
 // import ShipmentDetails from './pages/admin/Home/shipmentDetails'
@@ -45,6 +47,8 @@ const App = () => {
 
          
          <Route path='/dlogin' element={<Dlogin/>}/>
+         <Route path='/driverhome' element={<DriverHome/>}/>
+
 
          <Route path='/admin' element={<PublicRoutesAdmin><Adminlogin /></PublicRoutesAdmin>}/>
          <Route path='/adminhome*' element={<ProtectedRoutesAdmin><AdminHome/> </ProtectedRoutesAdmin>}/>

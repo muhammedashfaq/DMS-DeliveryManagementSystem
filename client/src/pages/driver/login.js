@@ -6,7 +6,11 @@ const Login = () => {
         <div className="flex justify-center items-center min-h-screen w-full filter border-2 border-black dlogin">
           <div className="bg-white shadow-2xl h-max w-96 m-5 rounded-lg border-solid border-2 border-sky-500">
             <div>
-              {/* Icon */} icon
+              {/* Icon */} <img
+                        className="h-20 w-auto"
+                        src="./images/landingpage/logo.png"
+                        alt="Your Company"
+                      />
             </div>
     
             <h1 className="text-center font-bold text-2xl m-2">Login</h1>
@@ -18,7 +22,7 @@ const Login = () => {
               </span>
               <input
                 className="pl-2 bg-gray-200 my-2 w-72 h-8 rounded-sm"
-                placeholder="Login Id"
+                placeholder="Employee Id"
               />
             </div>
             

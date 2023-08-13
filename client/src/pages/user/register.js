@@ -74,7 +74,7 @@ const Register = () => {
               Register
             </h2>
             <div className="inputbox ">
-              <p className="absolute right-0 mt-4 ">
+              <p className="absolute right-0 mt-4 mr-2 ">
                 {" "}
                 <regicon.IoPersonCircleSharp />
               </p>
@@ -91,7 +91,12 @@ const Register = () => {
               )}
             </div>
             <div className="inputbox">
+            <p className="absolute right-0 mt-4 mr-2 ">
+
+
               <BiEnvelope />
+            </p>
+
               <input
                 name="email"
                 onChange={handleInputchange}
@@ -105,7 +110,11 @@ const Register = () => {
               )}
             </div>
             <div className="inputbox ">
+            <p className="absolute right-0 mt-4 mr-2">
+
+
               {/* icon */} <BiSolidLock />
+            </p>
               <input
                 type="password"
                 onChange={handleInputchange}
@@ -119,8 +128,12 @@ const Register = () => {
               )}
             </div>
             <div className="inputbox">
+            <p className="absolute right-0 mt-4 mr-2 ">
+
+
               {/* icon */}
               <BiSolidLock />
+            </p>
               <input
                 type="password"
                 name="cpassword"

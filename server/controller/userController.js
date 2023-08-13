@@ -75,7 +75,7 @@ const loginpage = async (req, res) => {
 
         res
           .status(200)
-          .send({ message: "successfully logged", success: true, data: token });
+          .send({ message: "successfully logged", success: true, data: token,name:user.username });
       }
     } else {
       res.status(200).send({ message: "user not verified", success: false });

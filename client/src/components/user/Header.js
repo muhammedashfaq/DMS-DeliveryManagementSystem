@@ -3,7 +3,11 @@ import { useDispatch } from 'react-redux'
 import {Navigate, useNavigate,Link,useLocation} from 'react-router-dom'
 import { hideloading, showloading } from "../../redux/alertSlice";
 
+import{useUserContext } from '../../context/userContext'
+
 const Header = () => {
+	const {userName} =useUserContext()
+
 	const location =useLocation()
 
 	const menu=[
@@ -43,7 +47,9 @@ const Header = () => {
 			</li>
 				)
 			})}
-
+ <div className="user-info">
+        Welcome, {userName}
+      </div>
 			
 			<li className="flex">
 				<a rel="noopener noreferrer" href="#" className="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent" onClick={()=>{localStorage.clear()

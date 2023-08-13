@@ -8,10 +8,12 @@ import { hideloading, showloading } from "../../redux/alertSlice";
 import { Alert } from "@mui/material";
 import { loginValidate } from "../api/validation";
 import { BiEnvelope, BiSolidLock } from "react-icons/bi";
+import { useUserContext} from '../../context/userContext'
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { setUserName } = useUserContext()
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -41,8 +43,10 @@ const Login = () => {
       dispatch(hideloading());
       if (response.data.success) {
         toast.success(response.data.message);
-
         localStorage.setItem("token", response.data.data);
+        const name=response.data.name
+        setUserName(name)
+
         navigate("/home");
       } else {
         toast.error(response.data.message);

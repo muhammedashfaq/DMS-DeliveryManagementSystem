@@ -8,7 +8,7 @@ export const ProtectedRoutesUser = (props) => {
     if(localStorage.getItem('token')){
         return props.children
     }else{
-        return <Navigate to='/login' />
+        return <Navigate to='/' />
     }
 
   
@@ -24,4 +24,16 @@ export const ProtectedRoutesAdmin = (props) => {
 
   
 }
+export const ProtectedRoutesdriver = (props) => {
+
+
+    if(localStorage.getItem('token')){
+        return props.children
+    }else{
+        return <Navigate to='/dlogin' />
+    }
+
+  
+}
+
 

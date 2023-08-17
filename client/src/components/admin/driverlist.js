@@ -2,13 +2,26 @@ import React, { useEffect, useState } from 'react'
 import {useDispatch} from 'react-redux'
 import{ hideloading, showloading }from '../../redux/alertSlice' 
 import axios from 'axios'
+import { Link, useNavigate } from 'react-router-dom'
 
 const Driverlist = () => {
+  const navigate =useNavigate()
+  const [search,setSearch]=useState("")
 
-  const[user,setUser] = useState([])
+
+  const[driver,setDriver] = useState([])
   const dispatch=useDispatch()
+  const filtereddriver = driver.filter((user) => {
+    const lowerCaseSearchInput = search.toLowerCase();
+    return (
+      user.fname.toLowerCase().includes(lowerCaseSearchInput)
+    //   user.lname.toLowerCase().includes(lowerCaseSearchInput)  ,
+    //  user.email.toLowerCase().includes(lowerCaseSearchInput) 
+    );
+  });
 
-  const getUserData= async()=>{
+
+  const getDriverrData= async()=>{
 
     try {
       
@@ -16,14 +29,14 @@ const Driverlist = () => {
       
        dispatch(showloading())
 
-     const response =await axios.get('/admin/get-useDetials',{
+     const response =await axios.get('/admin/get-driverDetials',{
         headers:{
           Authorization:`Bearer ${localStorage.getItem("token")}`
         }
       })
  dispatch(hideloading())
       if(response.data.message){
-        setUser(response.data.data)
+        setDriver(response.data.data)
         console.log(response.data.data);
 
       }
@@ -33,11 +46,11 @@ const Driverlist = () => {
     }    
   }
 
+  // useEffect(()=>{
+  //   // console.log(user,"hahhaa");
+  // },[user])
   useEffect(()=>{
-    console.log(user,"hahhaa");
-  },[user])
-  useEffect(()=>{
-    getUserData()
+    getDriverrData()
   },[])
   return (
     <div className='container mt-5'>
@@ -47,7 +60,7 @@ const Driverlist = () => {
 
 
 <div className=" w-full h-14 flex justify-evenly dark:bg-gray-700 text-sm text-left text-gray-500 dark:text-gray-400 ">
-<button className='w-36 h-10 bg-blue-500 m-2 rounded-lg font-bold text-black hover:bg-slate-600'>Add</button>
+<Link to= '/adminhome/add_driver'> <button className='w-36 h-10 bg-blue-500 m-2 rounded-lg font-bold text-black hover:bg-slate-600'>Add</button></Link>
 <fieldset className="space-y-1 dark:text-gray-100 mt-2">
 	<label for="Search" className="hidden">Search</label>
 	<div className="relative">
@@ -58,7 +71,9 @@ const Driverlist = () => {
 				</svg>
 			</button>
 		</span>
-		<input type="search" name="Search" placeholder="Search..." className="w-32 py-2 pl-10 text-sm rounded-md sm:w-auto focus:outline-none dark:bg-gray-800 dark:text-gray-100 focus:dark:bg-gray-900 focus:dark:border-violet-400" />
+		<input type="search"       name="Search"
+                value={search}
+                placeholder="Search..."onChange={(e)=>setSearch(e.target.value)} className="w-32 py-2 pl-10 text-sm rounded-md sm:w-auto focus:outline-none dark:bg-gray-800 dark:text-gray-100 focus:dark:bg-gray-900 focus:dark:border-violet-400" />
 	</div>
 
 </fieldset>
@@ -80,25 +95,38 @@ const Driverlist = () => {
                    Contact Number
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Vehicle No
+                    Licence Number
                 </th>
+                <th scope="col" class="px-6 py-3">
+                   Age
+                </th>
+                
                 
                
             </tr>
         </thead>
         <tbody>
-  {user?.map((user, index) => (
+        {filtereddriver?.length > 0 ? (
+  filtereddriver?.map((driver, index) => (
     <tr key={index} className="bg-black border-b dark:bg-gray-800 dark:border-gray-700">
-      <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-        {user?.username}
+      <th scope="row" className="px-6 py-3   font-medium text-gray-900 whitespace-nowrap dark:text-white">
+
+       <a href={`/adminhome/driver_profile/${driver?.id}`}>{driver?.fname + ' ' + driver?.lname}</a>
       </th>
-      <td className="px-6 py-4">{user?.email}</td>
-      <td className="px-6 py-4">{user?.phone}</td>
-      <td className="px-6 py-4">
-        <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-      </td>
+      <td className="px-6 py-2">{driver?.email}</td>
+      <td className="px-6 py-2">{driver?.mobile}</td>
+      <td className="px-6 py-2">{driver?.licence}</td>
+      <td className="px-6 py-2">{driver?.age}</td>
+
+
     </tr>
-  ))}
+      ))):(
+        <tr>
+          <td colSpan="5" className="px-6 py-2 bg-black text-center">
+            No matching data
+          </td>
+        </tr>
+      )} 
 </tbody>
 
     </table>

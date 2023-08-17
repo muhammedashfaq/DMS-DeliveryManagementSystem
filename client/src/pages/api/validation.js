@@ -1,105 +1,128 @@
 export const registervalidate = (name, email, password, copassword) => {
-  
-    const error = {};
-
-    if (!name || name.trim() === "") {
-      error.name = "Name is Required";
-    } else {
-      error.name = "";
-    }
-
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      error.email = "Email Not Matched ";
-    } else {
-      error.email = "";
-    }
-
-    if (password.trim() === "") {
-      error.password = "password is Required";
-    } else if (password.length < 8) {
-      error.password = "password  Not Matched ";
-    } else {
-      error.password = "";
-    }
-
-    if (copassword.trim() === "") {
-      error.copassword = "Field is Required";
-    } else if (password !== copassword) {
-      error.copassword = "Password not matching";
-    } else {
-      error.copassword = "";
-    }
-
-    return error;
-  };
-
-  export const loginValidate=(email,password)=>{
-    const error={}
-    if(!email){
-      error.email="Email is Required"
-    }else if(!/\S+@\S+\.\S+/.test(email))
-  {
-    error.email="Email Not Matched "
-  }else{
-    error.email=""
-  }
-    
-  if(!password){
-    error.password="password is Required"
-  }else if(password.length < 8)
-  {
-  error.password="password  Not Matched "
-  }else{
-  error.password = ""
-  }
-  
-  return error
-  
-  }
-
-export   const forgetValidate = (password,cpassword) => {
   const error = {};
 
-  if(password.trim()===""){
-    error.password = "password is Required";
-  }else if (password.length < 8) {
-    error.password = "password  Not Matched ";
-  } else {
-    error.password = "";
-  }
+  error.name = !name || name.trim() === "" ? "Name is required" : "";
 
-  if (cpassword.trim() === "") {
-    error.cpassword = "Field is Required";
-  } else if (password !== cpassword) {
-    error.cpassword = "Password not matching";
-  } else {
-    error.cpassword = "";
-  }
-  return error
+  error.email = !/\S+@\S+\.\S+/.test(email) ? "Invalid email format" : "";
+
+  error.password = password.trim() === "" ? "Password is required" : password.length < 8 ? "Password must be at least 8 characters long" : "";
+
+  error.copassword = copassword.trim() === "" ? "Confirm password is required" : password !== copassword ? "Passwords do not match" : "";
+
+  return error;
 };
 
-export const adminloginvalidate=(email,password)=>{
+  export const loginValidate = (email, password) => {
+    const error = {};
+  
+    error.email = !email ? "Email is required" : !/\S+@\S+\.\S+/.test(email) ? "Invalid email format" : "";
+  
+    error.password = !password ? "Password is required" : password.length < 8 ? "Password must be at least 8 characters long" : "";
+  
+    return error;
+  };
+  
+  export const forgetValidate = (password, cpassword) => {
+    const errors = {};
+  
+    if (password.trim() === "") {
+      errors.password = "Password is required";
+    } else if (password.length < 8) {
+      errors.password = "Password must be at least 8 characters long";
+    } else {
+      errors.password = "";
+    }
+  
+    if (cpassword.trim() === "") {
+      errors.cpassword = "Confirm password is required";
+    } else if (password !== cpassword) {
+      errors.cpassword = "Passwords do not match";
+    } else {
+      errors.cpassword = "";
+    }
+  
+    return errors;
+  };
+  
+export const adminloginvalidate = (email, password) => {
+  const errors = {};
 
-    const error={}
-    if(!email){
-      error.email="Email is Required"
-    }else if(!/\S+@\S+\.\S+/.test(email))
-  {
-    error.email="Email Not Matched "
-  }else{
-    error.email=""
+  if (!email) {
+    errors.email = "Email is required";
+  } else if (!/\S+@\S+\.\S+/.test(email)) {
+    errors.email = "Email format is not valid";
   }
+
+  if (!password) {
+    errors.password = "Password is required";
+  } else if (password.length < 8) {
+    errors.password = "Password must be at least 8 characters long";
+  }
+
+  return errors;
+};
+
+
+
+
+ export const drivervalidate = (formData) => {
+    const errors = {};
+  
+    if (!formData.fname || formData.fname.trim() === "") {
+      errors.fname = "First name is required";
+    }
+  
+    if (!formData.lname || formData.lname.trim() === "") {
+      errors.lname = "Last name is required";
+    }
+  
+    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.email = "Valid email is required";
+    }
+  
+    if (!formData.gender) {
+      errors.gender = "Please select a gender";
+    }
+  
+    if (!formData.address || formData.address.trim() === "") {
+      errors.address = "Address is required";
+    }
+  
+    if (!formData.age || formData.age.trim() === "") {
+      errors.age = "Age is required";
+    }
+  
+    if (!formData.mobile || formData.mobile.trim() === "") {
+      errors.mobile = "Mobile number is required";
+    } else if (formData.mobile.length !== 10) {
+      errors.mobile = "Mobile number must be 10 digits";
+    }
+  
+    if (!formData.pin || formData.pin.trim() === "") {
+      errors.pin = "PIN is required";
+    }
+  
+    if (!formData.licence || formData.licence.trim() === "") {
+      errors.licence = "Licence number is required";
+    }
     
-  if(!password){
-    error.password="password is Required"
-  }else if(password.length < 8)
-  {
-  error.password="password  Not Matched "
-  }else{
-  error.password = ""
-  }
+   
+    return errors;
+  };
   
-  return error
   
-  }
+  export const driverloginvalidate =(formData)=>{
 
+    const errors = {};
+    if (!formData.employeeid || formData.employeeid.trim() === "") {
+      errors.employeeid = "EmployeeID is required";
+    }
+  
+   
+  if (!formData.password || formData.password.trim() === "") {
+    errors.password = "Password is required";
+  } else if (formData.password.trim().length < 8) {
+    errors.password = "Password must be at least 8 characters long";
+  }
+    return errors
+  }

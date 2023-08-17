@@ -6,8 +6,11 @@ import { toast } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { adminloginvalidate } from "../api/validation";
 import { Alert } from "@mui/material";
+import { useUserContext } from "../../context/userContext";
 
 const Login = () => {
+  const { setUserName } = useUserContext()
+
   const navigate = useNavigate();
   const [errors, seterrors] = useState([]);
   const [formData, setFormData] = useState({
@@ -33,7 +36,8 @@ const Login = () => {
       if (response.data.success) {
         toast.success(response.data.message);
         localStorage.setItem("token", response.data.data);
-
+        const name=response.data.name
+        setUserName(name)
         navigate("/adminhome");
       } else {
         toast.error(response.data.message);

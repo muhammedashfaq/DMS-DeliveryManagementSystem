@@ -47,9 +47,9 @@ const Header = () => {
 			</li>
 				)
 			})}
- <div className="user-info">
+ {/* <div className="user-info">
         Welcome, {userName}
-      </div>
+      </div> */}
 			
 			<li className="flex">
 				<a rel="noopener noreferrer" href="#" className="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent" onClick={()=>{localStorage.clear()

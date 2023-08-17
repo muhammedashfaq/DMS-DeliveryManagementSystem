@@ -1,17 +1,25 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
+import { useUserContext } from "../../context/userContext";
 
 const Header = () => {
+  
+  const { userName  } = useUserContext();
+
+  console.log(userName);
+  
   return (
     <div className=" h-16 flex justify-end ">
       <div className="flex justify-end  w-96 border-b-4 border-gray-500">
         <div className="hidden sm:ml-6 sm:block">
-          <div className="flex space-x-4 pt-6">
-            <a href="#">Admin Name</a>
-          </div>
+        {userName && ( // Conditionally render if userName is available
+            <div className="flex space-x-4 pt-6">
+              <a href="#">Hi Admin {userName}</a>
+            </div>
+          )}
         </div>
 
         <div className="hidden sm:ml-6 sm:block">
-          <a href="#">
+          <a href="/adminhome/adminprofile">
             <div className="flex space-x-4  mr-7 pt-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

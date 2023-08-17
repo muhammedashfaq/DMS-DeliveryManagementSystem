@@ -37,7 +37,7 @@ const Nav = () => {
           <div>
             <Link to="/adminhome">
               
-              <img src="./images/adminlogin/logo.png" />
+              <img src="./images/landingpage/logo.png" />
             </Link>
           </div>
         </div>

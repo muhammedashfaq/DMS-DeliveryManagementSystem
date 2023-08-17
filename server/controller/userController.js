@@ -37,6 +37,7 @@ const registerpage = async (req, res) => {
     const password = req.body.password;
     const passwordHash = await securePassword(password);
     req.body.password = passwordHash;
+    
     const newUser = new User(req.body);
     const userData = await newUser.save();
     if (userData) {
@@ -69,9 +70,12 @@ const loginpage = async (req, res) => {
       if (!isMatch) {
         res.status(200).send({ message: "incorrect password", success: false });
       } else {
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+        const token = jwt.sign({ id: user._id,name: user.username }, process.env.JWT_SECRET, {
           expiresIn: "1d",
         });
+
+
+        
 
         res
           .status(200)
@@ -94,6 +98,7 @@ const userdetails = async (req, res) => {
         .status(200)
         .send({ message: "user does no exist", success: false });
     } else {
+      console.log(user.username,'name')
       res.status(200).send({
         success: true,
         data: { name: user.username, email: user.email },

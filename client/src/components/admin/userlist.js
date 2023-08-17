@@ -16,8 +16,8 @@ const Userlist = () => {
   const filteredUsers = user.filter((user) => {
     const lowerCaseSearchInput = search.toLowerCase();
     return (
-      user.username.toLowerCase().includes(lowerCaseSearchInput)  // Search by username
-      // user.email.toLowerCase().includes(lowerCaseSearchInput) // Search by email
+      user.username.toLowerCase().includes(lowerCaseSearchInput)  
+      // user.email.toLowerCase().includes(lowerCaseSearchInput) 
     );
   });
 
@@ -130,35 +130,49 @@ const Userlist = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers?.map((user, index) => (
-              <tr
-                key={index}
-                className="bg-black border-b dark:bg-gray-800 dark:border-gray-700"
-              >
-                <td
-                  scope="row"
-                  className="px-6  font-medium text-gray-900 whitespace-nowrap dark:text-white"
+            {filteredUsers?.length > 0 ?(
+              filteredUsers?.map((user, index) => (
+                <tr
+                  key={index}
+                  className="bg-black border-b dark:bg-gray-800 dark:border-gray-700"
                 >
-                  {user?.username}
-                </td>
-                <td className="px-6 ">{user?.email}</td>
-                <td className="px-6 ">
-                  {user?.isBlocked ? "True" : "false"}
-                </td>
-                <td className="px-6 py-2">
-                  <a href="#">
-                    <button
-                      className={`w-20 h-8  rounded-lg font-bold text-black hover:bg-slate-600 ${user.isBlocked? "bg-blue-500":"bg-red-800"}` }
-                      onClick={() => {
-                        handleclick(user?.email, user?.isBlocked);
-                      }}
-                    >   
-                       {user.isBlocked ? "Unblock  " : "Block"}
-                          </button>
-                  </a>
-                </td>
-              </tr>
-            ))}
+                  <td
+                    scope="row"
+                    className="px-6  font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  >
+                    {user?.username}
+                  </td>
+                  <td className="px-6 ">{user?.email}</td>
+                  <td className="px-6 ">
+                    {user?.isBlocked ? "True" : "false"}
+                  </td>
+                  <td className="px-6 py-2">
+                    <a href="#">
+                      <button
+                        className={`w-20 h-8  rounded-lg font-bold text-black hover:bg-slate-600 ${user.isBlocked? "bg-blue-500":"bg-red-800"}` }
+                        onClick={() => {
+                          handleclick(user?.email, user?.isBlocked);
+                        }}
+                      >   
+                         {user.isBlocked ? "Unblock  " : "Block"}
+                            </button>
+                    </a>
+                  </td>
+                </tr>
+              ))
+
+
+
+            ):(
+
+              <tr>
+          <td colSpan="5" className="px-6 py-4 bg-black text-center">
+            No matching data
+          </td>
+        </tr>
+
+            )}
+            
           </tbody>
         </table>
       </div>

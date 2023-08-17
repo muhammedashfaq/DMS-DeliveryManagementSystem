@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
 import Header from "../../../components/admin/Header";
 import SideNav from "../../../components/admin/nav";
-import{BrowserRouter,Routes,Route} from 'react-router-dom'
+import{Routes,Route} from 'react-router-dom'
 import UserDetails from '../../../components/admin/userlist'
 import DriverDetails from '../../../components/admin/driverlist'
-
+import AddDriver from "../../../components/admin/addDriver";
+import AdminProfile from "../../../components/admin/adminProfile";
 import axios from "axios";
 const Home = () => {
   const getData = async (req, res) => {
@@ -18,8 +19,9 @@ const Home = () => {
           },
         }
       );
-      console.log(response.data);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -34,6 +36,10 @@ const Home = () => {
         <Routes>
           <Route path="/user_details" element={<UserDetails />} />
           <Route path="/driver_details" element={<DriverDetails />} />
+          <Route path="/add_driver" element={<AddDriver />} />
+          <Route path="/adminprofile" element={<AdminProfile />} />
+
+
 
         </Routes>
       </div>

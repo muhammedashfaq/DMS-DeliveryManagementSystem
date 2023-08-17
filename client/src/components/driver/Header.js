@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import {Navigate, useNavigate,Link,useLocation} from 'react-router-dom'
+import { useNavigate,Link,useLocation} from 'react-router-dom'
 import { hideloading, showloading } from "../../redux/alertSlice";
 
 const Header = () => {
@@ -51,9 +51,9 @@ const Header = () => {
 				<a rel="noopener noreferrer" href="#" className="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent" onClick={()=>{localStorage.clear()
                     
                     
-                    // dispatch(showloading())
-                    // navigate('/login')
-                    // dispatch(hideloading())
+                    dispatch(showloading())
+                    navigate('/dlogin')
+                    dispatch(hideloading())
                     
                     
                     

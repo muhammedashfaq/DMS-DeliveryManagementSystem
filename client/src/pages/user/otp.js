@@ -24,7 +24,7 @@ const Otp = () => {
       dispatch(hideloading());
       if (response.data.success) {
         toast.success(response.data.message);
-        navigate("/login");
+        navigate("/");
       } else {
         toast.error(response.data.message);
       }

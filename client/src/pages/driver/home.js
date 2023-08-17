@@ -1,10 +1,34 @@
-import React from 'react'
+import React ,{useEffect}from 'react'
 import Footer from '../../components/user/footer'
 import Header from '../../components/driver/Header'
 import Body from '../../components/driver/body'
+import axios from 'axios'
+
+const Home = () => {
+  const getData =async(req,res)=>{
+    try {
+
+      const response =await axios.post('get-driverinfo-id',{},{
+        headers:{
+          Authorization: "Bearer " + localStorage.getItem("token"),
 
 
-const home = () => {
+        }
+      })
+
+      if (response.data.success) {
+      console.log(response.data.data.name);
+    }
+      
+    } catch (error) {
+      console.log(error)
+      
+    }
+
+  }
+  useEffect(()=>{
+    getData()
+  },[])
   return (
     
 
@@ -20,4 +44,4 @@ const home = () => {
   )
 }
 
-export default home
+export default Home

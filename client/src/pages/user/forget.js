@@ -65,7 +65,7 @@ const Forget = () => {
     const error = {};
 
     if (forget.trim() === "") {
-      error.forget = "otp is Required";
+      error.forget = "Field is Required";
     } else {
       error.forget = "";
     }

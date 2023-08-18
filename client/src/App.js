@@ -105,7 +105,6 @@ const App = () => {
             }
           />
           {/*  <Route path='/driver_details' element={<ProtectedRoutesAdmin><DriverDetails/> </ProtectedRoutesAdmin>}/>
-         <Route path='/shipment_details' element={<ProtectedRoutesAdmin><ShipmentDetails/> </ProtectedRoutesAdmin>}/>
         */}
         </Routes>
       </BrowserRouter>

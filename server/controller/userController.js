@@ -87,14 +87,12 @@ const loginpage = async (req, res) => {
           }
         );
 
-        res
-          .status(200)
-          .send({
-            message: "successfully logged",
-            success: true,
-            data: token,
-            name: user.username,
-          });
+        res.status(200).send({
+          message: "successfully logged",
+          success: true,
+          data: token,
+          name: user.username,
+        });
       }
     } else {
       res.status(200).send({ message: "user not verified", success: false });
@@ -232,13 +230,9 @@ const getprofile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   try {
-    // const image2=req.file.filename
-    // console.log(image2)
+    const id = req.userId
 
-    const id = req.userId;
-    console.log(id, "image");
-    const userdata = await User.findOne({ _id: "64dba9a4ad2325afde95ef0e" });
-    console.log(userdata);
+    const userdata = await User.findOne({ _id:id});
 
     if (userdata) {
       await sharp("./public/multer/" + req.file.filename)

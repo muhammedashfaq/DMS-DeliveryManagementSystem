@@ -10,14 +10,14 @@ export const PublicRoutesUser = (props) => {
 }
 
 export const PublicRoutesAdmin = (props) => {
-    if(localStorage.getItem('token')){
+    if(localStorage.getItem('admintoken')){
         return <Navigate to='/adminhome' />
     }else{
         return props.children 
     }
 }
 export const PublicRoutesdriver = (props) => {
-    if(localStorage.getItem('token')){
+    if(localStorage.getItem('drivertoken')){
         return <Navigate to='/driverhome' />
     }else{
         return props.children 

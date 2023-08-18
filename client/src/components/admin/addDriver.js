@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { hideloading, showloading } from "../../redux/alertSlice";
 import{drivervalidate} from '../../pages/api/validation'
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 const AddDriver = () => {
 
@@ -42,23 +43,18 @@ const AddDriver = () => {
     try {
       e.preventDefault();
 
-      const error = drivervalidate( formData
-      
-  
-      )
+      const error = drivervalidate( formData)
     
 
       if (Object.keys(error).length === 0) {
-        alert('done')
-      }
-      setError(error)
+        
         
         dispatch(showloading());
         const formDataToSend = new FormData();
         
-      for (const key in formData) {
-        if (formData.hasOwnProperty(key)) {
-          formDataToSend.append(key, formData[key]);
+        for (const key in formData) {
+          if (formData.hasOwnProperty(key)) {
+            formDataToSend.append(key, formData[key]);
         }
       }
 
@@ -73,8 +69,13 @@ const AddDriver = () => {
       if (response.data.success) {
         navigate('/adminhome/driver_details')
       } else {
+        toast.error(response.data.message)
         
       }
+    }else{
+      setError(error)
+
+    }
    
     } catch (error) {
       dispatch(hideloading());
@@ -168,6 +169,7 @@ const AddDriver = () => {
                 <select
                   id="gender"
                   name="gender"
+                  value={formData.gender}
                   onChange={handleinputchange}
                   className="w-full h-8 rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900"
                 >

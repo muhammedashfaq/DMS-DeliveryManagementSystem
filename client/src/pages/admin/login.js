@@ -35,7 +35,7 @@ const Login = () => {
       const response = await axios.post("/admin/login", formData);
       if (response.data.success) {
         toast.success(response.data.message);
-        localStorage.setItem("token", response.data.data);
+        localStorage.setItem("admintoken", response.data.data);
         const name=response.data.name
         setUserName(name)
         navigate("/adminhome");

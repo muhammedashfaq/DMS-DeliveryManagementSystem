@@ -30,7 +30,7 @@ const Userlist = () => {
 
       const response = await axios.get("/admin/get-useDetials", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("admintoken")}`,
         },
       });
       dispatch(hideloading());
@@ -43,7 +43,13 @@ const Userlist = () => {
   const handleclick = async (email, status) => {
     try {
       if (status === false) {
-        const response = await axios.post("/admin/blockuser", { email: email });
+        const response = await axios.post("/admin/blockuser", { email: email },{
+          headers:{
+            Authorization: `Bearer ${localStorage.getItem("admintoken")}`,
+
+          }
+        });
+        console.log('falsw');
         if (response.data.success) {
           toast.success(response.data.message);
       
@@ -55,6 +61,11 @@ const Userlist = () => {
       } else {
         const response = await axios.post("/admin/unblockuser", {
           email: email,
+        },{
+          headers:{
+            Authorization: `Bearer ${localStorage.getItem("admintoken")}`,
+
+          }
         });
         if (response.data.success) {
           toast.success(response.data.message);

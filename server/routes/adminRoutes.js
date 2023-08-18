@@ -16,6 +16,11 @@ admin_router.post('/blockuser',authmiddleware,adminController.blockuser)
 admin_router.post('/unblockuser',authmiddleware,adminController.unblockuser)
 admin_router.post('/add_driver',upload.upload.array('profileimage',5), adminController.addDriver)
 admin_router.get('/get-driverDetials',adminController.driverlistLoad)
+admin_router.post('/get-profile/:id',adminController.driverProfile)
+admin_router.put('/driverstatusUpdat/:id',adminController.driverstatusUpdate)
+
+
+
 
 
 

@@ -84,6 +84,7 @@ const userlistLoad = async (req, res) => {
 
 const blockuser = async (req, res) => {
   try {
+    console.log('reachwe');
     const email = req.body.email;
     console.log(req.body);
 
@@ -106,6 +107,8 @@ const blockuser = async (req, res) => {
 
 const unblockuser = async (req, res) => {
   try {
+    console.log('reachwe');
+
     const email = req.body.email;
     console.log(req.body);
 
@@ -153,6 +156,7 @@ const addDriver = async (req, res) => {
     const data = await cloudinary.uploader.upload(
       './public/cloudinary/' + req.files[0].filename
     );
+
 
     const cdurl = [data.secure_url];
 
@@ -204,6 +208,50 @@ const driverlistLoad = async(req,res)=>{
     res.status(500).send({ message: "Error", success: false, error });
   }
 }
+
+const driverProfile =async(req,res)=>{
+  try {
+
+    const id = req.params.id
+    console.log(id,'hhhhh');
+
+    const driver= await Driver.findById({_id:id})
+
+    if(driver){
+      res.status(200).send({message:"fetched ", success:true ,data:driver})
+    }else{
+      res.status(200).send({message:" error while fetching", success:false})
+    }
+
+
+
+  } catch (error) {
+    res.status(200).send({message:"something went wrong" , success:false})
+  }
+
+
+
+}
+
+const driverstatusUpdate =async(req,res)=>{
+  try {
+    const {id}=req.params
+    const {status}=req.body
+
+    const updatedriver = await Driver.findByIdAndUpdate({_id:id},{$set:{activestatus:status}})
+    if(updatedriver){
+      res.status(200).send({message:"status updated", success:true})
+    }else{
+      res.status(200).send({message:"failed to update",success:false})
+
+    }
+
+  } catch (error) {
+    console.log(error)
+    res.status(200).send({message:"something went wrong",success:false})
+    
+  }
+}
 module.exports = {
   adminLogin,
   admindetails,
@@ -212,6 +260,8 @@ module.exports = {
   unblockuser,
   addDriver,
   driverlistLoad,
+  driverProfile,
+  driverstatusUpdate
 };
 
 

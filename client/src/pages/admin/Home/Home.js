@@ -6,6 +6,8 @@ import UserDetails from '../../../components/admin/userlist'
 import DriverDetails from '../../../components/admin/driverlist'
 import AddDriver from "../../../components/admin/addDriver";
 import AdminProfile from "../../../components/admin/adminProfile";
+import DriverProfilePage from '../../../components/admin/driverProfile'
+import ShipmentList from '../../../components/admin/shipmentlist'
 import axios from "axios";
 const Home = () => {
   const getData = async (req, res) => {
@@ -15,7 +17,7 @@ const Home = () => {
         {},
         {
           headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
+            Authorization: "Bearer " + localStorage.getItem("admintoken"),
           },
         }
       );
@@ -40,6 +42,10 @@ const Home = () => {
           <Route path="/driver_details" element={<DriverDetails />} />
           <Route path="/add_driver" element={<AddDriver />} />
           <Route path="/adminprofile" element={<AdminProfile />} />
+          <Route path="/driver_profile" element={<DriverProfilePage />} />
+          <Route path='/shipment_list' element={<ShipmentList/> }/>
+
+
 
 
 

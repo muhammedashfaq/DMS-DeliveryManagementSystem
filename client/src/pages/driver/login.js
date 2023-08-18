@@ -41,11 +41,13 @@ const Login = () => {
 
       if (response.data.success) {
         toast.success(response.data.message);
-        localStorage.setItem("token", response.data.data);
+        localStorage.setItem("drivertoken", response.data.data);
+
+        console.log('res',response);
         const name = response.data.name;
         setUserName(name);
-
         navigate("/driverhome");
+        
       } else {
         toast.error(response.data.message);
       }

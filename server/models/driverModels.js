@@ -24,6 +24,10 @@ const driverSchema = new mongoose.Schema({
     default:''
 
   },
+  activestatus:{
+    type: String,
+    default: 'Active'
+  },
   fileImage: {
     type:Array
   },
@@ -58,7 +62,11 @@ const driverSchema = new mongoose.Schema({
   bio: {
     type: String,
     default: ''
+  },gender: {
+    type: String,
+    default: ''
   }
+
 }, {
   timestamps: true
 });

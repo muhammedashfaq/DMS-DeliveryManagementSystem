@@ -16,7 +16,7 @@ export const ProtectedRoutesUser = (props) => {
 export const ProtectedRoutesAdmin = (props) => {
 
 
-    if(localStorage.getItem('token')){
+    if(localStorage.getItem('admintoken')){
         return props.children
     }else{
         return <Navigate to='/admin' />
@@ -27,7 +27,7 @@ export const ProtectedRoutesAdmin = (props) => {
 export const ProtectedRoutesdriver = (props) => {
 
 
-    if(localStorage.getItem('token')){
+    if(localStorage.getItem('drivertoken')){
         return props.children
     }else{
         return <Navigate to='/dlogin' />

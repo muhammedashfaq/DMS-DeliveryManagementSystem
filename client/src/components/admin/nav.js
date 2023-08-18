@@ -90,7 +90,7 @@ const Nav = () => {
 
             <Dropdown.Item className="text-white p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
               {" "}
-              <Link to="/adminhome/shipment_details">Shipment</Link>
+              <Link to="/adminhome/shipment_list">Shipment</Link>
             </Dropdown.Item>
             <Dropdown.Item className="text-white p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
               <span

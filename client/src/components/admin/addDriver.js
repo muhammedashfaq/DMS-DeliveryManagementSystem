@@ -55,6 +55,7 @@ const AddDriver = () => {
         
         dispatch(showloading());
         const formDataToSend = new FormData();
+        
       for (const key in formData) {
         if (formData.hasOwnProperty(key)) {
           formDataToSend.append(key, formData[key]);

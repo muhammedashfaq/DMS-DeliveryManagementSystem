@@ -10,6 +10,15 @@ const {
   securePassword,
 } = require("../config/nodemailer");
 
+const sharp = require("sharp");
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: process.env.cloud_name,
+  api_key: process.env.api_key,
+  api_secret: process.env.api_secret,
+  secure: true,
+});
 
 var savedOtp;
 var useremail;
@@ -37,7 +46,7 @@ const registerpage = async (req, res) => {
     const password = req.body.password;
     const passwordHash = await securePassword(password);
     req.body.password = passwordHash;
-    
+
     const newUser = new User(req.body);
     const userData = await newUser.save();
     if (userData) {
@@ -70,16 +79,22 @@ const loginpage = async (req, res) => {
       if (!isMatch) {
         res.status(200).send({ message: "incorrect password", success: false });
       } else {
-        const token = jwt.sign({ id: user._id,name: user.username }, process.env.JWT_SECRET, {
-          expiresIn: "1d",
-        });
-
-
-        
+        const token = jwt.sign(
+          { id: user._id, name: user.username },
+          process.env.JWT_SECRET_USER,
+          {
+            expiresIn: "1d",
+          }
+        );
 
         res
           .status(200)
-          .send({ message: "successfully logged", success: true, data: token,name:user.username });
+          .send({
+            message: "successfully logged",
+            success: true,
+            data: token,
+            name: user.username,
+          });
       }
     } else {
       res.status(200).send({ message: "user not verified", success: false });
@@ -92,13 +107,15 @@ const loginpage = async (req, res) => {
 
 const userdetails = async (req, res) => {
   try {
-    const user = await User.findOne({ _id: req.body.userId });
+    const id = req.userId;
+
+    const user = await User.findOne({ _id: id });
     if (!user) {
       return res
         .status(200)
         .send({ message: "user does no exist", success: false });
     } else {
-      console.log(user.username,'name')
+      console.log(user.username, "namemyname", req.userId);
       res.status(200).send({
         success: true,
         data: { name: user.username, email: user.email },
@@ -148,7 +165,9 @@ const forgetMail = async (req, res) => {
 
         sendForgetymail(userData.username, req.body.email, token);
 
-        res.status(200).send({ message: "We Send ResetLink in Your Email", success: true });
+        res
+          .status(200)
+          .send({ message: "We Send ResetLink in Your Email", success: true });
       } else {
         res.status(200).send({ message: "error", success: false });
       }
@@ -189,6 +208,68 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const getprofile = async (req, res) => {
+  try {
+    const id = req.userId;
+
+    const user = await User.findOne({ _id: id });
+    if (!user) {
+      return res
+        .status(200)
+        .send({ message: "user does no exist", success: false });
+    } else {
+      res.status(200).send({
+        success: true,
+        data: user,
+      });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: "error getting info", success: false, error });
+  }
+};
+
+const updateProfile = async (req, res) => {
+  try {
+    // const image2=req.file.filename
+    // console.log(image2)
+
+    const id = req.userId;
+    console.log(id, "image");
+    const userdata = await User.findOne({ _id: "64dba9a4ad2325afde95ef0e" });
+    console.log(userdata);
+
+    if (userdata) {
+      await sharp("./public/multer/" + req.file.filename)
+        .resize(500, 500)
+        .toFile("./public/cloudinary/" + req.file.filename);
+
+      const data = await cloudinary.uploader.upload(
+        "./public/cloudinary/" + req.file.filename
+      );
+
+      const cdurl = data.secure_url;
+
+      await User.findOneAndUpdate(
+        { email: userdata.email },
+        { $set: { profileimage: cdurl } }
+      );
+
+      res
+        .status(200)
+        .send({ message: "image uploaded", success: true, image: cdurl });
+    } else {
+      return res
+        .status(200)
+        .send({ message: "user does no exist", success: false });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: "error getting info", success: false, error });
+  }
+};
 module.exports = {
   registerpage,
   loginpage,
@@ -196,4 +277,6 @@ module.exports = {
   otpVerification,
   resetPassword,
   forgetMail,
+  getprofile,
+  updateProfile,
 };

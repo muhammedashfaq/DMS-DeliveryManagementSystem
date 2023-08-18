@@ -21,7 +21,7 @@ const logindriver = async (req, res) => {
 
         const token = jwt.sign(
           { id: idexist._id, name: drivername },
-          process.env.JWT_SECRET,
+          process.env.JWT_SECRET_DRIVER,
           {
             expiresIn: "1d",
           }
@@ -45,7 +45,7 @@ const logindriver = async (req, res) => {
         } else {
           const token = jwt.sign(
             { id: idexist._id, name: drivername },
-            process.env.JWT_SECRET,
+            process.env.JWT_SECRET_DRIVER,
             {
               expiresIn: "1d",
             }
@@ -71,9 +71,11 @@ const logindriver = async (req, res) => {
 
 const driverdetails =async(req,res)=>{
   try {
-    console.log("object");
-    const user = await Driver.findOne({ _id: req.body.userId });
-    console.log(req.body.userId,'hhhhh')
+      console.log('reached');
+
+    const id = req.driverId
+    const user = await Driver.findOne({ _id: id });
+    console.log(id,'hhhhh')
     const drivername = user.fname + " " + user.lname;
 
     if (!user) {
@@ -81,10 +83,7 @@ const driverdetails =async(req,res)=>{
         .status(200)
         .send({ message: "user does no exist", success: false });
     } else {
-      res.status(200).send({
-        success: true,
-        data: { name: drivername },
-      });
+      res.status(200).send({message:"done",success:true, name:drivername})
     }
   } catch (error) {
     res

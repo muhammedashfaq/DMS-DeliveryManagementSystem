@@ -29,7 +29,16 @@ isBlocked:{
 },token:{
     type:String,
     default:""
+},profileimage:{
+    type:String,
+    default:""
+},mobile:{
+    type:Number,
+    trim:true,
+    default:0
+
 }
+
 
 
 

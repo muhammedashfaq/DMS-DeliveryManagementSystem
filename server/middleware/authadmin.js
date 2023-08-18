@@ -2,23 +2,22 @@ const jwt =require('jsonwebtoken')
 
 module.exports = async(req,res,next)=>{
     try {
-        const token = req.headers['authorization']?.split(' ')[1];
+        const token = req.headers['authorization'].split(' ')[1]      
+        console.log('one',token);
     
-        jwt.verify(token,process.env.JWT_SECRET_USER,(err,decoded)=>{
+        jwt.verify(token,process.env.JWT_SECRET_ADMIN,(err,decoded)=>{
 
             if(err){ 
                 return res.status(401).send({message:"Auth failed",success:false})
             }else{
-                req.userId =decoded.id,
-                console.log(req.userId,'id');
+                req.adminId =decoded.id,
+                console.log(req.adminId,'id');
 
 
                 next()
             }
         })
     } catch (error) {
-        console.log(error)
-        
         return res.status(401).send({message:"Auth failed",success:false})
     }
 }

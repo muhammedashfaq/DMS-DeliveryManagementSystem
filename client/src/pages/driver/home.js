@@ -8,19 +8,23 @@ const Home = () => {
   const getData =async(req,res)=>{
     try {
 
-      const response =await axios.post('get-driverinfo-id',{},{
+      const response =await axios.post('/driver/get-driverinfo-id',{},{
         headers:{
           Authorization: "Bearer " + localStorage.getItem("token"),
 
 
         }
       })
+      console.log('Server Response:', response)
 
       if (response.data.success) {
-      console.log(response.data.data.name);
+        const name=response.data.name
+      console.log(name,);
     }
       
     } catch (error) {
+      console.log('hhhhh');
+
       console.log(error)
       
     }

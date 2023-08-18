@@ -25,33 +25,18 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 const Header = () => {
+
+
   const { userName } = useUserContext();
 
+
+
   const navigate = useNavigate();
-  const getData = async (req, res) => {
-    try {
-      const response = await axios.post(
-        "/get-userinfo-id",
-        {},
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        }
-      );
 
-      if (response.data.success) {
-        console.log(response.data.data.name);
-      }
 
-    } catch (error) {}
-  };
+ 
 
-  useEffect(() => {
-    if (userName) {
-      getData();
-    }
-  }, [userName]);
+
 
   const [scrolled, setScrolled] = useState(false);
 

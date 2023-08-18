@@ -1,12 +1,15 @@
 const express =require('express')
 const app=express()
 const cors = require("cors");
-const mongodb = require('./config/auth')
+const path =require('path')
+const mongodb = require('./config/authdb')
  mongodb.mongoDB()
 require('dotenv').config()
 app.use(cors());
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
+app.use(express.static(path.join(__dirname,'public')))
+
 const adminroute=require('./routes/adminRoutes')
 app.use('/admin',adminroute)
 const driverroute=require('./routes/driverRoutes')

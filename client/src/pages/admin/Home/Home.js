@@ -11,7 +11,7 @@ const Home = () => {
   const getData = async (req, res) => {
     try {
       const response = await axios.post(
-        "/get-admininfo-id",
+        "/admin/get-admininfo-id",
         {},
         {
           headers: {
@@ -19,6 +19,8 @@ const Home = () => {
           },
         }
       );
+      console.log('Server Response:', response)
+
     } catch (error) {
       console.log(error);
     }

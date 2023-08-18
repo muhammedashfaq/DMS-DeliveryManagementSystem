@@ -30,14 +30,13 @@ const adminLogin = async (req, res) => {
       if (!isMatch) {
         res.status(200).send({ message: "incorrect password", success: false });
       } else {
-        const token = jwt.sign({ id: user._id, name:user.username }, process.env.JWT_SECRET, {
+        const token = jwt.sign({ id: user._id, name:user.username }, process.env.JWT_SECRET_ADMIN, {
           expiresIn: "1d",
         });
 
         res
           .status(200)
           .send({
-            message: "successfully logged",
             success: true,
             data: token,
             name: user.username,
@@ -54,6 +53,7 @@ const adminLogin = async (req, res) => {
 
 const admindetails = async (req, res) => {
   try {
+
     const user = await User.findOne({ _id: req.body.userId });
     if (!user) {
       return res
@@ -130,7 +130,8 @@ const unblockuser = async (req, res) => {
 const addDriver = async (req, res) => {
   try {
 
-
+    // const id=req.userId
+    // console.log(id,'iddd')
 
 
     // console.log(req.file[0].filename)
@@ -143,20 +144,17 @@ const addDriver = async (req, res) => {
     //     success: false
     //   });
     // }
+  
 
-    const image = req.files[0].filename;
-    const multerImages ='../config/multerImages/'
-    const cloudinaryimages ='../config/coudinaryimages/'
+    await sharp('./public/multer/' + req.files[0].filename )
+      .resize(500, 500)
+      .toFile('./public/cloudinary/' + req.files[0].filename);
 
-    // await sharp(`${multerImages}${image}`)
-    //   .resize(500, 500)
-    //   .toFile(`${cloudinaryimages}${image}`);
+    const data = await cloudinary.uploader.upload(
+      './public/cloudinary/' + req.files[0].filename
+    );
 
-    // const data = await cloudinary.uploader.upload(
-    //   `${multerImages}${image}`
-    // );
-
-    // const cdurl = [data.secure_url];
+    const cdurl = [data.secure_url];
 
     const saveData = new Driver({
       fname: req.body.fname,
@@ -170,7 +168,7 @@ const addDriver = async (req, res) => {
       licence: req.body.licence,
       website: req.body.website,
       bio: req.body.bio,
-      profileimage: image,
+      profileimage: cdurl,
     });
 
     const driverdata = await saveData.save();

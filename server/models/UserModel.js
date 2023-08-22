@@ -37,7 +37,7 @@ isBlocked:{
     trim:true,
     default:0
 
-}
+},
 
 
 

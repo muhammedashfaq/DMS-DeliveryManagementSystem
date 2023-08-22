@@ -1,27 +1,44 @@
 import { Dropdown } from "flowbite-react";
 import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import UserDetails from "../admin/userlist";
-import DriverDetails from './driverlist.js'
 
 
 const Nav = () => {
   const location=useLocation()
   const menu = [
+
     {
       name: "Dashboard",
       path: "/adminhome",
-      icon: "ri-home-2-fill",
+      icon: "material-symbols-outlined",
+      iconname:"dashboard"
     },
+
     {
       name: "Reports",
       path: "/adminhome/reports",
-      icon: "ri-home-5-line",
+      icon: "material-symbols-outlined",
+      iconname:"analytics"
     },
     {
       name: "Chats",
       path: "/adminhome/adminchats",
-      icon: "",
+      icon: "material-symbols-outlined",
+      iconname:"chat"
+    },
+    {
+      name: "Track Shipment",
+      path: "/adminhome/adminchats",
+      icon: "material-symbols-outlined",
+      iconname:"location_on"
+    },
+    {
+
+      name: "Services",
+      path: "/adminhome/services",
+      icon: "material-symbols-outlined",
+      iconname:"device_hub"
+      
     },
   ];
   const navigate = useNavigate();
@@ -65,7 +82,10 @@ const Nav = () => {
           return (
             
             <div key={menuitem.path} className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 ${isActive && `text-blue-700 font-bold bg-blue-600`}`}>
-            <i className={menuitem.icon}></i>
+            <span className="text-gray-200">
+
+            <span className={menuitem.icon}>{menuitem.iconname}</span>
+            </span>
             <span className="text-[15px] ml-4 text-gray-200">
               <Link to={menuitem.path}>{menuitem.name}</Link>
             </span>
@@ -81,16 +101,28 @@ const Nav = () => {
           {/* <span className="text-[15px] ml-4 text-gray-200">Management</span> */}
           <Dropdown className="bg-gray-900 text-white  " label="Management">
             <Dropdown.Item className=" text-white p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
-              <Link to="/adminhome/user_details">User</Link>
+              <Link to="/adminhome/user_details">User 
+              <span class="material-symbols-outlined">
+person_search
+</span>
+              </Link>
             </Dropdown.Item>
             <Dropdown.Item className="text-white p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
               {" "}
-              <Link to="/adminhome/driver_details">Driver</Link>
+              <Link to="/adminhome/driver_details">Driver
+              <span class="material-symbols-outlined">
+local_shipping
+</span>
+              </Link>
             </Dropdown.Item>
 
             <Dropdown.Item className="text-white p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
               {" "}
-              <Link to="/adminhome/shipment_list">Shipment</Link>
+              <Link to="/adminhome/shipment_list">Shipment
+              <span class="material-symbols-outlined">
+package_2
+</span>
+              </Link>
             </Dropdown.Item>
             <Dropdown.Item className="text-white p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
               <span
@@ -101,6 +133,9 @@ const Nav = () => {
               >
                 Logout
               </span>
+              <span class="material-symbols-outlined">
+logout
+</span>
             </Dropdown.Item>
           </Dropdown>
         </div>

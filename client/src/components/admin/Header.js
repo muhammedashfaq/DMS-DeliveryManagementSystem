@@ -5,7 +5,7 @@ const Header = () => {
   
   const { userName  } = useUserContext();
 
-  console.log(userName);
+  console.log(userName,'haiiiii');
   
   return (
     <div className=" h-16 flex justify-end ">

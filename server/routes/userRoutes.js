@@ -17,8 +17,10 @@ router.post('/otp',userController.otpVerification)
 router.post('/forget',userController.forgetMail)
 router.post('/reset/:token',userController.resetPassword)
 router.post('/get-dataprofils',authmiddleware,userController.getprofile)
-
 router.post('/updateprofileimage',authmiddleware,upload.upload.single("profileimage"),userController.updateProfile)
+router.post('/add_address',authmiddleware,userController.addAddress)
+router.get('/getLocationData',userController.getLocationData)
+
 
 
 

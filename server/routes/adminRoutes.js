@@ -18,6 +18,15 @@ admin_router.post('/add_driver',upload.upload.array('profileimage',5), adminCont
 admin_router.get('/get-driverDetials',adminController.driverlistLoad)
 admin_router.post('/get-profile/:id',adminController.driverProfile)
 admin_router.put('/driverstatusUpdat/:id',adminController.driverstatusUpdate)
+admin_router.post('/addserviceCity',adminController.addserviceCity)
+admin_router.post('/addservicePlace',adminController.addservicePlace)
+
+
+
+
+admin_router.get('/getLocationData',adminController.getLocationData)
+
+
 
 
 

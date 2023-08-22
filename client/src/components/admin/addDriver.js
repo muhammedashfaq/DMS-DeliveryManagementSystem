@@ -245,10 +245,10 @@ const AddDriver = () => {
           <fieldset className="grid grid-cols-4 gap-6 p-3 rounded-md shadow-sm dark:bg-gray-900">
             <div className="space-y-1 col-span-full lg:col-span-1">
               <fieldset className="w-full space-y-1 dark:text-gray-100">
-                <label for="files" className="block text-sm font-medium">
+                {/* <label for="files" className="block text-sm font-medium">
                   Attach Your Licence
-                </label>
-                <div className="flex">
+                </label> */}
+                {/* <div className="flex">
                   <input
                     type="file"
                     name="fileImage"
@@ -256,7 +256,7 @@ const AddDriver = () => {
                     className="px-8 py-12 border-2 border-dashed rounded-md dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800"
                   />
 
-                </div>
+                </div> */}
               </fieldset>
             </div>
             <div className="grid grid-cols-6 gap-2 col-span-full lg:col-span-3">
@@ -272,7 +272,6 @@ const AddDriver = () => {
                   placeholder="Username"
                   className="w-full h-8 rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900"
                 />
-                               {errors.licence && ( <p className="text-red-500">{errors.licence}</p>)}
 
               </div>
               <div className="col-span-full sm:col-span-3">

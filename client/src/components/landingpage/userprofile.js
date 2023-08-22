@@ -5,8 +5,11 @@ import { useDispatch } from "react-redux";
 import { hideloading, showloading } from "../../redux/alertSlice";
 import axios from "axios";
 import { useUserContext } from "../../context/userContext";
+import {AddressModal} from './addressModal' 
 
 const Userprofile = () => {
+
+  const [showModal, setShowModal]=useState(false)
   const {userName} =useUserContext()
   const [image, setImage] = useState(
     "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
@@ -78,6 +81,10 @@ const Userprofile = () => {
   useEffect(() => {
     getData();
   }, []);
+
+  const handleclose=()=>{
+    setShowModal(false)
+  }
   return (
     <div>
       <Header />
@@ -167,17 +174,18 @@ const Userprofile = () => {
                     <div className="mb-2 flex  items-center">
                       <p className="w-1/4 text-sm md:text-base lg:text-lg">
                         Address
-                        <a href="#">
+                        <a onClick={()=>{setShowModal(true)}} href="#">
                           <span className="material-symbols-outlined ml-4 absolute mt-1">
                             add_circle
                           </span>
                         </a>
-                        <a href="#">
+                        {/* <a href="#">
                           <span class="material-symbols-outlined ml-12 absolute mt-1">
                             edit
                           </span>
-                        </a>
+                        </a> */}
                       </p>
+                      <AddressModal onClose={handleclose} visible={showModal}  />
 
                       <div className="w-3/4 text-muted text-sm md:text-base lg:text-lg break-words h-max">
                         If you're still facing issues, it's possible that other

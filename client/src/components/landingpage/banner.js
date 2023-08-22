@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { LoginModal } from "./modal";
+import { LoginModal } from "./loginModal";
 import { useUserContext} from '../../context/userContext'
 
 const Banner = () => {

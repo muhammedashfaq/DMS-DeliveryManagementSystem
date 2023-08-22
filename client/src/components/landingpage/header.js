@@ -4,39 +4,22 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useUserContext } from "../../context/userContext";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { hideloading, showloading } from "../../redux/alertSlice";
 
 // import{setUserName} from  '../../context/userContext'
-const guestnavigation = [
-  // { name: 'Dashboard', href: '#', current: true },
-  { name: "Home", href: "/", current: true },
-  { name: "Careers", href: "#", current: false },
-  { name: "Contact Us", href: "#", current: false },
-];
-const usernavigation = [
-  { name: "Home", href: "/", current: true },
-  { name: "Track", href: "#", current: false },
-  { name: "Book Shipment", href: "#", current: false },
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 const Header = () => {
+  const location = useLocation();
 
-
+  
   const { userName } = useUserContext();
 
-
-
   const navigate = useNavigate();
-
-
- 
-
-
 
   const [scrolled, setScrolled] = useState(false);
 
@@ -57,9 +40,54 @@ const Header = () => {
   }, []);
   const [isOpen, setIsOpen] = useState(false);
 
+
+
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+  const [selectedCity, setSelectedCity] = useState("");
+
+
+
+
+  useEffect(() => {
+    const savedCity = localStorage.getItem("selectedCity");
+  
+    if (savedCity) {
+      setSelectedCity(savedCity);
+      
+
+    }
+  }, []);
+
+  
+  const reloadPageWithCity = (newCity) => {
+  setSelectedCity(newCity);
+
+  localStorage.setItem("selectedCity", newCity);
+  window.location.reload();
+
+};
+
+  useEffect(() => {
+    
+    localStorage.setItem("selectedCity", selectedCity);
+
+  }, [selectedCity]);
+  
+
+  const guestnavigation = [
+    // { name: 'Dashboard', href: '#', current: true },
+    { name: "Home", href: "/" },
+    { name: "Careers", href: "#" },
+    { name: "Contact Us", href: "#" },
+  ];
+  const usernavigation = [
+    { name: "Home", href: "/" },
+    { name: "Track", href: "#" },
+    { name: "Book Shipment", href:"/book_shipment" },
+  ];
+
 
   return (
     <Disclosure
@@ -95,7 +123,7 @@ const Header = () => {
                   ) : (
                     <img
                       className="h-20 w-auto"
-                      src="./images/landingpage/logo.png"
+                      src="../images/landingpage/logo.png"
                       alt="Your Company"
                     />
                   )}
@@ -103,6 +131,8 @@ const Header = () => {
                 <div className=" sm:ml-6 sm:block"></div>
               </div>
               <div className="flex space-x-4">
+         
+
                 {userName
                   ? usernavigation.map((item) => (
                       <a
@@ -111,8 +141,11 @@ const Header = () => {
                         className={classNames(
                           "rounded-md px-3 py-2 text-sm font-medium",
                           "text-gray-300 hover:bg-gray-700 hover:text-white",
-                          // Use the above line for differentiating styles between hover and non-hover states
-                          { "bg-gray-900 text-white": item.current }
+
+                          {
+                            "bg-red-500": location.pathname === item.href,
+                            "bg-red-800": location.pathname === item.href,
+                          }
                         )}
                         aria-current={item.current ? "page" : undefined}
                       >
@@ -127,7 +160,10 @@ const Header = () => {
                           "rounded-md px-3 py-2 text-sm font-medium",
                           "text-gray-300 hover:bg-gray-700 hover:text-white",
 
-                          { "bg-gray-900 text-white": item.current }
+                          {
+                            "bg-red-800": location.pathname === item.href,
+                            "bg-white": location.pathname !== item.href,
+                          }
                         )}
                         aria-current={item.current ? "page" : undefined}
                       >
@@ -145,9 +181,12 @@ const Header = () => {
                 {isOpen && (
                   <ul className="absolute top-8 right-0 mt-2 bg-white dark:bg-gray-800 border rounded shadow-md w-40 h-max">
                     <li>
-                      <a href="/userProfile" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left">
+                      <a
+                        href={`/userProfile/${selectedCity}`}
+                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left"
+                      >
                         {" "}
-                       Profile
+                        Profile
                       </a>
                     </li>
                     <li>

@@ -8,8 +8,10 @@ import AddDriver from "../../../components/admin/addDriver";
 import AdminProfile from "../../../components/admin/adminProfile";
 import DriverProfilePage from '../../../components/admin/driverProfile'
 import ShipmentList from '../../../components/admin/shipmentlist'
+import Services from '../../../components/admin/services'
 import axios from "axios";
 const Home = () => {
+
   const getData = async (req, res) => {
     try {
       const response = await axios.post(
@@ -28,9 +30,14 @@ const Home = () => {
     }
   };
 
+
+  
   useEffect(() => {
     getData();
   });
+
+
+
   return (
     <div className="w-full h-auto ">
       <Header />
@@ -44,7 +51,9 @@ const Home = () => {
           <Route path="/adminprofile" element={<AdminProfile />} />
           <Route path="/driver_profile" element={<DriverProfilePage />} />
           <Route path='/shipment_list' element={<ShipmentList/> }/>
+          <Route path='/services' element={<Services/> }/>
 
+          services
 
 
 

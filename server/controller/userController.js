@@ -1,8 +1,11 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const User = require("../models/UserModel");
+const userAddress = require("../models/userAddress.js");
 const jwt = require("jsonwebtoken");
 const randomString = require("randomstring");
+const service = require("../models/servicesModel");
+
 const nodemailer = require("nodemailer");
 const {
   sendForgetymail,
@@ -53,7 +56,6 @@ const registerpage = async (req, res) => {
       const otpGenarated = Math.floor(1000 + Math.random() * 9999);
       savedOtp = otpGenarated;
       useremail = req.body.email;
-      console.log("Incoming request body:");
 
       sendVerifymail(req.body.username, req.body.email, otpGenarated);
     }
@@ -211,6 +213,8 @@ const getprofile = async (req, res) => {
     const id = req.userId;
 
     const user = await User.findOne({ _id: id });
+      const address= await userAddress.findOne({user:user._id})
+    const addressdetails=address.address
     if (!user) {
       return res
         .status(200)
@@ -230,9 +234,9 @@ const getprofile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   try {
-    const id = req.userId
-
-    const userdata = await User.findOne({ _id:id});
+    const id = req.userId;
+    const userdata = await User.findOne({ _id: id });
+  
 
     if (userdata) {
       await sharp("./public/multer/" + req.file.filename)
@@ -264,6 +268,77 @@ const updateProfile = async (req, res) => {
       .send({ message: "error getting info", success: false, error });
   }
 };
+
+const addAddress = async (req, res) => {
+  try {
+    const id = req.userId;
+
+    const user = await User.findById({ _id: id });
+
+    console.log(user, "user id");
+
+    if (user) {
+      const checkuser = await userAddress.findOne({ user: user._id });
+
+      if (checkuser) {
+        const update = await userAddress.updateOne(
+          { user: user._id },
+          {
+            $push: {
+              address: {
+                name: req.body.name,
+                mobile: req.body.mobile,
+                address: req.body.address,
+                pin: req.body.pin,
+              },
+            },
+          }
+        );
+
+        res.status(200).send({ message: "Address Added", success: true });
+      } else {
+        const data = new userAddress({
+          user: user._id,
+          address: [
+            {
+              name: req.body.name,
+              mobile: req.body.mobile,
+              address: req.body.address,
+              pin: req.body.pin,
+            },
+          ],
+        });
+
+        const addressData = await data.save();
+
+        res.status(200).send({ message: "Address Added", success: true });
+      }
+    } else {
+      res.status(200).send({ message: "User not exist", success: false });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "somthing wrong", success: false });
+  }
+};
+
+const getLocationData =async(req,res)=>{
+  try {
+
+ 
+
+    const locationdata = await service.find({})
+
+      res.status(200).send({message:"fetched",success:true,data:locationdata})
+
+
+
+    
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({message:"something went wrong",success:false})
+  }
+}
 module.exports = {
   registerpage,
   loginpage,
@@ -273,4 +348,6 @@ module.exports = {
   forgetMail,
   getprofile,
   updateProfile,
+  addAddress,
+  getLocationData
 };

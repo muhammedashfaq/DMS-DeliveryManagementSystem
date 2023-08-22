@@ -11,6 +11,7 @@ import AdminHome from "./pages/admin/Home/Home";
 import { UserProvider } from "./context/userContext";
 import DriverHome from "./pages/driver/home";
 import UserProfile from "./components/landingpage/userprofile";
+import BookShipment from "./components/landingpage/bookShipment";
 import Reset from "./pages/user/forget2";
 import { Toaster } from "react-hot-toast";
 import { useSelector } from "react-redux";
@@ -39,7 +40,25 @@ const App = () => {
 
         <Toaster position="bottom-center" reverseOrder={false} />
         <Routes>
-          <Route path="/" element={<Landingpage />} />
+          {/* USER_SIDE ----------------------------------------------------------------------- */}
+
+          <Route
+            path="/register"
+            element={
+              <PublicRoutesUser>
+                <Register />{" "}
+              </PublicRoutesUser>
+            }
+          />
+          <Route
+            path="/otp"
+            element={
+              <PublicRoutesUser>
+                <Otp />
+              </PublicRoutesUser>
+            }
+          />
+
           <Route
             path="/login"
             element={
@@ -49,18 +68,61 @@ const App = () => {
               </PublicRoutesUser>
             }
           />
+
           <Route
-            path="/register"
+            path="/forget"
             element={
               <PublicRoutesUser>
-                <Register />{" "}
+                <Forget />
               </PublicRoutesUser>
             }
           />
+          <Route
+            path="/reset"
+            element={
+              <PublicRoutesUser>
+                <Reset />
+              </PublicRoutesUser>
+            }
+          />
+          <Route path="/" element={<Landingpage />} />
 
-          <Route path="/otp" element={<Otp />} />
-          <Route path="/forget" element={<Forget />} />
-          <Route path="/reset" element={<Reset />} />
+          <Route
+            path="/userProfile"
+            element={
+              <ProtectedRoutesUser>
+                <UserProfile />{" "}
+              </ProtectedRoutesUser>
+            }
+          />
+          <Route
+            path="/book_shipment"
+            element={
+              <ProtectedRoutesUser>
+                <BookShipment />{" "}
+              </ProtectedRoutesUser>
+            }
+          />
+
+          {/* ADMIN_SIDE ------------------------------------------------------------------------*/}
+          <Route
+            path="/admin"
+            element={
+              <PublicRoutesAdmin>
+                <Adminlogin />
+              </PublicRoutesAdmin>
+            }
+          />
+          <Route
+            path="/adminhome*"
+            element={
+              <ProtectedRoutesAdmin>
+                <AdminHome />{" "}
+              </ProtectedRoutesAdmin>
+            }
+          />
+
+          {/* DRIVER_SIDE ----------------------------------------------------------------*/}
 
           <Route
             path="/dlogin"
@@ -79,33 +141,6 @@ const App = () => {
               </ProtectedRoutesdriver>
             }
           />
-
-          <Route
-            path="/admin"
-            element={
-              <PublicRoutesAdmin>
-                <Adminlogin />
-              </PublicRoutesAdmin>
-            }
-          />
-          <Route
-            path="/adminhome*"
-            element={
-              <ProtectedRoutesAdmin>
-                <AdminHome />{" "}
-              </ProtectedRoutesAdmin>
-            }
-          />
-          <Route
-            path="/userProfile"
-            element={
-              <ProtectedRoutesUser>
-                <UserProfile />{" "}
-              </ProtectedRoutesUser>
-            }
-          />
-          {/*  <Route path='/driver_details' element={<ProtectedRoutesAdmin><DriverDetails/> </ProtectedRoutesAdmin>}/>
-        */}
         </Routes>
       </BrowserRouter>
     </UserProvider>

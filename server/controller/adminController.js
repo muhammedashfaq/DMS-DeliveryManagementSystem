@@ -3,6 +3,7 @@ const User = require("../models/UserModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const Driver = require("../models/driverModels");
+const service = require("../models/servicesModel");
 const cloudinary = require("cloudinary").v2;
 const sharp = require("sharp");
 const { sendmailtoDriver } = require("../config/nodemailer");
@@ -30,17 +31,20 @@ const adminLogin = async (req, res) => {
       if (!isMatch) {
         res.status(200).send({ message: "incorrect password", success: false });
       } else {
-        const token = jwt.sign({ id: user._id, name:user.username }, process.env.JWT_SECRET_ADMIN, {
-          expiresIn: "1d",
-        });
+        const token = jwt.sign(
+          { id: user._id, name: user.username },
+          process.env.JWT_SECRET_ADMIN,
+          {
+            expiresIn: "1d",
+          }
+        );
 
-        res
-          .status(200)
-          .send({
-            success: true,
-            data: token,
-            name: user.username,
-          });
+        res.status(200).send({
+          message: "logged",
+          success: true,
+          data: token,
+          name: user.username,
+        });
       }
     } else {
       res.status(200).send({ message: "user not verified", success: false });
@@ -53,7 +57,6 @@ const adminLogin = async (req, res) => {
 
 const admindetails = async (req, res) => {
   try {
-
     const user = await User.findOne({ _id: req.body.userId });
     if (!user) {
       return res
@@ -84,7 +87,7 @@ const userlistLoad = async (req, res) => {
 
 const blockuser = async (req, res) => {
   try {
-    console.log('reachwe');
+    console.log("reachwe");
     const email = req.body.email;
     console.log(req.body);
 
@@ -107,7 +110,7 @@ const blockuser = async (req, res) => {
 
 const unblockuser = async (req, res) => {
   try {
-    console.log('reachwe');
+    console.log("reachwe");
 
     const email = req.body.email;
     console.log(req.body);
@@ -132,10 +135,8 @@ const unblockuser = async (req, res) => {
 
 const addDriver = async (req, res) => {
   try {
-
     // const id=req.userId
     // console.log(id,'iddd')
-
 
     // console.log(req.file[0].filename)
 
@@ -147,16 +148,14 @@ const addDriver = async (req, res) => {
     //     success: false
     //   });
     // }
-  
 
-    await sharp('./public/multer/' + req.files[0].filename )
+    await sharp("./public/multer/" + req.files[0].filename)
       .resize(500, 500)
-      .toFile('./public/cloudinary/' + req.files[0].filename);
+      .toFile("./public/cloudinary/" + req.files[0].filename);
 
     const data = await cloudinary.uploader.upload(
-      './public/cloudinary/' + req.files[0].filename
+      "./public/cloudinary/" + req.files[0].filename
     );
-
 
     const cdurl = [data.secure_url];
 
@@ -177,15 +176,11 @@ const addDriver = async (req, res) => {
 
     const driverdata = await saveData.save();
 
-    const name =req.body.fname+" "+req.body.lname
-    const email=req.body.email
-    const employeeId=driverdata.employeeId
+    const name = req.body.fname + " " + req.body.lname;
+    const email = req.body.email;
+    const employeeId = driverdata.employeeId;
     if (driverdata) {
-
-      sendmailtoDriver(name,email,employeeId)
-
-
-
+      sendmailtoDriver(name, email, employeeId);
 
       res.status(200).send({ message: "successfully saved", success: true });
     } else {
@@ -197,58 +192,145 @@ const addDriver = async (req, res) => {
   }
 };
 
-
-const driverlistLoad = async(req,res)=>{
+const driverlistLoad = async (req, res) => {
   try {
-    
     const driverdata = await Driver.find({});
-    res.status(200).send({ message: "fetched", success: true, data: driverdata });
+    res
+      .status(200)
+      .send({ message: "fetched", success: true, data: driverdata });
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: "Error", success: false, error });
   }
-}
+};
 
-const driverProfile =async(req,res)=>{
+const driverProfile = async (req, res) => {
   try {
+    const id = req.params.id;
+    console.log(id, "hhhhh");
 
-    const id = req.params.id
-    console.log(id,'hhhhh');
+    const driver = await Driver.findById({ _id: id });
 
-    const driver= await Driver.findById({_id:id})
-
-    if(driver){
-      res.status(200).send({message:"fetched ", success:true ,data:driver})
-    }else{
-      res.status(200).send({message:" error while fetching", success:false})
+    if (driver) {
+      res
+        .status(200)
+        .send({ message: "fetched ", success: true, data: driver });
+    } else {
+      res
+        .status(200)
+        .send({ message: " error while fetching", success: false });
     }
-
-
-
   } catch (error) {
-    res.status(200).send({message:"something went wrong" , success:false})
+    res.status(200).send({ message: "something went wrong", success: false });
   }
+};
 
-
-
-}
-
-const driverstatusUpdate =async(req,res)=>{
+const driverstatusUpdate = async (req, res) => {
   try {
-    const {id}=req.params
-    const {status}=req.body
+    const { id } = req.params;
+    const { status } = req.body;
 
-    const updatedriver = await Driver.findByIdAndUpdate({_id:id},{$set:{activestatus:status}})
-    if(updatedriver){
-      res.status(200).send({message:"status updated", success:true})
-    }else{
-      res.status(200).send({message:"failed to update",success:false})
+    const updatedriver = await Driver.findByIdAndUpdate(
+      { _id: id },
+      { $set: { activestatus: status } }
+    );
+    if (updatedriver) {
+      res.status(200).send({ message: "status updated", success: true });
+    } else {
+      res.status(200).send({ message: "failed to update", success: false });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(200).send({ message: "something went wrong", success: false });
+  }
+};
 
+const getLocationData =async(req,res)=>{
+  try {
+
+    const locationdata = await service.find({})
+
+      res.status(200).send({message:"fetched",success:true,data:locationdata})
+
+
+
+    
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({message:"something went wrong",success:false})
+  }
+}
+const addserviceCity = async (req, res) => {
+  try {
+    if(!req.body.city){
+      res.status(200).send({message:"This field is required" ,success:false})
+    }
+    const city = req.body.city;
+    console.log(city,'reached')
+    const alredy = await service.findOne({
+      city: { $regex: city, $options: "i" },
+    });
+
+    if (!alredy) {
+      const insertdata = new service({
+        city: req.body.city,
+      });
+
+      const citydata = insertdata.save();
+      if (citydata) {
+        res.status(200).send({ message: "updated", success: true });
+      } else {
+        res.status(200).send({ message: "update failed", success: false });
+      }
+    } else {
+      res.status(200).send({ message: "data already exist", success: false });
+    }
+  } catch (error) {
+    res.status(500).send({ message: "something went wrong", success: false });
+
+    console.log(error);
+  }
+};
+
+const addservicePlace = async(req,res)=>{
+  try { 
+
+    console.log(req.body,'res');
+   
+    const {city,place} =req.body
+    if (!place) {
+      return res.status(400).send({ message: "Place field is required", success: false });
     }
 
+    const citydata= await service.findOne({city:city})
+
+
+    if(citydata){
+
+      const placeExist = await service.findOne({
+        city: city,
+        place: { $elemMatch: { $regex: new RegExp(place, "i") } }
+      });
+
+      if(!placeExist){
+
+        await service.findOneAndUpdate({city:city},{$addToSet:{place:place}})
+        return res.status(200).send({ message: "Place added successfully", success: true });
+      }else{
+        return res.status(200).send({ message: "Place existed", success: false });
+
+
+      }
+
+    } else {
+      return res.status(404).send({ message: "City not found", success: false });
+    }
+
+    
+
+    
   } catch (error) {
-    console.log(error)
-    res.status(200).send({message:"something went wrong",success:false})
+    console.log(error);
     
   }
 }
@@ -261,8 +343,8 @@ module.exports = {
   addDriver,
   driverlistLoad,
   driverProfile,
-  driverstatusUpdate
+  driverstatusUpdate,
+  getLocationData,
+  addserviceCity,
+  addservicePlace
 };
-
-
-

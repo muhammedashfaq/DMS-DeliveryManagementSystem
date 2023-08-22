@@ -126,3 +126,14 @@ export const adminloginvalidate = (email, password) => {
   }
     return errors
   }
+
+  export const addressvalidate =(formdata)=>{
+    const error={}
+    error.name = !formdata.name || formdata.name.trim() === "" ? "Name is required" : "";
+    error.mobile = formdata.mobile.length !== 10  ? "Enter Valid Mobile Number " : formdata.mobile.trim() === ""   ? " Mobile Number is required": "";
+    error.address = !formdata.address || formdata.address.trim() === "" ? "Address is required" : "";
+    error.pin = !formdata.pin || formdata.pin.trim() === "" ? "Pin is required" : "";
+
+    return error
+
+  }

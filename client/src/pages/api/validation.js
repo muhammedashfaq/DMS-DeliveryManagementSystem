@@ -137,3 +137,20 @@ export const adminloginvalidate = (email, password) => {
     return error
 
   }
+
+  export const bookshipmentvalidation=(formdata)=>{
+    const error={}
+
+    error.fromname =!formdata.fromname || formdata.fromname.trim() === "" ? "Name is required" : "";
+    error.frommobile=formdata.frommobile.length !== 10  ? "Enter Valid Mobile Number " : formdata.frommobile.trim() === ""   ? " Mobile Number is required": "";
+    error.fromaddress=formdata.fromaddress.trim() === "" ? "Addrress is required" : "";
+    error.frompin=formdata.frompin.trim() === "" ? "field is required" : "";
+
+    error.fromdescription=formdata.fromdescription.trim() === "" ? " required" : "";
+    error.toname=!formdata.toname || formdata.toname.trim() === "" ? "Name is required" : "";
+    error.tomobile=formdata.tomobile.length !== 10  ? "Enter Valid Mobile Number " : formdata.tomobile.trim() === ""   ? " Mobile Number is required": "";
+    error.toaddress=formdata.fromaddress.trim() === "" ? "Addrress is required" : "";
+    error.topin=formdata.topin.trim() === "" ? "Field is required" : "";
+
+    return error
+  }

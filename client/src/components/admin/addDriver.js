@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import myimage from "../../components/images/def.jpg";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
 const AddDriver = () => {
-
+  const [hubcity,sethubcity]=useState([])
   const navigate=useNavigate()
   const dispatch = useDispatch();
   const [errors,setError] =useState([])
@@ -94,6 +94,26 @@ const AddDriver = () => {
     }
   };
 
+  const getCity = async(req,res)=>{
+    try {
+      const response = await axios.get('/admin/getcitydetails')
+      if(response.data.success){
+        toast.success(response.data.message)
+        const city=response.data.data
+        sethubcity(city)
+
+        console.log(city,'cityyyy')
+
+      }
+      
+    } catch (error) {
+      
+    }
+  }
+  useEffect(()=>{
+    getCity()
+  },[])
+
   return (
     <div>
       <div className="p-6 bg-gray-200 dark:text-gray-50">
@@ -164,21 +184,26 @@ const AddDriver = () => {
               </div>
               <div className="col-span-full sm:col-span-3">
                 <label htmlFor="gender" className="text-sm">
-                  Gender
+                  City
                 </label>
+
                 <select
-                  id="gender"
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleinputchange}
-                  className="w-full h-8 rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900"
-                >
-                  <option value="">Select Gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                </select>
+  id="gender"
+  name="gender"
+  value={formData.gender}
+  onChange={handleinputchange}
+  className="w-full h-8 rounded-md focus:ring focus:ring-dark focus:border-gray-700 dark:text-gray-900"
+>
+  <option value="">Select City</option>
+  {hubcity.map((city, index) => (
+    <option key={index} value={city.value}>
+      {city.city}
+    </option>
+  ))}
+</select>
+
               </div>
+
 
               <div className="col-span-full">
                 <label for="email" className="text-sm">

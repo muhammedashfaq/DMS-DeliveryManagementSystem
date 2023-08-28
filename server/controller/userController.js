@@ -14,6 +14,7 @@ const {
 } = require("../config/nodemailer");
 
 const sharp = require("sharp");
+const shipmentModel = require("../models/shipmentModel");
 const cloudinary = require("cloudinary").v2;
 
 cloudinary.config({
@@ -213,8 +214,10 @@ const getprofile = async (req, res) => {
     const id = req.userId;
 
     const user = await User.findOne({ _id: id });
-      const address= await userAddress.findOne({user:user._id})
-    const addressdetails=address.address
+    const shipmentdata= await shipmentModel.findOne({user:user.id})
+
+    const address = await userAddress.findOne({ user: user._id });
+    const addressdetails = address.address;
     if (!user) {
       return res
         .status(200)
@@ -223,6 +226,7 @@ const getprofile = async (req, res) => {
       res.status(200).send({
         success: true,
         data: user,
+        shipmentdata:shipmentdata
       });
     }
   } catch (error) {
@@ -236,7 +240,6 @@ const updateProfile = async (req, res) => {
   try {
     const id = req.userId;
     const userdata = await User.findOne({ _id: id });
-  
 
     if (userdata) {
       await sharp("./public/multer/" + req.file.filename)
@@ -322,23 +325,95 @@ const addAddress = async (req, res) => {
   }
 };
 
-const getLocationData =async(req,res)=>{
+const getLocationData = async (req, res) => {
   try {
+    const locationdata = await service.find({});
 
- 
-
-    const locationdata = await service.find({})
-
-      res.status(200).send({message:"fetched",success:true,data:locationdata})
-
-
-
-    
+    res
+      .status(200)
+      .send({ message: "fetched", success: true, data: locationdata });
   } catch (error) {
     console.log(error);
-    res.status(500).send({message:"something went wrong",success:false})
+    res.status(500).send({ message: "something went wrong", success: false });
   }
-}
+};
+
+const bookshipment = async (req, res) => {
+  try {
+
+    console.log(req.body,'body')
+    const id = req.userId;
+
+    const user = await User.findById({ _id: id });
+
+    console.log(id,'id')
+
+    if (user) {
+      const checkuser = await shipmentModel.findOne({ user: user._id });
+
+
+      if (checkuser) {
+        await shipmentModel.updateOne(
+          { user: user._id },
+          {
+            $push: {
+              shipment: {
+                fromcity: req.body.fromcity,
+                fromplace: req.body.fromplace,
+                fromname: req.body.fromname,
+                frommobile: req.body.frommobile,
+                fromaddress: req.body.fromaddress,
+                fromdescripyion: req.body.fromdescription,
+                frompin: req.body.frompin,
+                toname: req.body.toname,
+                tomobile: req.body.tomobile,
+                toaddress: req.body.toaddress,
+                topin: req.body.topin,
+                tocity: req.body.tocity,
+                toplace: req.body.toplace,
+              },
+            },
+          }
+        );
+        res.status(200).send({ message: "Shipment updated", success: true });
+
+      } else {
+        const shipmentdata = new shipmentModel({
+          user: user._id,
+          shipment: [
+            {
+              fromcity: req.body.fromcity,
+              fromplace: req.body.fromplace,
+              fromname: req.body.fromname,
+              frommobile: req.body.frommobile,
+              fromaddress: req.body.fromaddress,
+              fromdescripyion: req.body.fromdescription,
+              frompin: req.body.frompin,
+              toname: req.body.toname,
+              tomobile: req.body.tomobile,
+              toaddress: req.body.toaddress,
+              topin: req.body.topin,
+              tocity: req.body.tocity,
+              toplace: req.body.toplace,
+            },
+          ],
+        });
+
+        const saveddata = await shipmentdata.save()
+        res.status(200).send({ message: "Shipment Booked", success: true });
+
+      }
+    } else {
+      res.status(200).send({ message: "booking Failed", success: false });
+
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "something went wrong", success: false });
+
+
+  }
+};
 module.exports = {
   registerpage,
   loginpage,
@@ -349,5 +424,6 @@ module.exports = {
   getprofile,
   updateProfile,
   addAddress,
-  getLocationData
+  getLocationData,
+  bookshipment,
 };

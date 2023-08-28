@@ -64,6 +64,42 @@ const CityPlaces = () => {
       console.log(error);
     }
   };
+const deletecity = async(city)=>{
+try {
+
+  const response = await axios.post('/admin/deletecity',{city:city})
+
+  if(response.data.success){
+    toast.success(response.data.message)
+    window.location.reload();
+
+
+  }else{
+    toast.error(response.data.message)
+  }
+} catch (error) {
+  toast.error('somthing went wrong')
+  
+}
+}
+const deleteplace = async(position,city)=>{
+  try {
+  
+    const response = await axios.post('/admin/deleteplace',{position:position,city:city})
+  
+    if(response.data.success){
+      toast.success(response.data.message)
+      window.location.reload();
+
+
+    }else{
+      toast.error(response.data.message)
+    }
+  } catch (error) {
+    toast.error('somthing went wrong')
+    
+  }
+  }
 
   useEffect(() => {
     getData();
@@ -76,7 +112,9 @@ const CityPlaces = () => {
   };
 
   return (
+    <div>
     <div className="container mt-8 ">
+        <h1 className="font-bold text-2xl font-mono underline text-lime-600 mb-4">Cities Managment</h1>
       <div className="py-6 dark:bg-gray-600 dark:text-gray-50 rounded-lg">
         <div className="grid max-w-6xl grid-cols-1 px-6 mx-auto lg:px-8 md:grid-cols-2 md:divide-x">
           <div className="py-6 md:py-0 md:px-6">
@@ -112,7 +150,7 @@ const CityPlaces = () => {
             <div className="flex justify-between">
               <h1 className="mb-4 text-xl font-semibold">Select a City</h1>
               {selectedcity && (
-                <button className="material-symbols-outlined  mb-4 ">
+                <button onClick={()=>deletecity(selectedcity)}  className="material-symbols-outlined  mb-4 ">
                   delete
                 </button>
               )}
@@ -134,6 +172,11 @@ const CityPlaces = () => {
               ))}
             </select>
           </div>
+
+
+
+
+
 
           <div className="py-6 md:py-0 md:px-6">
             <h1> Add Places in {selectedcity}</h1>
@@ -174,11 +217,11 @@ const CityPlaces = () => {
                   {data.city === selectedcity
                     ? data.place.map((place, placeIndex) => (
                         <div
-                          key={placeIndex}
-                          className="border rounded p-2 mb-2 mt-2 shadow-sm flex justify-between"
+                        key={placeIndex}
+                        className="border rounded p-2 mb-2 mt-2 shadow-sm flex justify-between"
                         >
                           {place}{" "}
-                          <span class="material-symbols-outlined">delete</span>
+                          <button  onClick={() => deleteplace(placeIndex, selectedcity)} class="material-symbols-outlined">delete</button>
                         </div>
                       ))
                     : ""}
@@ -189,6 +232,29 @@ const CityPlaces = () => {
         </div>
       </div>
     </div>
+
+
+    <div className="container mt-8 ">
+    <h1 className="font-bold text-2xl font-mono underline text-lime-600 mb-4"> Shipment Criteria Managment</h1>
+      <div className="py-6 dark:bg-gray-600 dark:text-gray-50 rounded-lg">
+        <div className="grid max-w-6xl grid-cols-1 px-6 mx-auto lg:px-8 md:grid-cols-2 md:divide-x">
+          <div className="py-6 md:py-0 md:px-6">
+            <h1>ADD CITY</h1>
+
+           
+          </div>
+
+          <div className="py-6 md:py-0 md:px-6">
+            <h1> Add Places in {selectedcity}</h1>
+
+         
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+                        </div>
   );
 };
 

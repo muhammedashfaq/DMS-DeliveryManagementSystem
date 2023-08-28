@@ -3,9 +3,10 @@ const User = require("../models/UserModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const Driver = require("../models/driverModels");
-const service = require("../models/servicesModel");
 const cloudinary = require("cloudinary").v2;
 const sharp = require("sharp");
+const service = require("../models/servicesModel");
+
 const { sendmailtoDriver } = require("../config/nodemailer");
 
 cloudinary.config({
@@ -192,6 +193,20 @@ const addDriver = async (req, res) => {
   }
 };
 
+const getcitydetails = async(req,res)=>{
+  try {
+      console.log('hahhahahahah');
+    const citydata = await service.find()
+
+    res.status(200).send({message:"fetched",success:true,data:citydata})
+
+
+
+
+  } catch (error) {
+    res.status(200).send({message:"error", success:false})
+  }
+}
 const driverlistLoad = async (req, res) => {
   try {
     const driverdata = await Driver.find({});
@@ -334,6 +349,50 @@ const addservicePlace = async(req,res)=>{
     
   }
 }
+
+const deletecity = async(req,res)=>{
+  try {
+      const {city} =req.body
+
+      const deletedata =await service.deleteOne({city:city}) 
+
+      res.status(200).send({message:"deleted", success:true})
+
+
+
+
+  } catch (error) {
+    res.status(500).send({message:"somthing went wrong", success:false})
+
+    
+  }
+}
+
+const deleteplace = async (req, res) => {
+  try {
+    const { position, city } = req.body;
+
+    const findcity = await service.findOne({ city: city });
+
+    if (!findcity) {
+      return res.status(404).send({ message: "City not found", success: false });
+    }
+
+    findcity.place.splice(position, 1); 
+    const updatedCity = await findcity.save();
+
+    if (!updatedCity) {
+      return res.status(500).send({ message: "Failed to update city", success: false });
+    }
+
+    res.status(200).send({ message: "Place deleted", success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: "Something went wrong", success: false });
+  }
+};
+
+
 module.exports = {
   adminLogin,
   admindetails,
@@ -341,10 +400,13 @@ module.exports = {
   blockuser,
   unblockuser,
   addDriver,
+  getcitydetails,
   driverlistLoad,
   driverProfile,
   driverstatusUpdate,
   getLocationData,
   addserviceCity,
-  addservicePlace
+  addservicePlace,
+  deletecity,
+  deleteplace
 };

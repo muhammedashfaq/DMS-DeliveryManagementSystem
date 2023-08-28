@@ -182,7 +182,7 @@ const Header = () => {
                   <ul className="absolute top-8 right-0 mt-2 bg-white dark:bg-gray-800 border rounded shadow-md w-40 h-max">
                     <li>
                       <a
-                        href={`/userProfile/${selectedCity}`}
+                        href="/userProfile"
                         className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left"
                       >
                         {" "}
@@ -192,7 +192,7 @@ const Header = () => {
                     <li>
                       <button
                         onClick={() => {
-                          localStorage.clear();
+                          localStorage.removeItem('token')
 
                           window.location.reload();
                           navigate("/");

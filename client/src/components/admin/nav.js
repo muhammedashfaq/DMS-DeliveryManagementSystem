@@ -109,7 +109,7 @@ person_search
             </Dropdown.Item>
             <Dropdown.Item className="text-white p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
               {" "}
-              <Link to="/adminhome/driver_details">Driver
+              <Link to="/adminhome/driver_details">HUB
               <span class="material-symbols-outlined">
 local_shipping
 </span>
@@ -127,7 +127,7 @@ package_2
             <Dropdown.Item className="text-white p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
               <span
                 onClick={() => {
-                  localStorage.clear();
+                  localStorage.removeItem('admintoken')
                   navigate("/admin");
                 }}
               >

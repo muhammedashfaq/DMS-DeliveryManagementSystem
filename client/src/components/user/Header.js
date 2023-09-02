@@ -1,9 +1,9 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import {Navigate, useNavigate,Link,useLocation} from 'react-router-dom'
-import { hideloading, showloading } from "../../redux/alertSlice";
+import { hideloading, showloading } from "../../Helper/redux/alertSlice";
 
-import{useUserContext } from '../../context/userContext'
+import{useUserContext } from '../../Helper/context/userContext'
 
 const Header = () => {
 	const {userName} =useUserContext()

@@ -8,6 +8,7 @@ const sharp = require("sharp");
 const service = require("../models/servicesModel");
 
 const { sendmailtoDriver } = require("../config/nodemailer");
+const shipmentModel = require("../models/shipmentModel");
 
 cloudinary.config({
   cloud_name: process.env.cloud_name,
@@ -88,7 +89,6 @@ const userlistLoad = async (req, res) => {
 
 const blockuser = async (req, res) => {
   try {
-    console.log("reachwe");
     const email = req.body.email;
     console.log(req.body);
 
@@ -111,8 +111,6 @@ const blockuser = async (req, res) => {
 
 const unblockuser = async (req, res) => {
   try {
-    console.log("reachwe");
-
     const email = req.body.email;
     console.log(req.body);
 
@@ -141,7 +139,7 @@ const addDriver = async (req, res) => {
 
     // console.log(req.file[0].filename)
 
-    // if (!req.body.fname || !req.body.lname || !req.body.email || !req.body.gender ||
+    // if (!req.body.fname || !req.body.lname || !req.body.email || !req.body.city ||
     //     !req.body.address || !req.body.age || !req.body.mobile || !req.body.pin || !req.body.licence ||
     //     !req.files.fileImage || !req.files.profileimage) {
     //   return res.status(400).send({
@@ -164,9 +162,8 @@ const addDriver = async (req, res) => {
       fname: req.body.fname,
       lname: req.body.lname,
       email: req.body.email,
-      gender: req.body.gender,
+      city: req.body.city,
       address: req.body.address,
-      age: req.body.age,
       mobile: req.body.mobile,
       pin: req.body.pin,
       licence: req.body.licence,
@@ -193,20 +190,15 @@ const addDriver = async (req, res) => {
   }
 };
 
-const getcitydetails = async(req,res)=>{
+const getcitydetails = async (req, res) => {
   try {
-      console.log('hahhahahahah');
-    const citydata = await service.find()
+    const citydata = await service.find();
 
-    res.status(200).send({message:"fetched",success:true,data:citydata})
-
-
-
-
+    res.status(200).send({ message: "fetched", success: true, data: citydata });
   } catch (error) {
-    res.status(200).send({message:"error", success:false})
+    res.status(200).send({ message: "error", success: false });
   }
-}
+};
 const driverlistLoad = async (req, res) => {
   try {
     const driverdata = await Driver.find({});
@@ -222,7 +214,6 @@ const driverlistLoad = async (req, res) => {
 const driverProfile = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log(id, "hhhhh");
 
     const driver = await Driver.findById({ _id: id });
 
@@ -260,28 +251,26 @@ const driverstatusUpdate = async (req, res) => {
   }
 };
 
-const getLocationData =async(req,res)=>{
+const getLocationData = async (req, res) => {
   try {
+    const locationdata = await service.find({});
 
-    const locationdata = await service.find({})
-
-      res.status(200).send({message:"fetched",success:true,data:locationdata})
-
-
-
-    
+    res
+      .status(200)
+      .send({ message: "fetched", success: true, data: locationdata });
   } catch (error) {
     console.log(error);
-    res.status(500).send({message:"something went wrong",success:false})
+    res.status(500).send({ message: "something went wrong", success: false });
   }
-}
+};
 const addserviceCity = async (req, res) => {
   try {
-    if(!req.body.city){
-      res.status(200).send({message:"This field is required" ,success:false})
+    if (!req.body.city) {
+      res
+        .status(200)
+        .send({ message: "This field is required", success: false });
     }
     const city = req.body.city;
-    console.log(city,'reached')
     const alredy = await service.findOne({
       city: { $regex: city, $options: "i" },
     });
@@ -307,66 +296,57 @@ const addserviceCity = async (req, res) => {
   }
 };
 
-const addservicePlace = async(req,res)=>{
-  try { 
-
-    console.log(req.body,'res');
-   
-    const {city,place} =req.body
+const addservicePlace = async (req, res) => {
+  try {
+    const { city, place } = req.body;
     if (!place) {
-      return res.status(400).send({ message: "Place field is required", success: false });
+      return res
+        .status(400)
+        .send({ message: "Place field is required", success: false });
     }
 
-    const citydata= await service.findOne({city:city})
+    const citydata = await service.findOne({ city: city });
 
-
-    if(citydata){
-
+    if (citydata) {
       const placeExist = await service.findOne({
         city: city,
-        place: { $elemMatch: { $regex: new RegExp(place, "i") } }
+        place: { $elemMatch: { $regex: new RegExp(place, "i") } },
       });
 
-      if(!placeExist){
-
-        await service.findOneAndUpdate({city:city},{$addToSet:{place:place}})
-        return res.status(200).send({ message: "Place added successfully", success: true });
-      }else{
-        return res.status(200).send({ message: "Place existed", success: false });
-
-
+      if (!placeExist) {
+        await service.findOneAndUpdate(
+          { city: city },
+          { $addToSet: { place: place } }
+        );
+        return res
+          .status(200)
+          .send({ message: "Place added successfully", success: true });
+      } else {
+        return res
+          .status(200)
+          .send({ message: "Place existed", success: false });
       }
-
     } else {
-      return res.status(404).send({ message: "City not found", success: false });
+      return res
+        .status(404)
+        .send({ message: "City not found", success: false });
     }
-
-    
-
-    
   } catch (error) {
     console.log(error);
-    
   }
-}
+};
 
-const deletecity = async(req,res)=>{
+const deletecity = async (req, res) => {
   try {
-      const {city} =req.body
+    const { city } = req.body;
 
-      const deletedata =await service.deleteOne({city:city}) 
+    const deletedata = await service.deleteOne({ city: city });
 
-      res.status(200).send({message:"deleted", success:true})
-
-
-
-
+    res.status(200).send({ message: "deleted", success: true });
   } catch (error) {
-    res.status(500).send({message:"somthing went wrong", success:false})
-
-    
+    res.status(500).send({ message: "somthing went wrong", success: false });
   }
-}
+};
 
 const deleteplace = async (req, res) => {
   try {
@@ -375,14 +355,18 @@ const deleteplace = async (req, res) => {
     const findcity = await service.findOne({ city: city });
 
     if (!findcity) {
-      return res.status(404).send({ message: "City not found", success: false });
+      return res
+        .status(404)
+        .send({ message: "City not found", success: false });
     }
 
-    findcity.place.splice(position, 1); 
+    findcity.place.splice(position, 1);
     const updatedCity = await findcity.save();
 
     if (!updatedCity) {
-      return res.status(500).send({ message: "Failed to update city", success: false });
+      return res
+        .status(500)
+        .send({ message: "Failed to update city", success: false });
     }
 
     res.status(200).send({ message: "Place deleted", success: true });
@@ -392,7 +376,21 @@ const deleteplace = async (req, res) => {
   }
 };
 
+const getshipmentdata = async (req, res) => {
+  try {
+    const shipmentdata = await shipmentModel.find({}).populate("shipment");
 
+    if (shipmentdata) {
+      res
+        .status(200)
+        .send({ message: "fetched", success: true, data: shipmentdata });
+    } else {
+      res.status(200).send({ message: "error", success: false });
+    }
+  } catch (error) {
+    res.status(500).send({ message: "something went wrong", success: false });
+  }
+};
 module.exports = {
   adminLogin,
   admindetails,
@@ -408,5 +406,6 @@ module.exports = {
   addserviceCity,
   addservicePlace,
   deletecity,
-  deleteplace
+  deleteplace,
+  getshipmentdata,
 };

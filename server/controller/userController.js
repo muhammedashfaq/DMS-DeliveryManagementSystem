@@ -5,17 +5,15 @@ const userAddress = require("../models/userAddress.js");
 const jwt = require("jsonwebtoken");
 const randomString = require("randomstring");
 const service = require("../models/servicesModel");
-
-const nodemailer = require("nodemailer");
+const Razorpay = require("razorpay");
+const sharp = require("sharp");
+const shipmentModel = require("../models/shipmentModel");
+const cloudinary = require("cloudinary").v2;
 const {
   sendForgetymail,
   sendVerifymail,
   securePassword,
 } = require("../config/nodemailer");
-
-const sharp = require("sharp");
-const shipmentModel = require("../models/shipmentModel");
-const cloudinary = require("cloudinary").v2;
 
 cloudinary.config({
   cloud_name: process.env.cloud_name,
@@ -24,8 +22,8 @@ cloudinary.config({
   secure: true,
 });
 
-var savedOtp;
-var useremail;
+let savedOtp;
+let useremail;
 
 const registerpage = async (req, res) => {
   try {
@@ -116,7 +114,6 @@ const userdetails = async (req, res) => {
         .status(200)
         .send({ message: "user does no exist", success: false });
     } else {
-      console.log(user.username, "namemyname", req.userId);
       res.status(200).send({
         success: true,
         data: { name: user.username, email: user.email },
@@ -214,7 +211,9 @@ const getprofile = async (req, res) => {
     const id = req.userId;
 
     const user = await User.findOne({ _id: id });
-    const shipmentdata= await shipmentModel.findOne({user:user.id})
+    const shipmentdata = await shipmentModel
+      .find({ user: user._id })
+      .populate("shipment");
 
     const address = await userAddress.findOne({ user: user._id });
     const addressdetails = address.address;
@@ -226,7 +225,7 @@ const getprofile = async (req, res) => {
       res.status(200).send({
         success: true,
         data: user,
-        shipmentdata:shipmentdata
+        shipmentdata: shipmentdata,
       });
     }
   } catch (error) {
@@ -277,8 +276,6 @@ const addAddress = async (req, res) => {
     const id = req.userId;
 
     const user = await User.findById({ _id: id });
-
-    console.log(user, "user id");
 
     if (user) {
       const checkuser = await userAddress.findOne({ user: user._id });
@@ -340,80 +337,82 @@ const getLocationData = async (req, res) => {
 
 const bookshipment = async (req, res) => {
   try {
-
-    console.log(req.body,'body')
     const id = req.userId;
 
     const user = await User.findById({ _id: id });
 
-    console.log(id,'id')
-
     if (user) {
-      const checkuser = await shipmentModel.findOne({ user: user._id });
-
-
-      if (checkuser) {
-        await shipmentModel.updateOne(
-          { user: user._id },
+      const shipmentdata = new shipmentModel({
+        user: user._id,
+        username: user.username,
+        fromhub: req.body.fromcity,
+        tohub: req.body.tocity,
+        shipment: [
           {
-            $push: {
-              shipment: {
-                fromcity: req.body.fromcity,
-                fromplace: req.body.fromplace,
-                fromname: req.body.fromname,
-                frommobile: req.body.frommobile,
-                fromaddress: req.body.fromaddress,
-                fromdescripyion: req.body.fromdescription,
-                frompin: req.body.frompin,
-                toname: req.body.toname,
-                tomobile: req.body.tomobile,
-                toaddress: req.body.toaddress,
-                topin: req.body.topin,
-                tocity: req.body.tocity,
-                toplace: req.body.toplace,
-              },
-            },
-          }
-        );
-        res.status(200).send({ message: "Shipment updated", success: true });
+            fromcity: req.body.fromcity,
+            fromplace: req.body.fromplace,
+            fromname: req.body.fromname,
+            frommobile: req.body.frommobile,
+            fromaddress: req.body.fromaddress,
+            fromdescripyion: req.body.fromdescription,
+            frompin: req.body.frompin,
+            toname: req.body.toname,
+            tomobile: req.body.tomobile,
+            toaddress: req.body.toaddress,
+            topin: req.body.topin,
+            tocity: req.body.tocity,
+            toplace: req.body.toplace,
+          },
+        ],
+      });
 
-      } else {
-        const shipmentdata = new shipmentModel({
-          user: user._id,
-          shipment: [
-            {
-              fromcity: req.body.fromcity,
-              fromplace: req.body.fromplace,
-              fromname: req.body.fromname,
-              frommobile: req.body.frommobile,
-              fromaddress: req.body.fromaddress,
-              fromdescripyion: req.body.fromdescription,
-              frompin: req.body.frompin,
-              toname: req.body.toname,
-              tomobile: req.body.tomobile,
-              toaddress: req.body.toaddress,
-              topin: req.body.topin,
-              tocity: req.body.tocity,
-              toplace: req.body.toplace,
-            },
-          ],
-        });
+      const saveddata = await shipmentdata.save();
 
-        const saveddata = await shipmentdata.save()
-        res.status(200).send({ message: "Shipment Booked", success: true });
+      const shipmantdata = saveddata.shipment[0];
+      const id = saveddata._id;
 
-      }
-    } else {
-      res.status(200).send({ message: "booking Failed", success: false });
-
+      res.status(200).send({
+        message: "Shipment Booked",
+        success: true,
+        data: shipmantdata,
+        id: id,
+      });
     }
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: "something went wrong", success: false });
-
-
   }
 };
+
+const advancepaymentUpdate = async (req, res) => {
+  const id = req.body.id;
+  const paymentid = req.body.payment.razorpay_payment_id;
+
+  try {
+    const updateOrder = await shipmentModel.findOneAndUpdate(
+      { _id: id, "shipment._id": req.body.order._id },
+      {
+        $set: {
+          "shipment.$.advanceamountStatus": true,
+          "shipment.$.paymentid": paymentid,
+        },
+      },
+      { new: true }
+    );
+
+    if (updateOrder) {
+      res.status(200).send({ message: "Payment successful", success: true });
+    } else {
+      res.status(200).send({
+        message: "Something went wrong, please try again later",
+        success: false,
+      });
+    }
+  } catch (error) {
+    res.status(500).send({ error });
+  }
+};
+
 module.exports = {
   registerpage,
   loginpage,
@@ -426,4 +425,5 @@ module.exports = {
   addAddress,
   getLocationData,
   bookshipment,
+  advancepaymentUpdate,
 };

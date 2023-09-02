@@ -80,18 +80,14 @@ export const adminloginvalidate = (email, password) => {
       errors.email = "Valid email is required";
     }
   
-    if (!formData.gender) {
-      errors.gender = "Please select a gender";
+    if (!formData.city) {
+      errors.city = "Please select a gender";
     }
   
     if (!formData.address || formData.address.trim() === "") {
       errors.address = "Address is required";
     }
-  
-    if (!formData.age || formData.age.trim() === "") {
-      errors.age = "Age is required";
-    }
-  
+ 
     if (!formData.mobile || formData.mobile.trim() === "") {
       errors.mobile = "Mobile number is required";
     } else if (formData.mobile.length !== 10) {

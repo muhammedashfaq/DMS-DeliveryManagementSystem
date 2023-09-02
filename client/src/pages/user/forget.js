@@ -3,7 +3,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
-import { hideloading, showloading } from "../../redux/alertSlice";
+import { hideloading, showloading } from "../../Helper/redux/alertSlice";
 import { toast } from "react-hot-toast";
 import { BiSolidLock } from "react-icons/bi";
 

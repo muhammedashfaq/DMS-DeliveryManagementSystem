@@ -5,9 +5,9 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import * as regicon from "react-icons/io5";
 import { BiEnvelope, BiSolidLock } from "react-icons/bi";
-import { hideloading, showloading } from "../../redux/alertSlice";
+import { hideloading, showloading } from "../../Helper/redux/alertSlice";
 import { Alert } from "@mui/material";
-import {registervalidate} from '../api/validation'
+import {registervalidate} from '../../Helper/Validations/validation'
 
 const Register = () => {
   const [errors, setError] = useState([]);

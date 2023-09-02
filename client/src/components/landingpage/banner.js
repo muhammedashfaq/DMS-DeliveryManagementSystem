@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { LoginModal } from "./loginModal";
-import { useUserContext} from '../../context/userContext'
+import { useUserContext} from '../../Helper/context/userContext'
+// import { GoogleOAuthProvider } from "@react-oauth/google";
+// import { GoogleLogin ,googleLogout} from "@react-oauth/google";
+// import jwt_decode from 'jwt-decode'
+
+
+
+
 
 const Banner = () => {
   const {userName} = useUserContext()
@@ -12,6 +19,7 @@ const Banner = () => {
   const handleclose=()=>{
     setshowMymodal(false)
   }
+
 
   return (
     <div className=" w-full h-96 ">
@@ -63,7 +71,26 @@ const Banner = () => {
         <button className="bg-blue-950 text-white w-full py-2 rounded-full relative bottom-0" onClick={()=>{setshowMymodal(true)}}>
           Login
           </button>
+
+
+          {/* <GoogleOAuthProvider clientId={process.env.REACT_APP_ClientID}>
+            <GoogleLogin
+              onSuccess={(credentialResponse) => {
+                const details =jwt_decode(credentialResponse.credential)
+                console.log(details)
+                console.log(credentialResponse);
+              }}
+              onError={() => {
+                console.log("Login Failed");
+              }}
+            />
+            
+          </GoogleOAuthProvider> */}
+
+
+
         </div>
+
       </div> )}
 
 

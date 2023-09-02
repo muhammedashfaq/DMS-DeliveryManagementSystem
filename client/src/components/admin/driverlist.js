@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { hideloading, showloading } from "../../redux/alertSlice";
+import { hideloading, showloading } from "../../Helper/redux/alertSlice";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -90,7 +90,7 @@ const Driverlist = () => {
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" class="px-6 py-3">
-                Driver Name
+                Hub Admin Name
               </th>
               <th scope="col" class="px-6 py-3">
                 Email Id
@@ -99,7 +99,7 @@ const Driverlist = () => {
                 Contact Number
               </th>
               <th scope="col" class="px-6 py-3">
-                Status
+               Hub Status
               </th>
             </tr>
           </thead>

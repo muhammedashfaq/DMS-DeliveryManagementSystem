@@ -1,9 +1,37 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate,Link,useLocation} from 'react-router-dom'
-import { hideloading, showloading } from "../../redux/alertSlice";
+import { hideloading, showloading } from "../../Helper/redux/alertSlice";
+import axios from 'axios';
 
 const Header = () => {
+
+	const [name ,setName]=useState("")
+	const getData = async (req, res) => {
+		try {
+		  const response = await axios.post(
+			"/hub/get-driverinfo-id",
+			{},
+			{
+			  headers: {
+				Authorization: "Bearer " + localStorage.getItem("drivertoken"),
+			  },
+			}
+		  );
+		  console.log("Server Response:", response);
+	
+		  if (response.data.success) {
+			const name = response.data.name;
+			setName(name)
+		  }
+		} catch (error) {
+		  console.log(error);
+		}
+	  };
+	  useEffect(() => {
+		getData();
+	  }, []);
+
 	const location =useLocation()
 
 	const menu=[
@@ -59,7 +87,7 @@ const Header = () => {
                     
                     }}>Logout</a>
 			</li>
-          
+					{name}
 		</ul>
 		<button className="flex justify-end p-4 md:hidden">
 			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">

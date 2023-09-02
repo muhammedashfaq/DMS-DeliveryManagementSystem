@@ -1,24 +1,15 @@
-const mongoose=require('mongoose')
-
-
+const mongoose = require("mongoose");
 
 const serviceSchema = new mongoose.Schema({
-    city:{
-        type:String,
-        trim:true,
-        required:true
-        
-    },
+  city: {
+    type: String,
+    trim: true,
+    required: true,
+  },
 
-    place:{
-        type:Array,
-        
+  place: {
+    type: Array,
+  },
+});
 
-    }
-
-
-
-})
-
-
-module.exports=mongoose.model('service',serviceSchema)
+module.exports = mongoose.model("service", serviceSchema);

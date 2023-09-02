@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
-import { hideloading, showloading } from "../../redux/alertSlice";
+import { hideloading, showloading } from "../../Helper/redux/alertSlice";
 import { toast } from "react-hot-toast";
 import {
   Popover,
@@ -178,10 +178,10 @@ const Driverdetails = () => {
                   <hr className="my-2" />
                   <div className="mb-2 flex items-center">
                     <p className="w-1/4 text-sm md:text-base lg:text-lg">
-                      Gender
+                      Hub City
                     </p>
                     <p className="w-3/4 text-muted text-sm md:text-base lg:text-lg">
-                      {driver?.gender}
+                      {driver?.city}
                     </p>
                   </div>
                   <hr className="my-2" />
@@ -193,13 +193,7 @@ const Driverdetails = () => {
                       {driver?.licence}
                     </p>
                   </div>
-                  <hr className="my-2" />
-                  <div className="mb-2 flex items-center">
-                    <p className="w-1/4 text-sm md:text-base lg:text-lg">Age</p>
-                    <p className="w-3/4 text-muted text-sm md:text-base lg:text-lg">
-                      {driver?.age}
-                    </p>
-                  </div>
+                
 
                   <hr className="my-2" />
                   <div className="mb-2 flex  items-center">

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import myimage from "../../components/images/def.jpg";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { hideloading, showloading } from "../../redux/alertSlice";
-import{drivervalidate} from '../../pages/api/validation'
+import { hideloading, showloading } from "../../Helper/redux/alertSlice";
+import{drivervalidate} from '../../Helper/Validations/validation'
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
@@ -17,9 +17,8 @@ const AddDriver = () => {
     fname: "",
     lname: "",
     email: "",
-    gender: "",
+    city: "",
     address: "",
-    age: "",
     mobile: "",
     pin: "",
     licence: "",
@@ -183,14 +182,13 @@ const AddDriver = () => {
 
               </div>
               <div className="col-span-full sm:col-span-3">
-                <label htmlFor="gender" className="text-sm">
+                <label htmlFor="city" className="text-sm">
                   City
                 </label>
 
                 <select
-  id="gender"
-  name="gender"
-  value={formData.gender}
+  id="city"
+  name="city"
   onChange={handleinputchange}
   className="w-full h-8 rounded-md focus:ring focus:ring-dark focus:border-gray-700 dark:text-gray-900"
 >
@@ -220,21 +218,7 @@ const AddDriver = () => {
                                {errors.address && ( <p className="text-red-500">{errors.address}</p>)}
 
               </div>
-              <div className="col-span-full sm:col-span-2">
-                <label for="city" className="text-sm">
-                  Age
-                </label>
-                <input
-                  id="city"
-                  type="number"
-                  name="age"
-                  onChange={handleinputchange}
-                  placeholder="Age"
-                  className="w-full h-8 rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900"
-                />
-                               {errors.age && ( <p className="text-red-500">{errors.age}</p>)}
-
-              </div>
+          
               <div className="col-span-full sm:col-span-2">
                 <label for="state" className="text-sm">
                   Mobile

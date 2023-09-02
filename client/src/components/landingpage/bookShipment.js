@@ -2,26 +2,30 @@ import React, { useEffect, useState } from "react";
 import Header from "./header";
 import Footer from "./footer";
 import axios from "axios";
-import { bookshipmentvalidation } from "../../pages/api/validation";
+import { bookshipmentvalidation } from "../../Helper/Validations/validation";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { loadScript } from "https://checkout.razorpay.com/v1/checkout.js";
+
+// import {dotenv} from 'dotenv';
+// dotenv.config();
 
 const BookShipment = () => {
-  const navigate =useNavigate()
+  const rupeeSymbol = "\u20B9";
+  const navigate = useNavigate();
   const [selectedCity, setSelectedCity] = useState("");
   const [toselectedCity, settoSelectedCity] = useState("");
   const [selectedPlace, setSelectedPlace] = useState("");
-const [toselectedPlace, settoSelectedPlace] = useState("");
-
+  const [toselectedPlace, settoSelectedPlace] = useState("");
 
   const [pagenext, setPageNext] = useState(1);
   const [fetchedCity, setfetchedCity] = useState([]);
   const [errors, setErrors] = useState([]);
   const [formdata, setformdata] = useState({
-    fromcity:"",
-    fromplace:"",
-    tocity:"",
-    toplace:"",
+    fromcity: "",
+    fromplace: "",
+    tocity: "",
+    toplace: "",
     fromname: "",
     frommobile: "",
     frompin: "",
@@ -38,9 +42,9 @@ const [toselectedPlace, settoSelectedPlace] = useState("");
       ...pformdata,
       [name]: value,
       fromcity: selectedCity,
-    fromplace: selectedPlace,     
-    tocity: toselectedCity,
-    toplace: toselectedPlace, 
+      fromplace: selectedPlace,
+      tocity: toselectedCity,
+      toplace: toselectedPlace,
     }));
   };
 
@@ -61,28 +65,68 @@ const [toselectedPlace, settoSelectedPlace] = useState("");
         },
       });
 
+      if (response.data.success) {
+        razorpayPayment(response.data.data, response.data.id);
 
-      if(response.data.success){
-        toast.success(response.data.message)
-        navigate('/userProfile')
-
-
-      }else{
-        toast.error(response.data.message)
-
-
+        toast.success(response.data.message);
+      } else {
+        toast.error(response.data.message);
       }
     } catch (error) {
-      toast.error("seomthing went wrong")
-
+      toast.error("seomthing went wrong");
     }
   };
 
-  const handlenext = () => {
-    if (pagenext === 1) {
-      setPageNext((prev) => prev + 1);
-    } else {
-      setPageNext((prev) => prev - 1);
+  function razorpayPayment(order, id) {
+    console.log("amount", order.advanceamount);
+    var options = {
+      key: process.env.REACT_APP_Razorid,
+      amount: order.advanceamount * 100,
+      currency: "INR",
+      name: "HL ENTERPRISES",
+      description: "Pay Your Advance Amount Here",
+      image: "./images/langingpage/logo.png",
+      order_id: order.id,
+      handler: function (response) {
+        verifyPayment(response, order, id);
+      },
+      prefill: {
+        name: "Gaurav Kumar",
+        email: "gaurav.kumar@example.com",
+        contact: "9000090000",
+      },
+      notes: {
+        address: "Razorpay Corporate Office",
+      },
+      theme: {
+        color: "#3399cc",
+      },
+    };
+
+    var rzp1 = new window.Razorpay(options);
+    rzp1.open();
+  }
+  const verifyPayment = (payment, order, id) => {
+    PaymentUpdate(payment, order, id);
+  };
+
+  const PaymentUpdate = async (payment, order, id) => {
+    try {
+      const response = await axios.post("/advancepaymentUpdate", {
+        payment,
+        order,
+        id,
+      });
+
+      if (response.data.success) {
+        toast.success(response.data.message);
+
+        navigate("/userProfile");
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      toast.error("something went wrong");
     }
   };
 
@@ -109,100 +153,30 @@ const [toselectedPlace, settoSelectedPlace] = useState("");
     <div>
       <Header />
 
-      <div className="px-8 py-2 h-40 dark:bg-gray-900 dark:text-gray-100">
-        <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  mx-auto container  md:justify-between py-2">
-          <div className="grid grid-cols-3 gap-4 m-6  ">
-            <h1>Service Avaliable:</h1>
-
+      <div className="px-8 py-2 dark:bg-gray-900 dark:text-gray-100">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-auto container md:justify-between py-2">
+          <div className="col-span-1 md:col-span-1 lg:col-span-1 grid grid-cols-3 gap-4 m-6">
+            <h1 className="col-span-3">Service Available Cities:</h1>
             {fetchedCity.map((city, index) => (
-              <div key={index} className=" border-yellow-800 border-b-4">
+              <div
+                key={index}
+                className="col-span-1 border-yellow-800 border-b-4"
+              >
                 {city.city}
               </div>
             ))}
           </div>
 
-          <div>
-            <span className="border-yellow-600 border-b-2 ">
-              Weight realted details
-            </span>
-
-            <ul className="m-3">
-              <li className="flex items-center space-x-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 512 512"
-                  className="w-5 h-5 fill-current dark:text-violet-400"
-                >
-                  <path d="M426.072,86.928A238.75,238.75,0,0,0,88.428,424.572,238.75,238.75,0,0,0,426.072,86.928ZM257.25,462.5c-114,0-206.75-92.748-206.75-206.75S143.248,49,257.25,49,464,141.748,464,255.75,371.252,462.5,257.25,462.5Z"></path>
-                  <polygon points="221.27 305.808 147.857 232.396 125.23 255.023 221.27 351.063 388.77 183.564 366.142 160.937 221.27 305.808"></polygon>
-                </svg>
-                <span>test</span>
-              </li>
-              <li className="flex items-center space-x-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 512 512"
-                  className="w-5 h-5 fill-current dark:text-violet-400"
-                >
-                  <path d="M426.072,86.928A238.75,238.75,0,0,0,88.428,424.572,238.75,238.75,0,0,0,426.072,86.928ZM257.25,462.5c-114,0-206.75-92.748-206.75-206.75S143.248,49,257.25,49,464,141.748,464,255.75,371.252,462.5,257.25,462.5Z"></path>
-                  <polygon points="221.27 305.808 147.857 232.396 125.23 255.023 221.27 351.063 388.77 183.564 366.142 160.937 221.27 305.808"></polygon>
-                </svg>
-                <span>test </span>
-              </li>
-              <li className="flex items-center space-x-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 512 512"
-                  className="w-5 h-5 fill-current dark:text-violet-400"
-                >
-                  <path d="M426.072,86.928A238.75,238.75,0,0,0,88.428,424.572,238.75,238.75,0,0,0,426.072,86.928ZM257.25,462.5c-114,0-206.75-92.748-206.75-206.75S143.248,49,257.25,49,464,141.748,464,255.75,371.252,462.5,257.25,462.5Z"></path>
-                  <polygon points="221.27 305.808 147.857 232.396 125.23 255.023 221.27 351.063 388.77 183.564 366.142 160.937 221.27 305.808"></polygon>
-                </svg>
-                <span>test</span>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <span className="border-yellow-600 border-b-2 ">
-              Price related details
-            </span>
-
-            <ul className="m-3">
-              <li className="flex items-center space-x-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 512 512"
-                  className="w-5 h-5 fill-current dark:text-violet-400"
-                >
-                  <path d="M426.072,86.928A238.75,238.75,0,0,0,88.428,424.572,238.75,238.75,0,0,0,426.072,86.928ZM257.25,462.5c-114,0-206.75-92.748-206.75-206.75S143.248,49,257.25,49,464,141.748,464,255.75,371.252,462.5,257.25,462.5Z"></path>
-                  <polygon points="221.27 305.808 147.857 232.396 125.23 255.023 221.27 351.063 388.77 183.564 366.142 160.937 221.27 305.808"></polygon>
-                </svg>
-                <span>test</span>
-              </li>
-              <li className="flex items-center space-x-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 512 512"
-                  className="w-5 h-5 fill-current dark:text-violet-400"
-                >
-                  <path d="M426.072,86.928A238.75,238.75,0,0,0,88.428,424.572,238.75,238.75,0,0,0,426.072,86.928ZM257.25,462.5c-114,0-206.75-92.748-206.75-206.75S143.248,49,257.25,49,464,141.748,464,255.75,371.252,462.5,257.25,462.5Z"></path>
-                  <polygon points="221.27 305.808 147.857 232.396 125.23 255.023 221.27 351.063 388.77 183.564 366.142 160.937 221.27 305.808"></polygon>
-                </svg>
-                <span>test </span>
-              </li>
-              <li className="flex items-center space-x-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 512 512"
-                  className="w-5 h-5 fill-current dark:text-violet-400"
-                >
-                  <path d="M426.072,86.928A238.75,238.75,0,0,0,88.428,424.572,238.75,238.75,0,0,0,426.072,86.928ZM257.25,462.5c-114,0-206.75-92.748-206.75-206.75S143.248,49,257.25,49,464,141.748,464,255.75,371.252,462.5,257.25,462.5Z"></path>
-                  <polygon points="221.27 305.808 147.857 232.396 125.23 255.023 221.27 351.063 388.77 183.564 366.142 160.937 221.27 305.808"></polygon>
-                </svg>
-                <span>test</span>
-              </li>
-            </ul>
+          <div className=" flex justify-between col-span-1 md:col-span-1 lg:col-span-2 border-l-2 border-l-slate-500  bg-gradient-to-r from-gray-900  overflow-hidden">
+            <div>
+              <span className="border-yellow-600 border-b-2 py-2 ml-10">
+                Weight-related details{" "}
+              </span>{" "}
+              <button>
+                <span class="material-symbols-outlined ml-2">info</span>
+              </button>
+            </div>
+            <div className="w-1/2 h-40 opacity-60 "></div>
           </div>
         </div>
       </div>
@@ -242,8 +216,12 @@ const [toselectedPlace, settoSelectedPlace] = useState("");
                       <label for="lastname" className="text-sm">
                         Choose place
                       </label>
-                      <select name="fromplace"   value={selectedPlace}
-  onChange={(e) => setSelectedPlace(e.target.value)} className="border rounded p-2 mb-2 mt-2 shadow-sm w-full text-black">
+                      <select
+                        name="fromplace"
+                        value={selectedPlace}
+                        onChange={(e) => setSelectedPlace(e.target.value)}
+                        className="border rounded p-2 mb-2 mt-2 shadow-sm w-full text-black"
+                      >
                         <option value="">Select a place</option>
                         {fetchedCity.map(
                           (data, index) =>
@@ -267,7 +245,7 @@ const [toselectedPlace, settoSelectedPlace] = useState("");
                       placeholder="Name"
                       name="fromname"
                       onChange={handlechangeinput}
-                      className="w-full rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900"
+                      className="w-full rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900 pl-4"
                     />
                     {errors.fromname && (
                       <p className="text-red-500">{errors.fromname}</p>
@@ -283,7 +261,7 @@ const [toselectedPlace, settoSelectedPlace] = useState("");
                       placeholder="mobile"
                       name="frommobile"
                       onChange={handlechangeinput}
-                      className="w-full rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900"
+                      className="w-full rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900 pl-4"
                     />
                     {errors.frommobile && (
                       <p className="text-red-500">{errors.frommobile}</p>
@@ -296,10 +274,10 @@ const [toselectedPlace, settoSelectedPlace] = useState("");
                     <input
                       id="lastname"
                       type="text"
-                      placeholder="pin"
+                      placeholder="PIN"
                       name="frompin"
                       onChange={handlechangeinput}
-                      className="w-full rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900"
+                      className="w-full rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900 pl-4"
                     />
                     {errors.frompin && (
                       <p className="text-red-500">{errors.frompin}</p>
@@ -315,7 +293,7 @@ const [toselectedPlace, settoSelectedPlace] = useState("");
                       placeholder="Type Here...."
                       name="fromaddress"
                       onChange={handlechangeinput}
-                      className="w-full rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900"
+                      className="w-full rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900 pl-4 pt-2"
                     ></textarea>
                     {errors.fromaddress && (
                       <p className="text-red-500">{errors.fromaddress}</p>
@@ -333,7 +311,7 @@ const [toselectedPlace, settoSelectedPlace] = useState("");
                       placeholder="Type Here...."
                       name="fromdescription"
                       onChange={handlechangeinput}
-                      className="w-full rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900"
+                      className="w-full rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900 pl-4 pt-2"
                     ></textarea>
                     {errors.fromdescription && (
                       <p className="text-red-500">{errors.fromdescription}</p>
@@ -376,8 +354,12 @@ const [toselectedPlace, settoSelectedPlace] = useState("");
                     <label for="lastname" className="text-sm">
                       Choose place
                     </label>
-                    <select name="toplace"  value={toselectedPlace}
-  onChange={(e) => settoSelectedPlace(e.target.value)} className="border rounded p-2 mb-2 mt-2 shadow-sm w-full text-black">
+                    <select
+                      name="toplace"
+                      value={toselectedPlace}
+                      onChange={(e) => settoSelectedPlace(e.target.value)}
+                      className="border rounded p-2 mb-2 mt-2 shadow-sm w-full text-black"
+                    >
                       <option value="">Select a place</option>
                       {fetchedCity.map(
                         (data, index) =>
@@ -400,7 +382,7 @@ const [toselectedPlace, settoSelectedPlace] = useState("");
                       placeholder="Name"
                       name="toname"
                       onChange={handlechangeinput}
-                      className="w-full rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900"
+                      className="w-full rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900 pl-4"
                     />
                     {errors.toname && (
                       <p className="text-red-500">{errors.toname}</p>
@@ -416,7 +398,7 @@ const [toselectedPlace, settoSelectedPlace] = useState("");
                       placeholder="Mobile"
                       name="tomobile"
                       onChange={handlechangeinput}
-                      className="w-full rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900"
+                      className="w-full rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900 pl-4"
                     />
                     {errors.tomobile && (
                       <p className="text-red-500">{errors.tomobile}</p>
@@ -429,10 +411,10 @@ const [toselectedPlace, settoSelectedPlace] = useState("");
                     <input
                       id="lastname"
                       type="text"
-                      placeholder="pin"
+                      placeholder="PIN"
                       name="topin"
                       onChange={handlechangeinput}
-                      className="w-full rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900"
+                      className="w-full rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900 pl-4 "
                     />
                     {errors.topin && (
                       <p className="text-red-500">{errors.topin}</p>
@@ -447,113 +429,45 @@ const [toselectedPlace, settoSelectedPlace] = useState("");
                       placeholder="Type Here..."
                       name="toaddress"
                       onChange={handlechangeinput}
-                      className="w-full rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900"
+                      className="w-full rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900 pl-4 pt-2"
                     ></textarea>
                     {errors.toaddress && (
                       <p className="text-red-500">{errors.toaddress}</p>
                     )}
                   </div>
                 </div>
-
-                <div className="grid grid-cols-6 gap-4 col-span-full lg:col-span-3"></div>
               </fieldset>
-            </div>
 
-            <div className="col-span-2 flex justify-center p-4">
-              {/* {pagenext === 1 && (
-                <button
-                  onClick={handlenext}
-                  className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                >
-                  Next
-                  <span class="material-symbols-outlined  relative top-2">
-                    navigate_next
-                  </span>
-                </button>
-              )} */}
-            </div>
+              <div className="flex justify-end ">
+                <div className="flex flex-col max-w-md space-y-4 divide-y sm:w-96 sm:p-10 divide-gray-700 dark:bg-gray-900 dark:text-gray-100">
+                  <h2 className="text-2xl font-semibold">Shipmant Charges</h2>
 
-            <div className="col-span-2 flex justify-center p-4">
-              {/* {pagenext === 2 && (
-                <button
-                  onClick={handlenext}
-                  className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                >
-                  <span class=" relative top-2 material-symbols-outlined">
-                    undo
-                  </span>
-                  Back
-                </button>
-              )} */}
+                  <div className="pt-4 space-y-2">
+                    <div className="flex justify-between">
+                      <span>Advance Amount</span>
+                      <span>{rupeeSymbol}100</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <div className="flex justify-between">
+                        <span>Delivery fee</span>
+                        <span class="material-symbols-outlined ml-2">info</span>
+                      </div>
+                    </div>
+                    <div className="space-y-6">
+                      <div className="flex justify-between">
+                        <span>Total</span>
+                        <span className="font-semibold">{rupeeSymbol}100</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button className=" bg-blue-600 w-full h-14 mt-10">
+                Pay & Submit
+              </button>
             </div>
           </div>
-          {/* page2 */}
-
-          {/* {pagenext === 2 && (
-            <div className="container ">
-              <div>
-                <h1 className="text-white ">courier details</h1>
-              </div>
-              <fieldset className=" p-6 rounded-md shadow-sm dark:bg-gray-900">
-                <div className="grid grid-cols-6 gap-4 col-span-full">
-                 
-                 
-                  <div className="col-span-full ">
-                    <label for="email" className="text-sm">
-                      Name
-                    </label>
-                    <input
-                      id="email"
-                      type="Name"
-                      placeholder="Name"
-                      name="toname"
-                      onChange={handlechangeinput}
-                      className="w-full rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900"
-                    />
-                    {errors.toname && (
-                      <p className="text-red-500">{errors.toname}</p>
-                    )}
-                  </div>
-                  <div className="col-span-full ">
-                    <label for="email" className="text-sm">
-                      Contact Number
-                    </label>
-                    <input
-                      id="email"
-                      type="number"
-                      placeholder="Mobile"
-                      name="tomobile"
-                      onChange={handlechangeinput}
-                      className="w-full rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900"
-                    />
-                    {errors.tomobile && (
-                      <p className="text-red-500">{errors.tomobile}</p>
-                    )}
-                  </div>
-                  <div className="col-span-full">
-                    <label for="bio" className="text-sm">
-                      Address
-                    </label>
-                    <textarea
-                      id="bio"
-                      placeholder="Type Here..."
-                      name="toaddress"
-                      onChange={handlechangeinput}
-                      className="w-full rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900"
-                    ></textarea>
-                    {errors.toaddress && (
-                      <p className="text-red-500">{errors.toaddress}</p>
-                    )}
-                  </div>
-                  
-                </div>
-
-                <div className="grid grid-cols-6 gap-4 col-span-full lg:col-span-3"></div>
-              </fieldset>
-            </div>
-          )} */}
-
-          <button className=" bg-blue-600 w-full h-14 mt-10">Submit</button>
         </div>
       </form>
 

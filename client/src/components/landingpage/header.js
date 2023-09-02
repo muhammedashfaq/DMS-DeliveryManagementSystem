@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { useUserContext } from "../../context/userContext";
+import { useUserContext } from "../../Helper/context/userContext";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { hideloading, showloading } from "../../redux/alertSlice";
+import { hideloading, showloading } from "../../Helper/redux/alertSlice";
 
 // import{setUserName} from  '../../context/userContext'
 

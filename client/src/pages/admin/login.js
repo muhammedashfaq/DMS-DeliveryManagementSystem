@@ -4,9 +4,9 @@ import { FaEnvelope, FaLock } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-import { adminloginvalidate } from "../api/validation";
+import { adminloginvalidate } from "../../Helper/Validations/validation";
 import { Alert } from "@mui/material";
-import { useUserContext } from "../../context/userContext";
+import { useUserContext } from "../../Helper/context/userContext";
 
 const Login = () => {
   const { setUserName } = useUserContext()

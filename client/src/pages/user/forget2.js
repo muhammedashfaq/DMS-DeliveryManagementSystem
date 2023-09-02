@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { forgetValidate } from "../api/validation";
+import { forgetValidate } from "../../Helper/Validations/validation";
 import { Alert } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import { hideloading, showloading } from "../../redux/alertSlice";
+import { hideloading, showloading } from "../../Helper/redux/alertSlice";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { BiSolidLock } from "react-icons/bi";

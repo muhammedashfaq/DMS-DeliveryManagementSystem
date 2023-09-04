@@ -8,6 +8,8 @@ const service = require("../models/servicesModel");
 const Razorpay = require("razorpay");
 const sharp = require("sharp");
 const shipmentModel = require("../models/shipmentModel");
+const shipmentupdates =require("../models/shipmetUpdatesModel")
+const ChatModel =require('../models/ChatModel')
 const cloudinary = require("cloudinary").v2;
 const {
   sendForgetymail,
@@ -413,6 +415,81 @@ const advancepaymentUpdate = async (req, res) => {
   }
 };
 
+const chatHistory =async(room,message,author)=>{
+    console.log('reach')
+  const roomexist =await ChatModel.findOne({chatRoom:room})
+
+
+    if(roomexist){
+        const id=roomexist._id
+        const chatUpdate = await Chat.findByIdAndUpdate(
+          id, 
+          {
+            $push: {
+              chathistory: {
+                author: author,
+                message: message,
+                time: new Date(),
+              },
+            },
+          },
+          { new: true }
+        );
+        
+      }else{
+        const savechat=new Chat({
+          chatRoom:room,
+          chathistory:[
+            {
+              author:author,
+              message:message,
+              time:new Date()
+            }
+          ]
+        })
+        await savechat.save()
+    
+      }
+    
+  
+
+}
+
+const trackshipment = async(req,res)=>{
+  try {
+
+    const {id}=req.body
+
+    const shipmentdetails = await shipmentModel.findOne({
+      shipment: { $elemMatch: { trackid: id } },
+    });
+    if(shipmentdetails){
+
+      const shipmentupdatedetails = await shipmentupdates.findOne({ TrackID: id })
+
+
+      res.status(200).send({message:"fetched", success:true, shipment:shipmentdetails,updates:shipmentupdatedetails })
+    }else{
+      res.status(200).send({message:"Invalid TrackID" ,success:false})
+
+    }
+    
+    
+    
+
+    
+
+
+
+
+  } catch (error) {
+    console.log(error);
+    res.status(200).send({message:"something went wrong " ,success:false})
+
+    
+  }
+}
+
 module.exports = {
   registerpage,
   loginpage,
@@ -426,4 +503,6 @@ module.exports = {
   getLocationData,
   bookshipment,
   advancepaymentUpdate,
+  chatHistory,
+  trackshipment
 };

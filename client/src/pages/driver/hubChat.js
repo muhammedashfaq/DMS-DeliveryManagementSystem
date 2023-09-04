@@ -1,18 +1,18 @@
 import React from "react";
 import Footer from "../../components/driver/footer";
 import Header from "../../components/driver/Header";
-import Body from "../../components/driver/body";
+import Chatbody from  "../../components/driver/chatBody"
 
-const Home = () => {
-
+const hubChat = () => {
   return (
+
     <div className="w-full h-full bg-slate-400">
       <Header />
-      <Body />
+      <Chatbody />
 
       <Footer />
     </div>
   );
 };
 
-export default Home;
+export default hubChat

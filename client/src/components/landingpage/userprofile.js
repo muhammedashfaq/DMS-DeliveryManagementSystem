@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
-import Header from "./header";
-import Footer from "./footer";
 import { useDispatch } from "react-redux";
 import { hideloading, showloading } from "../../Helper/redux/alertSlice";
 import axios from "axios";
 import { useUserContext } from "../../Helper/context/userContext";
 import { AddressModal } from "./addressModal";
+import ChatModal from "./ChatModal"
+import { SliderThumb } from "@mui/material";
 
 const Userprofile = () => {
+  const [trackid,settrackid]=useState("")
+  const[shipmentid,setshipmentid]=useState("")
+  const [hub,sethub]=useState("")
   const [showModal, setShowModal] = useState(false);
+  const [showchatModal, setShowchatModal] = useState(false);
+
   const { userName } = useUserContext();
   const [image, setImage] = useState(
     "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
@@ -93,9 +98,19 @@ const Userprofile = () => {
   const handleclose = () => {
     setShowModal(false);
   };
+  const handlechatclose = () => {
+    setShowchatModal(false);
+  };
+
+  const modaldata =(trackID,shipmentid,hub)=>{
+    setShowchatModal(true);
+    settrackid(trackID)
+    setshipmentid(shipmentid)
+    sethub(hub)
+
+  }
   return (
     <div>
-      <Header />
       {/* <div className=' h-screen bg-slate-600'> */}
       <div className="bg-gray-200">
         <div className="py-5 container mx-auto">
@@ -220,7 +235,7 @@ const Userprofile = () => {
 
       <div className="h-screen flex justify-center items-center">
 
-  <div className="w-5/6 h-5/6 rounded-xl border-sky-200 border-2 container  bg-slate-100">
+  <div className="w-5/6 h-5/6 rounded-xl  container  bg-slate-100">
         <h1 className="m-10 pt-4 font-semibold">HI, {userName} ;</h1>
     <div className="m-10">
       <span className="bg-slate-900 rounded-md p-2 text-white font-serif">Shipment From You</span>
@@ -233,9 +248,26 @@ const Userprofile = () => {
 
         <div key={index} className=" bg-slate-50   grid grid-cols-3 gap-4 items-center m-2 cursor-pointer hover:shadow-2xl  border-2 rounded-lg p-6">
           <div className=""><span className="font-bold font-mono">TO:</span> {shipment.shipment[0].toaddress}</div>
-          <div className=""><span className="font-bold font-mono">Your TrackID:</span> {shipment.shipment[0].trackid} 
+          <div className=""><span className="font-bold font-mono">Your TrackID:</span> {shipment.shipment[0].trackid} {shipment.fromhub}
           
-         <h1> <a className="text-blue-800 underline font-serif" href="#">track</a></h1> </div>
+          <div className="flex "> 
+
+
+         <span> <a className="text-blue-800 underline font-serif mr-2" href="#">track</a></span>
+         
+         
+          {shipment.shipment[0].shipmentStatus !== "Deliverd"   &&  shipment.shipment[0].shipmentStatus !== "Pending" ? <span><a  onClick={()=>modaldata(shipment.shipment[0].trackid ,shipment._id ,shipment.fromhub)} className="text-blue-800 underline"><span class="material-symbols-outlined">
+
+
+chat
+</span></a></span> :"" }
+
+                 <ChatModal    onClose={handlechatclose}
+                          visible={showchatModal}  data={{trackID:trackid ,shipmentId: shipmentid ,hub:hub}} />
+         
+          </div>
+          </div>
+         
           <div className=""><span className="font-bold font-mono">ShipmentStatus:</span> {shipment.shipment[0].shipmentStatus}</div>
         
         </div>
@@ -248,7 +280,7 @@ const Userprofile = () => {
                         
       {/* </div> */}
 
-      <Footer />
+
     </div>
   );
 };

@@ -16,7 +16,7 @@ const TransistUpdateModal = ({ visible, onClose, data }) => {
     setFormdata((preformdata) => ({
       ...preformdata,
       [name]: value,
-      trackid: trackidInput,
+      trackid: data,
     }));
   };
 

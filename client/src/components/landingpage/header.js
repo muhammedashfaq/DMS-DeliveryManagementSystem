@@ -45,36 +45,9 @@ const Header = () => {
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
-  const [selectedCity, setSelectedCity] = useState("");
 
 
 
-
-  useEffect(() => {
-    const savedCity = localStorage.getItem("selectedCity");
-  
-    if (savedCity) {
-      setSelectedCity(savedCity);
-      
-
-    }
-  }, []);
-
-  
-  const reloadPageWithCity = (newCity) => {
-  setSelectedCity(newCity);
-
-  localStorage.setItem("selectedCity", newCity);
-  window.location.reload();
-
-};
-
-  useEffect(() => {
-    
-    localStorage.setItem("selectedCity", selectedCity);
-
-  }, [selectedCity]);
-  
 
   const guestnavigation = [
     // { name: 'Dashboard', href: '#', current: true },
@@ -84,7 +57,6 @@ const Header = () => {
   ];
   const usernavigation = [
     { name: "Home", href: "/" },
-    { name: "Track", href: "#" },
     { name: "Book Shipment", href:"/book_shipment" },
   ];
 
@@ -170,6 +142,9 @@ const Header = () => {
                         {item.name}
                       </a>
                     ))}
+
+
+                    
               </div>
               <div className="relative">
                 <button
@@ -311,3 +286,6 @@ const Header = () => {
 };
 
 export default Header;
+
+
+

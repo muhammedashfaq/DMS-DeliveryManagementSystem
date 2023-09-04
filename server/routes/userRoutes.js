@@ -23,5 +23,6 @@ router.post("/add_address", authmiddleware, userController.addAddress);
 router.get("/getLocationData", userController.getLocationData);
 router.post("/bookshipment", authmiddleware, userController.bookshipment);
 router.post("/advancepaymentUpdate", userController.advancepaymentUpdate);
+router.post("/trackshipment", userController.trackshipment);
 
 module.exports = router;

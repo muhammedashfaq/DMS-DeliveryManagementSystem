@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Header from "./header";
-import Footer from "./footer";
+// import Header from "./header";
+// import Footer from "./footer";
 import axios from "axios";
 import { bookshipmentvalidation } from "../../Helper/Validations/validation";
 import { toast } from "react-hot-toast";
@@ -151,7 +151,6 @@ const BookShipment = () => {
 
   return (
     <div>
-      <Header />
 
       <div className="px-8 py-2 dark:bg-gray-900 dark:text-gray-100">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-auto container md:justify-between py-2">
@@ -471,9 +470,9 @@ const BookShipment = () => {
         </div>
       </form>
 
-      <Footer />
     </div>
   );
 };
 
 export default BookShipment;
+  

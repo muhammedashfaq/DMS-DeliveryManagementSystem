@@ -16,14 +16,13 @@ const UpdateModal = ({ visible, onClose, data }) => {
     setFormdata((preformdata) => ({
       ...preformdata,
       [name]: value,
-      trackid: trackidInput,
+      trackid: data,
     }));
   };
   const updatestatus = async (e) => {
     try {
       e.preventDefault();
 
-      console.log(trackidInput);
 
       const response = await axios.post("/hub/updateShipmentStatus", formdata);
 

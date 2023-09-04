@@ -30,7 +30,7 @@ export const ProtectedRoutesdriver = (props) => {
     if(localStorage.getItem('drivertoken')){
         return props.children
     }else{
-        return <Navigate to='/dlogin' />
+        return <Navigate to='/hublogin' />
     }
 
   

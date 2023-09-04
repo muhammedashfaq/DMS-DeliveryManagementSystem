@@ -3,7 +3,7 @@ function generateUniqueId() {
   const randomNumber = Math.floor(10000 + Math.random() * 90000);
   return "HL" + randomNumber;
 }
-const driverSchema = new mongoose.Schema(
+const hubSchema = new mongoose.Schema(
   {
     employeeId: { type: String, default: generateUniqueId },
     fname: {
@@ -68,4 +68,4 @@ const driverSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Driver", driverSchema);
+module.exports = mongoose.model("Hub", hubSchema);

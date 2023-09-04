@@ -18,7 +18,7 @@ export const PublicRoutesAdmin = (props) => {
 }
 export const PublicRoutesdriver = (props) => {
     if(localStorage.getItem('drivertoken')){
-        return <Navigate to='/driverhome' />
+        return <Navigate to='/hubhome' />
     }else{
         return props.children 
     }

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import axios from 'axios'
-import Footer from '../../../components/user/footer'
-import Header from '../../../components/user/Header'
+import Footer from '../../../components/driver/footer'
+import Header from '../../../components/xxxxx/Header'
 const Home = () => {
 
   return (

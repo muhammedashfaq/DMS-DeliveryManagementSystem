@@ -1,4 +1,4 @@
-const Driver = require("../models/driverModels");
+const Hub = require("../models/hubModels");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { securePassword } = require("../config/nodemailer");
@@ -10,14 +10,14 @@ const logindriver = async (req, res) => {
     if (!req.body.employeeid || !req.body.password) {
       res.status(200).send({ message: "field required", success: false });
     }
-    const idexist = await Driver.findOne({ employeeId: req.body.employeeid });
+    const idexist = await Hub.findOne({ employeeId: req.body.employeeid });
     const drivername = idexist.fname + " " + idexist.lname;
     if (idexist) {
       if (idexist.activestatus === "Active") {
         if (idexist.password === "") {
           const password = req.body.password;
           const passwordHash = await securePassword(password);
-          await Driver.updateOne(
+          await Hub.updateOne(
             { employeeId: req.body.employeeid },
             { $set: { password: passwordHash } }
           );
@@ -77,7 +77,7 @@ const logindriver = async (req, res) => {
 const driverdetails = async (req, res) => {
   try {
     const id = req.driverId;
-    const user = await Driver.findOne({ _id: id });
+    const user = await Hub.findOne({ _id: id });
     const City = user.city;
 
     if (!user) {
@@ -97,7 +97,7 @@ const driverdetails = async (req, res) => {
 const getdashboardjobs = async (req, res) => {
   try {
     const id = req.driverId;
-    const hub = await Driver.findById({ _id: id });
+    const hub = await Hub.findById({ _id: id });
 
     if (hub) {
       const shipmentdata = await shipmentModel.find({
@@ -129,7 +129,8 @@ const getdashboardjobs = async (req, res) => {
 
 const updateShipmentStatus = async (req, res) => {
   try {
-    console.log(req.body, "body");
+
+    console.log(req.body,"body");
 
     const { trackid, status, comments } = req.body;
 

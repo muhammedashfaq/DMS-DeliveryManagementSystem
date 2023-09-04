@@ -46,7 +46,7 @@ const Login = () => {
         console.log('res',response);
         const name = response.data.name;
         setUserName(name);
-        navigate("/driverhome");
+        navigate("/hubhome");
         
       } else {
         toast.error(response.data.message);
@@ -72,7 +72,6 @@ const Login = () => {
         <h1 className="text-center font-bold text-2xl m-2">Login</h1>
 
         <form onSubmit={handleSubmit}>
-          {/* Employee ID Input */}
           <div className=" flex justify-center relative">
             <input
               className="pr-10 bg-gray-200 my-2 w-72 h-10 rounded-sm"
@@ -89,7 +88,6 @@ const Login = () => {
             <span className="text-red-600 ml-11">{errors.employeeid}</span>
           )}
 
-          {/* Password Input */}
           <div className=" flex justify-center relative">
             <input
               className="pr-10 bg-gray-200 my-2 w-72 h-10 rounded-sm"

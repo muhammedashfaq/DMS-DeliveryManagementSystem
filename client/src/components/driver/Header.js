@@ -37,19 +37,19 @@ const Header = () => {
 	const menu=[
 		{
 			name:"JobSheet",
-			path:"#	",
+			path:"/hubhome",
 		
 		},
 		{
 			
 			name:"Track -D",
-			path:"#",
+			path:"/hubtrack",
 		
 		
 		},
 		{
 			name:"Chats",
-			path:"#",
+			path:"/chatbody",
 		
 		},
 
@@ -62,7 +62,7 @@ const Header = () => {
 	<div className="container flex justify-between h-16 mx-auto">
     <img src='./images/adminlogin/logo.png' />
 
-		<ul className="items-stretch hidden space-x-1 md:flex  ">
+		<ul className="items-stretch hidden space-x-1 md:flex  mr-10 ">
 
 			{menu?.map((menuitem)=>{
 				const isActive = location.pathname===menuitem.path
@@ -80,14 +80,17 @@ const Header = () => {
                     
                     
                     dispatch(showloading())
-                    navigate('/dlogin')
+                    navigate('/hublogin')
                     dispatch(hideloading())
                     
                     
                     
                     }}>Logout</a>
 			</li>
-					{name}
+			<li className='mt-6 border-yellow-500 border-b-4 rounded-sm' >
+
+					HUB: {name}
+			</li>
 		</ul>
 		<button className="flex justify-end p-4 md:hidden">
 			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">

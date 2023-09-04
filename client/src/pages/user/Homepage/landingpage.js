@@ -1,7 +1,7 @@
-import Header from "../components/landingpage/header";
-import Footer from "../components/landingpage/footer";
-import Banner from "../components/landingpage/banner";
-import Body from "../components/landingpage/body";
+import Header from "../../../components/landingpage/header";
+import Footer from "../../../components/landingpage/footer";
+import Banner from "../../../components/landingpage/banner";
+import Body from "../../../components/landingpage/body";
 import axios from "axios";
 import { useEffect } from "react";
 // import {Modal} from '../components/landingpage/modal'

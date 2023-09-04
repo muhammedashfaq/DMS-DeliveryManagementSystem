@@ -2,7 +2,7 @@ const express = require("express");
 const User = require("../models/UserModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const Driver = require("../models/driverModels");
+const Hub = require("../models/hubModels");
 const cloudinary = require("cloudinary").v2;
 const sharp = require("sharp");
 const service = require("../models/servicesModel");
@@ -158,7 +158,7 @@ const addDriver = async (req, res) => {
 
     const cdurl = [data.secure_url];
 
-    const saveData = new Driver({
+    const saveData = new hub({
       fname: req.body.fname,
       lname: req.body.lname,
       email: req.body.email,
@@ -201,7 +201,7 @@ const getcitydetails = async (req, res) => {
 };
 const driverlistLoad = async (req, res) => {
   try {
-    const driverdata = await Driver.find({});
+    const driverdata = await Hub.find({});
     res
       .status(200)
       .send({ message: "fetched", success: true, data: driverdata });
@@ -215,7 +215,7 @@ const driverProfile = async (req, res) => {
   try {
     const id = req.params.id;
 
-    const driver = await Driver.findById({ _id: id });
+    const driver = await Hub.findById({ _id: id });
 
     if (driver) {
       res
@@ -236,7 +236,7 @@ const driverstatusUpdate = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
 
-    const updatedriver = await Driver.findByIdAndUpdate(
+    const updatedriver = await hub.findByIdAndUpdate(
       { _id: id },
       { $set: { activestatus: status } }
     );

@@ -13,18 +13,22 @@ import {
   PublicRoutesdriver,
 } from "./components/Routes/publicRoutes";
 
+import Landingpage from "./pages/user/Homepage/landingpage";
 import Login from "./pages/user/login";
-import Landingpage from "./pages/landingpage";
 import Register from "./pages/user/register";
 import Otp from "./pages/user/otp";
 import Forget from "./pages/user/forget";
-import Dlogin from "./pages/driver/login";
+
+import Hublogin from "./pages/driver/login";
 import Adminlogin from "./pages/admin/login";
 import AdminHome from "./pages/admin/Home/Home";
-import DriverHome from "./pages/driver/home";
-import UserProfile from "./components/landingpage/userprofile";
-import BookShipment from "./components/landingpage/bookShipment";
+import HubHome from "./pages/driver/home";
+import Hubtrack from "./pages/driver/hubTrack";
+import ChatBody from "./pages/driver/hubChat";
+import UserProfile from "./pages/user/UserProfile/userProfile";
+import BookShipment from "./pages/user/Bookshipment/BookShipment";
 import Reset from "./pages/user/forget2";
+import Test from "./components/test/Test";
 
 const AppRoutes = () => {
   const { loading } = useSelector((state) => state.alerts);
@@ -42,6 +46,14 @@ const AppRoutes = () => {
       <Toaster position="bottom-center" reverseOrder={false} />
       <Routes>
         {/* USER_SIDE ----------------------------------------------------------------------- */}
+
+        <Route
+          path="/test"
+          element={
+              <Test />
+          }
+        />
+        
 
         <Route
           path="/register"
@@ -131,19 +143,36 @@ const AppRoutes = () => {
         {/* DRIVER_SIDE ----------------------------------------------------------------*/}
 
         <Route
-          path="/dlogin"
+          path="/hublogin"
           element={
             <PublicRoutesdriver>
-              <Dlogin />
+              <Hublogin />
             </PublicRoutesdriver>
           }
         />
 
         <Route
-          path="/driverhome"
+          path="/hubhome"
           element={
             <ProtectedRoutesdriver>
-              <DriverHome />
+              <HubHome />
+            </ProtectedRoutesdriver>
+          }
+        />
+             <Route
+          path="/chatbody"
+          element={
+            <ProtectedRoutesdriver>
+              <ChatBody />
+            </ProtectedRoutesdriver>
+          }
+        />
+
+<Route
+          path="/hubtrack"
+          element={
+            <ProtectedRoutesdriver>
+              <Hubtrack />
             </ProtectedRoutesdriver>
           }
         />

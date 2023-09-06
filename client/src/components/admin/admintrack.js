@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 
-const Hubtrack = () => {
+const   Admintrack = () => {
   const [trackDetails, setTrackDetails] = useState(false);
 
   const [trackinput, settrackininput] = useState("");
@@ -31,7 +31,7 @@ const Hubtrack = () => {
   };
 
   return (
-    <div className="h-screen">
+    <div className="">
       <div style={{ maxWidth: "700px", margin: "100px auto" }}>
         <form className="flex items-center">
           <label htmlFor="voice-search" className="sr-only">
@@ -58,7 +58,7 @@ const Hubtrack = () => {
               id="voice-search"
               value={trackinput}
               onChange={(e) => settrackininput(e.target.value)}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 rounded-sm focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder=" Track ID......."
               required
             />
@@ -66,7 +66,7 @@ const Hubtrack = () => {
           <button
             type="submit"
             onClick={trackshipment}
-            className="inline-flex items-center py-2.5 px-3 ml-2 text-sm font-medium text-white bg-blue-700 border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            className="inline-flex items-center py-2.5 px-3 ml-2 text-sm font-medium text-white   rounded-md  hover:border  hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
             <svg
               aria-hidden="true"
@@ -91,7 +91,7 @@ const Hubtrack = () => {
       {trackDetails && (
         <div className="  ">
           <div
-            className=" bg-white border rounded-lg overflow-hidden w-full "
+            className=" bg-gray-700 border rounded-lg overflow-hidden w-full "
             style={{
               backgroundImage: "url(./images/landingpage/track.jpg)",
             }}
@@ -101,54 +101,54 @@ const Hubtrack = () => {
             </h1>
             <div className="flex justify-evenly p-6 ">
               <div className="mb-4 ">
-                <p className="text-gray-600 text-lg font-semibold mb-2">
+                <p className="text-white text-lg font-semibold mb-2">
                   Track ID:
                 </p>
-                <p className="text-gray-800 text-xl  ">{updates?.TrackID}</p>
+                <p className="text-white text-xl  ">{updates?.TrackID}</p>
               </div>
 
               <div className="mb-4">
-                <p className="text-gray-600 text-lg font-semibold mb-2">
-                PickUp Date:
+                <p className="text-white text-lg font-semibold mb-2">
+                  PickUp Date:
                 </p>
-                <p className="text-gray-800 text-xl ">{updates?.pickupdate}</p>
+                <p className="text-white text-xl ">{updates?.pickupdate}</p>
+              </div>
+
+              <div className="mb-4">
+                <p className="text-white text-lg font-semibold mb-2">
+                  Delivered Date:
+                </p>
+                <p className="text-white text-xl ">{updates?.deliverydate}</p>
               </div>
               <div className="mb-4">
-                <p className="text-gray-600 text-lg font-semibold mb-2">
-                Delivered Date:
-                </p>
-                <p className="text-gray-800 text-xl ">{updates?.deliverydate}</p>
-              </div>
-              <div className="mb-4">
-                <p className="text-gray-600 text-lg  font-semibold mb-2">
+                <p className="text-white text-lg font-semibold mb-2">
                   From Address:
                 </p>
-                <p className="text-gray-800">{shipmentdetails.fromaddress}</p>
+                <p className="text-white text-xl ">{shipmentdetails?.fromaddress}</p>
               </div>
               <div className="mb-4">
-                <p className="text-gray-600 text-lg  font-semibold mb-2">
-                  To Address:
+                <p className="text-white text-lg  font-semibold mb-2">
+                 To Address:
                 </p>
-                <p className="text-gray-800">{shipmentdetails?.toaddress}</p>
+                <p className="text-white">{shipmentdetails?.toaddress} </p>
               </div>
 
               <div className="mb-4">
-                <p className= "  text-gray-600 text-lg font-semibold mb-2">
+                <p className="text-white text-lg font-semibold mb-2">
                   Shipment Status:
                 </p>
                 <p className="text-indigo-600 font-semibold">{updates?.status}</p>
               </div>
             </div>
-
             <div className="w-full  border-gray-200 mt-4 border-t-4 rounded-md h-28">
               {/* Timeline */}
               <div className="p-4">
-                <div className="flex items-center justify-evenly space-x-4">
+                <div className="flex items-center justify-evenly space-x-4 ">
                   <div className="relative ">
-                    <div className="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center">
+                    <div className="w-8 h-8  bg-indigo-600 text-white rounded-full flex items-center justify-center">
                       1
                     </div>
-                    <span className=" mt-2 absolute top-full left-1/2 transform -translate-x-1/2 text-xs text-gray-600">
+                    <span className=" mt-2 absolute top-full left-1/2 transform -translate-x-1/2 text-xs text-white">
                       Driver Asigned
                     </span>
                   </div>
@@ -157,7 +157,7 @@ const Hubtrack = () => {
                     <div className="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center">
                       2
                     </div>
-                    <span className=" mt-2 absolute top-full left-1/2 transform -translate-x-1/2 text-xs text-gray-600">
+                    <span className=" mt-2 absolute top-full left-1/2 transform -translate-x-1/2 text-xs text-white">
                       Shipment Picked
                     </span>
                   </div>
@@ -165,7 +165,7 @@ const Hubtrack = () => {
                     <div className="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center">
                       2
                     </div>
-                    <span className="mt-2 absolute top-full left-1/2 transform -translate-x-1/2 text-xs text-gray-600">
+                    <span className=" mt-2 absolute top-full left-1/2 transform -translate-x-1/2 text-xs text-white">
                       Hub Recived
                     </span>
                   </div>
@@ -173,16 +173,16 @@ const Hubtrack = () => {
                     <div className="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center">
                       2
                     </div>
-                    <span className="mt-2 absolute top-full left-1/2 transform -translate-x-1/2 text-xs text-gray-600">
+                    <span className=" mt-2 absolute top-full left-1/2 transform -translate-x-1/2 text-xs text-white">
                       Out of Delivery
                     </span>
                   </div>
 
-                  <div className="relative">
+                  <div className="relative ">
                     <div className="w-8 h-8 bg-gray-300 text-gray-800 rounded-full flex items-center justify-center">
                       3
                     </div>
-                    <span className="mt-2 absolute top-full left-1/2 transform -translate-x-1/2 text-xs text-gray-600">
+                    <span className=" mt-2 absolute top-full left-1/2 transform -translate-x-1/2 text-xs text-white">
                       Shipment Delivered
                     </span>
                   </div>
@@ -197,4 +197,4 @@ const Hubtrack = () => {
   );
 };
 
-export default Hubtrack;
+export default Admintrack;

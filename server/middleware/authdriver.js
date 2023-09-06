@@ -12,7 +12,8 @@ module.exports = async (req, res, next) => {
       if (err) {
         return res.status(401).send({ message: "Auth failed", success: false });
       } else {
-        (req.driverId = decoded.id), console.log("reached", req.driverId);
+        req.driverId = decoded.id,
+        
 
         next();
       }

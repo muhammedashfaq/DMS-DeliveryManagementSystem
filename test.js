@@ -204,3 +204,181 @@ useEffect(() => {
   </div>
   );
 }
+
+
+
+
+function gcdOfStrings(str1, str2) {
+  if (str1 + str2 !== str2 + str1) {
+    return '';
+  }
+  
+  const gcd = (a, b) => (b === 0 ? a : gcd(b, a % b));
+  const length = gcd(str1.length, str2.length);
+  
+  return str1.slice(0, length);
+}
+
+const str1 = "ABCABC";
+const str2 = "ABC";
+const result = gcdOfStrings(str1, str2);
+console.log(result); // Output: "ABC"
+
+
+function gcdOfStrings(str1, str2) {
+  if (str1 + str2 !== str2 + str1) {
+    return '';
+  }
+  
+  const gcd = (a, b) => (b === 0 ? a : gcd(b, a % b));
+  const length = gcd(str1.length, str2.length);
+  
+  return str1.slice(0, length);
+}
+
+const str1 = "ABCABC";
+const str2 = "ABC";
+const result = gcdOfStrings(str1, str2);
+console.log(result); // Output: "ABC"
+
+
+
+function findLargestDivisor(str1, str2) {
+  let result = '';
+  
+  for (let i = 0; i < str1.length; i++) {
+    const divisor = str1.substring(0, i + 1);
+    if (str1.split(divisor).join('') === '' && str2.split(divisor).join('') === '') {
+      result = divisor;
+    }
+  }
+  
+  return result;
+}
+
+const str1 = "ABCABC";
+const str2 = "ABC";
+const largestDivisor = findLargestDivisor(str1, str2);
+console.log(largestDivisor); // Output: "ABC"
+
+
+// Define a function to find the greatest common divisor (GCD) of two numbers using the Euclidean algorithm.
+function gcd(a, b) {
+  if (b === 0) {
+    return a; // If b is zero, a is the GCD.
+  } else {
+    return gcd(b, a % b); // Otherwise, recursively call gcd with the remainder of a divided by b.
+  }
+}
+
+// Function to find the largest string x that divides both str1 and str2.
+function findLargestDivisor(str1, str2) {
+  // Check if str1 + str2 is equal to str2 + str1.
+  if (str1 + str2 !== str2 + str1) {
+    return ''; // If they are not equal, there is no common divisor.
+  }
+  
+  // Calculate the GCD of the lengths of str1 and str2.
+  const length = gcd(str1.length, str2.length);
+  
+  // Return a slice of str1 with a length equal to the GCD.
+  return str1.slice(0, length);
+}
+
+// Example usage:
+const str1 = "ABCABC";
+const str2 = "ABC";
+const largestDivisor = findLargestDivisor(str1, str2);
+console.log(largestDivisor); // Output: "ABC"
+
+
+
+
+function distributeCandies(candies, num_people) {
+  const result = new Array(num_people).fill(0);
+  let givenCandies = 1;
+
+  for (let i = 0; candies > 0; i++) {
+    if (candies >= givenCandies) {
+      result[i % num_people] += givenCandies;
+      candies -= givenCandies;
+    } else {
+      result[i % num_people] += candies;
+      candies = 0;
+    }
+
+    givenCandies++;
+  }
+
+  return result;
+}
+const candies = 7;
+const num_people = 4;
+const distribution = distributeCandies(candies, num_people);
+console.log(distribution); // Output: [1, 2, 3, 1]
+
+
+
+function distributeCandies(candies, num_people) {
+  const result = new Array(num_people).fill(0);
+  let currentCandies = 1;
+
+  for (let i = 0; candies > 0; i++) {
+    result[i % num_people] += Math.min(candies, currentCandies);
+    candies -= currentCandies;
+    currentCandies++;
+  }
+
+  return result;
+}
+
+
+function distributeCandies(candies, num_people) {
+  const result = new Array(num_people).fill(0);
+  let givenCandies = 1;
+  let currentIndex = 0;
+
+  while (candies > 0) {
+    if (candies >= givenCandies) {
+      result[currentIndex] += givenCandies;
+      candies -= givenCandies;
+    } else {
+      result[currentIndex] += candies;
+      candies = 0;
+    }
+
+    currentIndex = (currentIndex + 1) % num_people;
+    givenCandies++;
+
+    // If we reach the last person, go back to the first person
+    if (currentIndex === 0) {
+      currentIndex = 0;
+    }
+  }
+
+  return result;
+}
+
+
+function distributeCandies(candies, num_people) {
+  const result = [];
+  for (let i = 0; i < num_people; i++) {
+    result[i] = 0;
+  }
+  
+  let givenCandies = 1;
+  
+  for (let i = 0; candies > 0; i++) {
+    if (candies >= givenCandies) {
+      result[i % num_people] += givenCandies;
+      candies -= givenCandies;
+    } else {
+      result[i % num_people] += candies;
+      candies = 0;
+    }
+    
+    givenCandies++;
+  }
+  
+  return result;
+}

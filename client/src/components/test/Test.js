@@ -1,67 +1,48 @@
-import React, { useState } from 'react';
-import ProgressBar from './ProgressBar';
-import ContentSection from './ContentSection';
+import React from 'react'
 
-function App() {
-  const [progress, setProgress] = useState(0);
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
 
-  const handleStepClick = (stepNumber) => {
-    const stepProgress = (stepNumber - 1) * 25;
-    setProgress(stepProgress);
-  };
-
+const Test = () => {
   return (
-    <div className="container mx-auto">
-      <h1 className="text-3xl font-semibold text-center my-8 uppercase">Our Process</h1>
-      <div className="process-wrapper">
-        <ProgressBar progress={progress} />
-        <ul id="progress-bar-container">
-          <li className="step step01 active" onClick={() => handleStepClick(1)}>
-            <div className="step-inner">HOME WORK</div>
-          </li>
-          <li className="step step02" onClick={() => handleStepClick(2)}>
-            <div className="step-inner">RESPONSIVE PART</div>
-          </li>
-          <li className="step step03" onClick={() => handleStepClick(3)}>
-            <div className="step-inner">Creative CREATIONS</div>
-          </li>
-          <li className="step step04" onClick={() => handleStepClick(4)}>
-            <div className="step-inner">TESTIMONIALS PART</div>
-          </li>
-          <li className="step step05" onClick={() => handleStepClick(5)}>
-            <div className="step-inner">OUR LOCATIONS</div>
-          </li>
-        </ul>
+    <div>
 
-        <div id="line">
-          <div id="line-progress" style={{ width: progress + '%' }}></div>
-        </div>
-      </div>
+<div className="grid max-w-screen-xl grid-cols-1 gap-8 px-8 py-16 mx-auto rounded-lg md:grid-cols-2 md:px-12 lg:px-16 xl:px-32 dark:bg-gray-800 dark:text-gray-100">
+	<div className="flex flex-col justify-between">
+		<div className="space-y-2">
+			<h2 className="text-4xl font-bold leadi lg:text-5xl">Let's talk!</h2>
+			<div className="dark:text-gray-400">Vivamus in nisl metus? Phasellus.</div>
+		</div>
+		<img src="assets/svg/doodle.svg" alt="" className="p-6 h-52 md:h-64" />
+	</div>
+	<form novalidate="" className="space-y-6">
+		<div>
+			<label for="name" className="text-sm">Full name</label>
+			<input id="name" type="text" placeholder="" className="w-full p-3 rounded dark:bg-gray-800" />
+		</div>
+		<div>
+			<label for="email" className="text-sm">Email</label>
+			<input id="email" type="email" className="w-full p-3 rounded dark:bg-gray-800" />
+		</div>
+		<div>
+			<label for="message" className="text-sm">Message</label>
+			<textarea id="message" rows="3" className="w-full p-3 rounded dark:bg-gray-800"></textarea>
+		</div>
+		<button type="submit" className="w-full p-3 text-sm font-bold tracki uppercase rounded dark:bg-violet-400 dark:text-gray-900">Send Message</button>
+	</form>
+</div>
 
-      <div id="progress-content-section">
-        <ContentSection
-          title="HOME SECTION"
-          content="Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
-        />
-        <ContentSection
-          title="GALLERY SECTION"
-          content="Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
-        />
-        <ContentSection
-          title="Creative CREATIONS"
-          content="Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
-        />
-        <ContentSection
-          title="TESTIMONIALS NOW"
-          content="Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
-        />
-        <ContentSection
-          title="OUR LOCATIONS"
-          content="Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
-        />
-      </div>
+
+
+
+  <Popup trigger={<button> Trigger</button>} position="right center">
+    <div>Popup content here !! jfhksgkg</div>
+  </Popup>
+
     </div>
-  );
+  )	
 }
 
-export default App;
+export default Test
+
+

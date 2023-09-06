@@ -59,7 +59,9 @@ const adminLogin = async (req, res) => {
 
 const admindetails = async (req, res) => {
   try {
-    const user = await User.findOne({ _id: req.body.userId });
+
+    const id= req.adminId
+    const user = await User.findOne({ _id:id });
     if (!user) {
       return res
         .status(200)

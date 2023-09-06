@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
-// import Header from "./header";
-// import Footer from "./footer";
 import axios from "axios";
 import { bookshipmentvalidation } from "../../Helper/Validations/validation";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { loadScript } from "https://checkout.razorpay.com/v1/checkout.js";
+import { userRequest } from "../../Helper/interceptor/axois";
 
-// import {dotenv} from 'dotenv';
-// dotenv.config();
+// import { loadScript } from "https://checkout.razorpay.com/v1/checkout.js";
 
 const BookShipment = () => {
   const rupeeSymbol = "\u20B9";
@@ -17,8 +14,6 @@ const BookShipment = () => {
   const [toselectedCity, settoSelectedCity] = useState("");
   const [selectedPlace, setSelectedPlace] = useState("");
   const [toselectedPlace, settoSelectedPlace] = useState("");
-
-  const [pagenext, setPageNext] = useState(1);
   const [fetchedCity, setfetchedCity] = useState([]);
   const [errors, setErrors] = useState([]);
   const [formdata, setformdata] = useState({
@@ -130,19 +125,41 @@ const BookShipment = () => {
     }
   };
 
+  // const getData = async (req, res) => {
+  //   try {
+  //     const response = await axios.get("/getLocationData");
+  //     if (response.data.success) {
+  //       toast.success(response.data.message);
+  //       const city = response.data.data;
+  //       setfetchedCity(city);
+  //     } else {
+  //       toast.error(response.data.message);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
   const getData = async (req, res) => {
-    try {
-      const response = await axios.get("/getLocationData");
-      if (response.data.success) {
-        toast.success(response.data.message);
-        const city = response.data.data;
-        setfetchedCity(city);
-      } else {
-        toast.error(response.data.message);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    userRequest({
+      url: "/getLocationData",
+      method: "get",
+    })
+      .then((response) => {
+        if (response.data.success) {
+          toast.success(response.data.message);
+          const city = response.data.data;
+          setfetchedCity(city);
+        } else {
+          toast.error(response.data.message);
+        }
+      })
+      .catch((err) => {
+        toast.error("something went wrong");
+        console.log(err);
+        localStorage.removeItem("token");
+        navigate("/login");
+      });
   };
 
   useEffect(() => {
@@ -151,7 +168,6 @@ const BookShipment = () => {
 
   return (
     <div>
-
       <div className="px-8 py-2 dark:bg-gray-900 dark:text-gray-100">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-auto container md:justify-between py-2">
           <div className="col-span-1 md:col-span-1 lg:col-span-1 grid grid-cols-3 gap-4 m-6">
@@ -166,16 +182,79 @@ const BookShipment = () => {
             ))}
           </div>
 
-          <div className=" flex justify-between col-span-1 md:col-span-1 lg:col-span-2 border-l-2 border-l-slate-500  bg-gradient-to-r from-gray-900  overflow-hidden">
+          <div className=" flex justify-between items-center col-span-1 md:col-span-1 lg:col-span-2 border-l-2 border-l-slate-500  bg-gradient-to-r from-gray-900  overflow-hidden">
             <div>
               <span className="border-yellow-600 border-b-2 py-2 ml-10">
-                Weight-related details{" "}
+                Weight & fare related details{" "}
               </span>{" "}
-              <button>
-                <span class="material-symbols-outlined ml-2">info</span>
-              </button>
+              <div className="w-auto h-auto m-4">
+                <ul className=" leading-6">
+                  <li className="flex items-center space-x-2   ">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                      className="w-5 h-5 fill-current dark:text-violet-400"
+                    >
+                      <path d="M426.072,86.928A238.75,238.75,0,0,0,88.428,424.572,238.75,238.75,0,0,0,426.072,86.928ZM257.25,462.5c-114,0-206.75-92.748-206.75-206.75S143.248,49,257.25,49,464,141.748,464,255.75,371.252,462.5,257.25,462.5Z"></path>
+                      <polygon points="221.27 305.808 147.857 232.396 125.23 255.023 221.27 351.063 388.77 183.564 366.142 160.937 221.27 305.808"></polygon>
+                    </svg>
+                    <span>
+                      Each Booking requires an advance payment of {rupeeSymbol}
+                      100.
+                    </span>
+                  </li>
+                  <li className="flex items-center space-x-2  ">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                      className="w-5 h-5 fill-current dark:text-violet-400"
+                    >
+                      <path d="M426.072,86.928A238.75,238.75,0,0,0,88.428,424.572,238.75,238.75,0,0,0,426.072,86.928ZM257.25,462.5c-114,0-206.75-92.748-206.75-206.75S143.248,49,257.25,49,464,141.748,464,255.75,371.252,462.5,257.25,462.5Z"></path>
+                      <polygon points="221.27 305.808 147.857 232.396 125.23 255.023 221.27 351.063 388.77 183.564 366.142 160.937 221.27 305.808"></polygon>
+                    </svg>
+                    <span>The advance payment is non-refundable.</span>
+                  </li>{" "}
+                  <li className="flex items-center space-x-2 ">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                      className="w-5 h-5 fill-current dark:text-violet-400"
+                    >
+                      <path d="M426.072,86.928A238.75,238.75,0,0,0,88.428,424.572,238.75,238.75,0,0,0,426.072,86.928ZM257.25,462.5c-114,0-206.75-92.748-206.75-206.75S143.248,49,257.25,49,464,141.748,464,255.75,371.252,462.5,257.25,462.5Z"></path>
+                      <polygon points="221.27 305.808 147.857 232.396 125.23 255.023 221.27 351.063 388.77 183.564 366.142 160.937 221.27 305.808"></polygon>
+                    </svg>
+                    <span>
+                      Shipment fare will be calculated at the time of pickup.
+                    </span>
+                  </li>
+                  <li className="flex items-center space-x-2 ">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                      className="w-5 h-5 fill-current dark:text-violet-400"
+                    >
+                      <path d="M426.072,86.928A238.75,238.75,0,0,0,88.428,424.572,238.75,238.75,0,0,0,426.072,86.928ZM257.25,462.5c-114,0-206.75-92.748-206.75-206.75S143.248,49,257.25,49,464,141.748,464,255.75,371.252,462.5,257.25,462.5Z"></path>
+                      <polygon points="221.27 305.808 147.857 232.396 125.23 255.023 221.27 351.063 388.77 183.564 366.142 160.937 221.27 305.808"></polygon>
+                    </svg>
+                    <span>
+                      Additional charges may apply for shipments with special
+                      requirements
+                    </span>
+                  </li>
+                </ul>
+              </div>
             </div>
-            <div className="w-1/2 h-40 opacity-60 "></div>
+
+            <div className="w-1/2 h-40 opacity-60 ">
+              <div className="flex flex-col max-w-md gap-2 p-6 rounded-md shadow-md dark:bg-gray-900 dark:text-gray-100">
+                <h2 className="text-xl font-semibold leadi tracki">
+                  “The information about package is as important as the delivery
+                  of the package itself.”
+                </h2>
+                {/* <p className="flex-1 dark:text-gray-400">Vero mollitia, accusantium deserunt fugiat obcaecati aperiam a, libero soluta asperiores sed quis incidunt.</p> */}
+                <div className="flex flex-col justify-between gap-6 mt-6 sm:flex-row"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -206,8 +285,6 @@ const BookShipment = () => {
                           {city.city}
                         </option>
                       ))}
-
-                      {/* Add more options here */}
                     </select>
                   </div>
                   <div className="col-span-full sm:col-span-3">
@@ -344,8 +421,6 @@ const BookShipment = () => {
                           {city.city}
                         </option>
                       ))}
-
-                      {/* Add more options here */}
                     </select>
                   </div>
 
@@ -469,10 +544,8 @@ const BookShipment = () => {
           </div>
         </div>
       </form>
-
     </div>
   );
 };
 
 export default BookShipment;
-  

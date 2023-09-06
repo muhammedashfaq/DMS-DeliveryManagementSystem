@@ -111,14 +111,12 @@ const getdashboardjobs = async (req, res) => {
         "shipment.shipmentStatus": "Transisted",
       });
 
-      res
-        .status(200)
-        .send({
-          message: "fetched",
-          success: true,
-          data: shipmentdata,
-          transist: transisteddata,
-        });
+      res.status(200).send({
+        message: "fetched",
+        success: true,
+        data: shipmentdata,
+        transist: transisteddata,
+      });
     } else {
       res.status(200).send({ message: "error", success: false });
     }
@@ -129,8 +127,7 @@ const getdashboardjobs = async (req, res) => {
 
 const updateShipmentStatus = async (req, res) => {
   try {
-
-    console.log(req.body,"body");
+    console.log(req.body, "body");
 
     const { trackid, status, comments } = req.body;
 
@@ -202,6 +199,35 @@ const updateShipmentStatus = async (req, res) => {
               .status(200)
               .send({ message: "Updated", success: true, data: updatestatus });
           }
+        } else if (status === "Hub Recived") {
+          const updatedUpdateStatus = await updatesModel.findOneAndUpdate(
+            { TrackID: trackid },
+            {
+              $set: {
+                status: status,
+                comments: comments,
+              },
+            },
+            { new: true }
+          );
+
+          if (updatedUpdateStatus) {
+            await shipmentModel.findOneAndUpdate(
+              {
+                $and: [
+                  { "shipment.trackid": trackid },
+                  { "shipment.shipmentStatus": { $ne: "Hub Recived" } },
+                ],
+              },
+              {
+                $set: { "shipment.$.shipmentStatus": "Hub Recived" },
+              }
+            );
+
+            res
+              .status(200)
+              .send({ message: "Updated", success: true, data: updatestatus });
+          }
         } else {
           await updatesModel.findOneAndUpdate(
             { TrackID: trackid },
@@ -227,18 +253,26 @@ const idverify = async (req, res) => {
   try {
     const { trackid } = req.body;
 
-    const updatestatus = await updatesModel.findOne({ TrackID: trackid });
-
     const verifytrackid = await shipmentModel.findOne({
       shipment: { $elemMatch: { trackid: trackid } },
     });
 
     if (verifytrackid) {
-      res
-        .status(200)
-        .send({ message: "Verified", success: true, data: updatestatus });
+      console.log(req.body, "body");
+
+      const updatestatus = await updatesModel.findOne({ TrackID: trackid });
+
+      if (updatestatus) {
+        res
+          .status(200)
+          .send({ message: "Verified", success: true, data: updatestatus });
+      } else {
+        res
+          .status(200)
+          .send({ message: "No updates found for this ID", success: false });
+      }
     } else {
-      res.status(200).send({ message: "Id not exist", success: false });
+      res.status(200).send({ message: "ID not found", success: false });
     }
   } catch (error) {
     console.error(error);
@@ -249,6 +283,8 @@ const idverify = async (req, res) => {
 const approveShipment = async (req, res) => {
   try {
     const { trackid } = req.body;
+
+    console.log(req.body, "body");
 
     const verifytrackid = await shipmentModel.findOne({
       shipment: { $elemMatch: { trackid: trackid } },
@@ -287,40 +323,50 @@ const approveShipment = async (req, res) => {
 
 const transistshipment = async (req, res) => {
   try {
-    const { trackid } = req.body;
+    const { trackid, comments } = req.body;
 
     const verifytrackid = await shipmentModel.findOne({
-      shipment: { $elemMatch: { trackid: trackid } },
+      "shipment.trackid": trackid,
     });
 
     if (verifytrackid) {
-      const newstatus = new updatesModel({
-        user: verifytrackid.user,
-        shipment: verifytrackid._id,
-        TrackID: trackid,
-        status: "Transisted",
-      });
-
-      await newstatus.save();
-
-      await shipmentModel.findOneAndUpdate(
+      const updated = await updatesModel.findOneAndUpdate(
+        { TrackID: trackid },
         {
-          $and: [
-            { "shipment.trackid": trackid },
-            { "shipment.shipmentStatus": { $ne: "Transisted" } },
-          ],
+          $set: {
+            status: "Transisted",
+            comments: comments,
+          },
         },
-        {
-          $set: { "shipment.$.shipmentStatus": "Transisted" },
-        }
+        { new: true }
       );
 
-      res.status(200).send({ message: "Updated", success: true });
+      if (updated) {
+        await shipmentModel.findOneAndUpdate(
+          {
+            $and: [
+              { "shipment.trackid": trackid },
+              { "shipment.shipmentStatus": { $ne: "Transisted" } },
+            ],
+          },
+          {
+            $set: { "shipment.$.shipmentStatus": "Transisted" },
+          }
+        );
+
+        res.status(200).send({ message: "Updated", success: true });
+      } else {
+        res.status(200).send({ message: "Update failed", success: false });
+      }
     } else {
       res.status(200).send({ message: "Id not exist", success: false });
     }
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: "Something went wrong", success: false });
+  }
 };
+
 module.exports = {
   logindriver,
   driverdetails,

@@ -33,20 +33,6 @@ export const LoginModal = ({ visible, onClose }) => {
     }));
   };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
@@ -90,7 +76,6 @@ export const LoginModal = ({ visible, onClose }) => {
               className="bg-white rounded-md p-1 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
               onClick={() => onClose()}
             >
-              {/* Close button (X icon) */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6"
@@ -110,7 +95,6 @@ export const LoginModal = ({ visible, onClose }) => {
           <form onSubmit={handleSubmit}>
             <div className="inputbox">
               <p className="absolute right-0 mt-4 mr-2 ">
-                {/* icon */}
                 <BiEnvelope />
               </p>
 
@@ -157,8 +141,7 @@ export const LoginModal = ({ visible, onClose }) => {
             </div>
           </form>
 
-
-           {/* <GoogleOAuthProvider clientId={process.env.REACT_APP_ClientID}>
+          {/* <GoogleOAuthProvider clientId={process.env.REACT_APP_ClientID}>
             <GoogleLogin
               onSuccess={handlegoglelogin}
 
@@ -168,8 +151,6 @@ export const LoginModal = ({ visible, onClose }) => {
             />
             
           </GoogleOAuthProvider>  */}
-          
-          
         </div>
       </div>
 

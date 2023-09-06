@@ -6,6 +6,9 @@ import TransistUpdateModal from "./transistUpdateModal";
 import axios from "axios";
 
 function Body() {
+  const [updatetrackid,setupdatetrackid]=useState("")
+  const [transistTrackid,settransistTrackid]=useState("")
+
   const [showModal, setShowModal] = useState(false);
   const [showtransistModal, setshowtransistModal] = useState(false);
 
@@ -31,7 +34,17 @@ function Body() {
 
 
 
+  const updatemodaldata =(trackid)=>{
+    setShowModal(true)
+    setupdatetrackid(trackid)
 
+  }
+
+  const transistmodaldata =(trackid)=>{
+    setshowtransistModal(true)
+    settransistTrackid(trackid)
+
+  }
 
 
   const sendtransist = async (e, trackid) => {
@@ -41,9 +54,10 @@ function Body() {
       const response = await axios.post("/hub/transistshipment", { trackid });
 
       if (response.data.success) {
-        toast.success("Verification successful");
+        toast.success(response.data.message);
+        getjobs();
       } else {
-        toast.error("Verification failed");
+        toast.error(response.data.message);
       }
     } catch (error) {
       toast.error("Something went wrong");
@@ -57,9 +71,11 @@ function Body() {
       const response = await axios.post("/hub/approveShipment", { trackid });
 
       if (response.data.success) {
-        toast.success("Verification successful");
+        toast.success(response.data.message);
+        getjobs();
+
       } else {
-        toast.error("Verification failed");
+        toast.error(response.data.message);
       }
     } catch (error) {
       toast.error("Something went wrong");
@@ -132,39 +148,26 @@ function Body() {
         <hr />
 
         {tabs === "joblist" && (
-          <div className="flex items-center justify-between pb-6">
-            <div>
-              <h2 className="text-gray-600 font-semibold">Products Order</h2>
-              <span className="text-xs">All products items</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex bg-gray-50 items-center p-2 rounded-md">
+      
+            <div className="flex  justify-center ">
+              <div className="flex bg-gray-50  p-2 rounded-md m-3 border-2 ">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5 text-gray-400"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
-                  {/* Search icon path */}
                 </svg>
                 <input
-                  className="bg-gray-50 outline-none ml-1 block"
+                  className=" outline-none ml-1 block w-full "
                   type="text"
                   name="search"
                   value={search}
                   placeholder="Search..."onChange={(e)=>setsearch(e.target.value)}
                 />
               </div>
-              <div className="lg:ml-40 ml-10 space-x-8">
-                <button className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">
-                  New Report
-                </button>
-                <button className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">
-                  Create
-                </button>
-              </div>
+       
             </div>
-          </div>
         )}
 
         {tabs === "joblist" && (
@@ -203,19 +206,20 @@ function Body() {
                   </tr>
                 </thead>
                 <tbody>
+                <UpdateModal
+                          onClose={handleclose}
+                          visible={showModal}
+                          data={updatetrackid}
+                        />
                   {searchdatajobs.map((shipment, index) => (
                     <tr
                       key={index}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                     >
-                      <td className="px-6 py-4">
-                        <UpdateModal
-                          onClose={handleclose}
-                          visible={showModal}
-                          data={shipment.shipment[0].trackid}
-                        />
+                      <td className="px-6 py-4"  >
+                       
 
-                        <button onClick={() => setShowModal(true)}>
+                        <button onClick={() => updatemodaldata(shipment.shipment[0].trackid)}>
                           {shipment.shipment[0].trackid}
                         </button>
                       </td>
@@ -244,8 +248,8 @@ function Body() {
                       </td>{" "}
                       <td className="px-6 py-4">
                         {" "}
-                        {shipment.fromhub === shipment.shipment[0].tocity &&
-                        shipment.shipment[0].shipmentStatus !== "approved" ? (
+                        {
+                        shipment.shipment[0].shipmentStatus !== "approved" && shipment.shipment[0].shipmentStatus !== "Hub Recived" ? (
                           <button
                             type="submit"
                             onClick={(e) =>
@@ -255,7 +259,7 @@ function Body() {
                           >
                             Approve
                           </button>
-                        ) : shipment.fromhub !== shipment.shipment[0].tocity ? (
+                        ) : shipment.fromhub !== shipment.shipment[0].tocity && shipment.shipment[0].shipmentStatus === "Hub Recived" ? (
                           <button
                             type="submit"
                             onClick={(e) =>
@@ -272,7 +276,6 @@ function Body() {
                     </tr>
                   ))}
 
-                  {/* Table rows */}
                 </tbody>
               </table>
               <div className="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between">
@@ -293,43 +296,25 @@ function Body() {
         )}
 
         {tabs === "transist" && (
-          <div className="flex items-center justify-between pb-6">
-            <div>
-              <h2 className="text-gray-600 font-semibold">Products Order</h2>
-              <span className="text-xs">All products items</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex bg-gray-50 items-center p-2 rounded-md">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 text-gray-400"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  {/* Search icon path */}
-                </svg>
-                <input
-                  className="bg-gray-50 outline-none ml-1 block"
-                  type="text"
-
-                  value={searchtransist}
-                  placeholder="Search..."onChange={(e)=>setsearchtransist(e.target.value)}
-                
-
-
-
-                />
+                <div className="flex  justify-center ">
+                <div className="flex bg-gray-50  p-2 rounded-md m-3 border-2 ">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 text-gray-400"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                  </svg>
+                  <input
+                    className=" outline-none ml-1 block w-full "
+                    type="text"
+                    name="search"
+                    value={search}
+                    placeholder="Search..."onChange={(e)=>setsearch(e.target.value)}
+                  />
+                </div>
+         
               </div>
-              <div className="lg:ml-40 ml-10 space-x-8">
-                <button className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">
-                  New Report
-                </button>
-                <button className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">
-                  Create
-                </button>
-              </div>
-            </div>
-          </div>
         )}
 
         {tabs === "transist" && (
@@ -365,19 +350,19 @@ function Body() {
                   </tr>
                 </thead>
                 <tbody>
+                  <TransistUpdateModal
+                    onClose={handletransistclose}
+                    visible={showtransistModal}
+                    data={transistTrackid}
+                  />
                   {searchdatatransist.map((shipment, index) => (
                     <tr
                       key={index}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                     >
                       <td className="px-6 py-4">
-                        <TransistUpdateModal
-                          onClose={handletransistclose}
-                          visible={showtransistModal}
-                          data={shipment.shipment[0].trackid}
-                        />
 
-                        <button onClick={() => setshowtransistModal(true)}>
+                        <button onClick={() => transistmodaldata(shipment.shipment[0].trackid)}>
                           {shipment.shipment[0].trackid}
                         </button>
                       </td>

@@ -8,8 +8,8 @@ const service = require("../models/servicesModel");
 const Razorpay = require("razorpay");
 const sharp = require("sharp");
 const shipmentModel = require("../models/shipmentModel");
-const shipmentupdates =require("../models/shipmetUpdatesModel")
-const ChatModel =require('../models/ChatModel')
+const shipmentupdates = require("../models/shipmetUpdatesModel");
+const ChatModel = require("../models/ChatModel");
 const cloudinary = require("cloudinary").v2;
 const {
   sendForgetymail,
@@ -57,6 +57,7 @@ const registerpage = async (req, res) => {
       const otpGenarated = Math.floor(1000 + Math.random() * 9999);
       savedOtp = otpGenarated;
       useremail = req.body.email;
+      console.log(otpGenarated,'otp')
 
       sendVerifymail(req.body.username, req.body.email, otpGenarated);
     }
@@ -109,7 +110,6 @@ const loginpage = async (req, res) => {
 const userdetails = async (req, res) => {
   try {
     const id = req.userId;
-
     const user = await User.findOne({ _id: id });
     if (!user) {
       return res
@@ -210,20 +210,21 @@ const resetPassword = async (req, res) => {
 
 const getprofile = async (req, res) => {
   try {
+    
     const id = req.userId;
-
+    
     const user = await User.findOne({ _id: id });
-    const shipmentdata = await shipmentModel
-      .find({ user: user._id })
-      .populate("shipment");
-
-    const address = await userAddress.findOne({ user: user._id });
-    const addressdetails = address.address;
+    
+    // const address = await userAddress.findOne({ user: user._id });
+    // const addressdetails = address.address;
     if (!user) {
       return res
-        .status(200)
-        .send({ message: "user does no exist", success: false });
+      .status(200)
+      .send({ message: "user does no exist", success: false });
     } else {
+      const shipmentdata = await shipmentModel
+      .find({ user: user._id })
+      .populate("shipment");
       res.status(200).send({
         success: true,
         data: user,
@@ -415,80 +416,68 @@ const advancepaymentUpdate = async (req, res) => {
   }
 };
 
-const chatHistory =async(room,message,author)=>{
-    console.log('reach')
-  const roomexist =await ChatModel.findOne({chatRoom:room})
+const chatHistory = async (room, message, author) => {
+  console.log("reach");
+  const roomexist = await ChatModel.findOne({ chatRoom: room });
 
-
-    if(roomexist){
-        const id=roomexist._id
-        const chatUpdate = await Chat.findByIdAndUpdate(
-          id, 
-          {
-            $push: {
-              chathistory: {
-                author: author,
-                message: message,
-                time: new Date(),
-              },
-            },
+  if (roomexist) {
+    const id = roomexist._id;
+    const chatUpdate = await Chat.findByIdAndUpdate(
+      id,
+      {
+        $push: {
+          chathistory: {
+            author: author,
+            message: message,
+            time: new Date(),
           },
-          { new: true }
-        );
-        
-      }else{
-        const savechat=new Chat({
-          chatRoom:room,
-          chathistory:[
-            {
-              author:author,
-              message:message,
-              time:new Date()
-            }
-          ]
-        })
-        await savechat.save()
-    
-      }
-    
-  
+        },
+      },
+      { new: true }
+    );
+  } else {
+    const savechat = new Chat({
+      chatRoom: room,
+      chathistory: [
+        {
+          author: author,
+          message: message,
+          time: new Date(),
+        },
+      ],
+    });
+    await savechat.save();
+  }
+};
 
-}
-
-const trackshipment = async(req,res)=>{
+const trackshipment = async (req, res) => {
   try {
-
-    const {id}=req.body
+    const { id } = req.body;
 
     const shipmentdetails = await shipmentModel.findOne({
       shipment: { $elemMatch: { trackid: id } },
     });
-    if(shipmentdetails){
+    if (shipmentdetails) {
+      const shipmentupdatedetails = await shipmentupdates.findOne({
+        TrackID: id,
+      });
 
-      const shipmentupdatedetails = await shipmentupdates.findOne({ TrackID: id })
-
-
-      res.status(200).send({message:"fetched", success:true, shipment:shipmentdetails,updates:shipmentupdatedetails })
-    }else{
-      res.status(200).send({message:"Invalid TrackID" ,success:false})
-
+      res
+        .status(200)
+        .send({
+          message: "fetched",
+          success: true,
+          shipment: shipmentdetails,
+          updates: shipmentupdatedetails,
+        });
+    } else {
+      res.status(200).send({ message: "Invalid TrackID", success: false });
     }
-    
-    
-    
-
-    
-
-
-
-
   } catch (error) {
     console.log(error);
-    res.status(200).send({message:"something went wrong " ,success:false})
-
-    
+    res.status(200).send({ message: "something went wrong ", success: false });
   }
-}
+};
 
 module.exports = {
   registerpage,
@@ -504,5 +493,5 @@ module.exports = {
   bookshipment,
   advancepaymentUpdate,
   chatHistory,
-  trackshipment
+  trackshipment,
 };

@@ -1,25 +1,58 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useUserContext } from "../../Helper/context/userContext";
+import axios from "axios";
 
 const Header = () => {
-  
-  const { userName  } = useUserContext();
+  const[headname,setHeadName]=useState()
+
+  // const { userName  } = useUserContext();
+
+  const getData = async (req, res) => {
+    try {
+      const response = await axios.post(
+        "/admin/get-admininfo-id",
+        {},
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("admintoken"),
+          },
+        }
+      );
+      if(response.data.success){
+        const adminname = response.data.data.name
+        console.log(adminname,'name');
+        setHeadName(adminname)
+
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 
   
+  useEffect(() => {
+    console.log('12222')
+    getData();
+  },[]);
+
+
+
   return (
     <div className=" h-16 flex justify-end ">
       <div className="flex justify-end  w-96 border-b-4 border-gray-500">
         <div className="hidden sm:ml-6 sm:block">
-        {userName && ( // Conditionally render if userName is available
+
             <div className="flex space-x-4 pt-6">
-              <a href="#">Hi Admin {userName}</a>
+              <a className="text-white" href="#">Hi Admin   {headname} </a>
             </div>
-          )}
+         
         </div>
 
         <div className="hidden sm:ml-6 sm:block">
           <a href="/adminhome/adminprofile">
-            <div className="flex space-x-4  mr-7 pt-2">
+            <div className="flex space-x-4  mr-7 pt-2 text-white  " >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="50"

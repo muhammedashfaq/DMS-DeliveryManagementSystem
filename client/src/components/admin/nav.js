@@ -2,50 +2,46 @@ import { Dropdown } from "flowbite-react";
 import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
-
 const Nav = () => {
-  const location=useLocation()
+  const location = useLocation();
   const menu = [
-
     {
       name: "Dashboard",
       path: "/adminhome",
       icon: "material-symbols-outlined",
-      iconname:"dashboard"
+      iconname: "dashboard",
     },
 
     {
       name: "Reports",
       path: "/adminhome/reports",
       icon: "material-symbols-outlined",
-      iconname:"analytics"
+      iconname: "analytics",
     },
     {
       name: "Chats",
       path: "/adminhome/adminchats",
       icon: "material-symbols-outlined",
-      iconname:"chat"
+      iconname: "chat",
     },
     {
       name: "Track Shipment",
-      path: "/adminhome/adminchats",
+      path: "/adminhome/admintrack",
       icon: "material-symbols-outlined",
-      iconname:"location_on"
+      iconname: "location_on",
     },
     {
-
       name: "Services",
       path: "/adminhome/services",
       icon: "material-symbols-outlined",
-      iconname:"device_hub"
-      
+      iconname: "device_hub",
     },
   ];
   const navigate = useNavigate();
   return (
     <div>
       <div
-        className="fixed top-0 bottom-0 lg:left-0 p-2 w-1/6  overflow-y-auto text-center bg-gray-900 "
+        className="fixed top-0 bottom-0 lg:left-0 p-2 w-1/6  overflow-y-auto text-center bg-[conic-gradient(at_top_right,_var(--tw-gradient-stops))] from-slate-900 via-purple-900 to-slate-900 "
         style={{
           marginRight: "300px",
         }}
@@ -53,13 +49,12 @@ const Nav = () => {
         <div>
           <div>
             <Link to="/adminhome">
-              
-              <img src="./images/landingpage/logo.png" />
+              <img src="./images/adminlogin/logo.png" />
             </Link>
           </div>
         </div>
         <hr className="my-2 text-gray-600 " />
-        <div className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer bg-gray-700">
+        <div className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer bg-gray-500">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -77,65 +72,65 @@ const Nav = () => {
         </div>
 
         {menu?.map((menuitem) => {
-
-          const isActive=location.pathname===menuitem.path
+          const isActive = location.pathname === menuitem.path;
           return (
-            
-            <div key={menuitem.path} className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 ${isActive && `text-blue-700 font-bold bg-blue-600`}`}>
-            <span className="text-gray-200">
-
-            <span className={menuitem.icon}>{menuitem.iconname}</span>
-            </span>
-            <span className="text-[15px] ml-4 text-gray-200">
-              <Link to={menuitem.path}>{menuitem.name}</Link>
-            </span>
-          </div>
-          )
-        }
-          )}
+            <div
+              key={menuitem.path}
+              className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-gray-600 ${
+                isActive &&
+                `text-blue-700 font-bold bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900`
+              }`}
+            >
+              <span className="text-gray-200">
+                <span className={menuitem.icon}>{menuitem.iconname}</span>
+              </span>
+              <span className="text-[15px] ml-4 text-gray-200">
+                <Link to={menuitem.path}>{menuitem.name}</Link>
+              </span>
+            </div>
+          );
+        })}
 
         <hr className="bg-gray-400" />
 
         <div className="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer w-max">
           <i className="bi bi-house-door-fill"></i>
           {/* <span className="text-[15px] ml-4 text-gray-200">Management</span> */}
-          <Dropdown className="bg-gray-900 text-white  " label="Management">
+          <Dropdown
+            className="bg-[conic-gradient(at_top_right,_var(--tw-gradient-stops))] from-slate-900 via-purple-900 to-slate-900  text-white  "
+            label="Management"
+          >
             <Dropdown.Item className=" text-white p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
-              <Link to="/adminhome/user_details">User 
-              <span class="material-symbols-outlined">
-person_search
-</span>
+              <Link to="/adminhome/user_details">
+                User
+                <span class="material-symbols-outlined">person_search</span>
               </Link>
             </Dropdown.Item>
             <Dropdown.Item className="text-white p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
               {" "}
-              <Link to="/adminhome/driver_details">HUB
-              <span class="material-symbols-outlined">
-local_shipping
-</span>
+              <Link to="/adminhome/driver_details">
+                HUB
+                <span class="material-symbols-outlined">local_shipping</span>
               </Link>
             </Dropdown.Item>
 
             <Dropdown.Item className="text-white p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
               {" "}
-              <Link to="/adminhome/shipment_list">Shipment
-              <span class="material-symbols-outlined">
-package_2
-</span>
+              <Link to="/adminhome/shipment_list">
+                Shipment
+                <span class="material-symbols-outlined">package_2</span>
               </Link>
             </Dropdown.Item>
             <Dropdown.Item className="text-white p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
               <span
                 onClick={() => {
-                  localStorage.removeItem('admintoken')
+                  localStorage.removeItem("admintoken");
                   navigate("/admin");
                 }}
               >
                 Logout
               </span>
-              <span class="material-symbols-outlined">
-logout
-</span>
+              <span class="material-symbols-outlined">logout</span>
             </Dropdown.Item>
           </Dropdown>
         </div>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../../components/admin/Header";
 import SideNav from "../../../components/admin/nav";
 import{Routes,Route} from 'react-router-dom'
@@ -9,6 +9,7 @@ import AdminProfile from "../../../components/admin/adminProfile";
 import DriverProfilePage from '../../../components/admin/driverProfile'
 import ShipmentList from '../../../components/admin/shipmentlist'
 import Services from '../../../components/admin/services'
+import Trackpage from '../../../components/admin/admintrack'
 import axios from "axios";
 const Home = () => {
 
@@ -23,7 +24,7 @@ const Home = () => {
           },
         }
       );
-      console.log('Server Response:', response)
+ 
 
     } catch (error) {
       console.log(error);
@@ -39,11 +40,17 @@ const Home = () => {
 
 
   return (
-    <div className="w-full h-auto ">
-      <Header />
+    <div className=" h-screen bg-gradient-to-bl from-slate-900 via-purple-900 to-slate-900"
+    
+    // style={{
+    //   backgroundImage: "url(./images/landingpage/track.jpg)",
+    // }}
+    
+    >
+      <Header  />
       <SideNav />
 
-      <div className=" h-max ml-64">
+      <div className=" h-max ml-64  ">
         <Routes>
           <Route path="/user_details" element={<UserDetails />} />
           <Route path="/driver_details" element={<DriverDetails />} />
@@ -52,8 +59,8 @@ const Home = () => {
           <Route path="/driver_profile" element={<DriverProfilePage />} />
           <Route path='/shipment_list' element={<ShipmentList/> }/>
           <Route path='/services' element={<Services/> }/>
+          <Route path='/admintrack' element={<Trackpage/> }/>
 
-          services
 
 
 

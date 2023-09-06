@@ -4,13 +4,14 @@ import { hideloading, showloading } from "../../Helper/redux/alertSlice";
 import axios from "axios";
 import { useUserContext } from "../../Helper/context/userContext";
 import { AddressModal } from "./addressModal";
-import ChatModal from "./ChatModal"
+import ChatModal from "./ChatModal";
 import { SliderThumb } from "@mui/material";
+import { toast } from "react-hot-toast";
 
 const Userprofile = () => {
-  const [trackid,settrackid]=useState("")
-  const[shipmentid,setshipmentid]=useState("")
-  const [hub,sethub]=useState("")
+  const [trackid, settrackid] = useState("");
+  const [shipmentid, setshipmentid] = useState("");
+  const [hub, sethub] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [showchatModal, setShowchatModal] = useState(false);
 
@@ -20,13 +21,15 @@ const Userprofile = () => {
   );
   const [profileimage, setProfileimage] = useState(image);
   const dispatch = useDispatch();
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState("");
   const [shipmetDetails, setshipmentDetails] = useState([]);
   const [search, setSearch] = useState("");
 
   const filterShipmentDetails = shipmetDetails.filter((shipment) => {
     const lowerCaseSearchInput = search.toLowerCase();
-    return shipment.shipment[0].toname.toLowerCase().includes(lowerCaseSearchInput);
+    return shipment.shipment[0].toname
+      .toLowerCase()
+      .includes(lowerCaseSearchInput);
   });
   const submitimage = async (e) => {
     try {
@@ -52,6 +55,29 @@ const Userprofile = () => {
     } catch (error) {}
   };
 
+  const changeimage = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setImage(imageUrl);
+      setProfileimage(file);
+    }
+  };
+
+  const handleclose = () => {
+    setShowModal(false);
+  };
+  const handlechatclose = () => {
+    setShowchatModal(false);
+  };
+
+  const modaldata = (trackID, shipmentid, hub) => {
+    setShowchatModal(true);
+    settrackid(trackID);
+    setshipmentid(shipmentid);
+    sethub(hub);
+  };
+
   const getData = async (req, res) => {
     try {
       dispatch(showloading());
@@ -66,49 +92,29 @@ const Userprofile = () => {
         }
       );
       dispatch(hideloading());
+
       if (response.data.success) {
+        toast.success(response.data.message);
         const data = response.data.data;
-        const shipmentdata = response.data.shipmentdata;
 
+        
+        console.log(response, "data");
 
-        console.log(shipmentdata,'shippp');
 
 
         setUser(data);
+        const shipmentdata = response.data.shipmentdata;
         setshipmentDetails(shipmentdata);
       }
     } catch (error) {
       dispatch(hideloading());
     }
   };
-
-  const changeimage = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setImage(imageUrl);
-      setProfileimage(file);
-    }
-  };
-
   useEffect(() => {
     getData();
+
+    console.log("123");
   }, []);
-
-  const handleclose = () => {
-    setShowModal(false);
-  };
-  const handlechatclose = () => {
-    setShowchatModal(false);
-  };
-
-  const modaldata =(trackID,shipmentid,hub)=>{
-    setShowchatModal(true);
-    settrackid(trackID)
-    setshipmentid(shipmentid)
-    sethub(hub)
-
-  }
   return (
     <div>
       {/* <div className=' h-screen bg-slate-600'> */}
@@ -234,53 +240,77 @@ const Userprofile = () => {
       </div>
 
       <div className="h-screen flex justify-center items-center">
-
-  <div className="w-5/6 h-5/6 rounded-xl  container  bg-slate-100">
-        <h1 className="m-10 pt-4 font-semibold">HI, {userName} ;</h1>
-    <div className="m-10">
-      <span className="bg-slate-900 rounded-md p-2 text-white font-serif">Shipment From You</span>
-      <hr className="mt-2 " />
-    </div>
-
-    <div className=" h-96 overflow-y-scroll p-4  ">
-      {filterShipmentDetails?.map((shipment, index) => (
-        
-
-        <div key={index} className=" bg-slate-50   grid grid-cols-3 gap-4 items-center m-2 cursor-pointer hover:shadow-2xl  border-2 rounded-lg p-6">
-          <div className=""><span className="font-bold font-mono">TO:</span> {shipment.shipment[0].toaddress}</div>
-          <div className=""><span className="font-bold font-mono">Your TrackID:</span> {shipment.shipment[0].trackid} {shipment.fromhub}
-          
-          <div className="flex "> 
-
-
-         <span> <a className="text-blue-800 underline font-serif mr-2" href="#">track</a></span>
-         
-         
-          {shipment.shipment[0].shipmentStatus !== "Deliverd"   &&  shipment.shipment[0].shipmentStatus !== "Pending" ? <span><a  onClick={()=>modaldata(shipment.shipment[0].trackid ,shipment._id ,shipment.fromhub)} className="text-blue-800 underline"><span class="material-symbols-outlined">
-
-
-chat
-</span></a></span> :"" }
-
-                 <ChatModal    onClose={handlechatclose}
-                          visible={showchatModal}  data={{trackID:trackid ,shipmentId: shipmentid ,hub:hub}} />
-         
+        <div className="w-5/6 h-5/6 rounded-xl  container  bg-slate-100">
+          <h1 className="m-10 pt-4 font-semibold">HI, {userName} ;</h1>
+          <div className="m-10">
+            <span className="bg-slate-900 rounded-md p-2 text-white font-serif">
+              Shipment From You
+            </span>
+            <hr className="mt-2 " />
           </div>
+
+          <div className=" h-96 overflow-y-scroll p-4  ">
+            {filterShipmentDetails?.map((shipment, index) => (
+              <div
+                key={index}
+                className=" bg-slate-50   grid grid-cols-3 gap-4 items-center m-2 cursor-pointer hover:shadow-2xl  border-2 rounded-lg p-6"
+              >
+                <div className="">
+                  <span className="font-bold font-mono">TO:</span>{" "}
+                  {shipment.shipment[0].toaddress}
+                </div>
+                <div className="">
+                  <span className="font-bold font-mono">Your TrackID:</span>{" "}
+                  {shipment.shipment[0].trackid}
+                  <div className="flex ">
+                    <span>
+                      {" "}
+                      <a
+                        className="text-blue-800 underline font-serif mr-2"
+                        href="#"
+                      >
+                        track
+                      </a>
+                    </span>
+
+                    {shipment.shipment[0].shipmentStatus !== "Deliverd" &&
+                    shipment.shipment[0].shipmentStatus !== "Pending" ? (
+                      <span>
+                        <a
+                          onClick={() =>
+                            modaldata(
+                              shipment.shipment[0].trackid,
+                              shipment._id,
+                              shipment.fromhub
+                            )
+                          }
+                          className="text-blue-800 underline"
+                        >
+                          <span class="material-symbols-outlined">chat</span>
+                        </a>
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                </div>
+
+                <div className="">
+                  <span className="font-bold font-mono">ShipmentStatus:</span>{" "}
+                  {shipment.shipment[0].shipmentStatus}
+                </div>
+              </div>
+            ))}
+            {/* <ChatModal
+              onClose={handlechatclose}
+              visible={showchatModal}
+              data={{ trackID: trackid, shipmentId: shipmentid, hub: hub }}
+            /> */}
           </div>
-         
-          <div className=""><span className="font-bold font-mono">ShipmentStatus:</span> {shipment.shipment[0].shipmentStatus}</div>
-        
         </div>
-          ))}
+      </div>
 
-    </div>
-  </div>
-</div>
-
-                        
       {/* </div> */}
-
-
     </div>
   );
 };

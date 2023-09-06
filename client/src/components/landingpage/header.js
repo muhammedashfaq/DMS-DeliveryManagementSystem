@@ -16,7 +16,6 @@ function classNames(...classes) {
 const Header = () => {
   const location = useLocation();
 
-  
   const { userName } = useUserContext();
 
   const navigate = useNavigate();
@@ -40,14 +39,9 @@ const Header = () => {
   }, []);
   const [isOpen, setIsOpen] = useState(false);
 
-
-
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
-
-
-
 
   const guestnavigation = [
     // { name: 'Dashboard', href: '#', current: true },
@@ -56,10 +50,9 @@ const Header = () => {
     { name: "Contact Us", href: "#" },
   ];
   const usernavigation = [
-    { name: "Home", href: "/" },
-    { name: "Book Shipment", href:"/book_shipment" },
+    { name: "Home", path: "/" },
+    { name: "Book Shipment", path: "/book_shipment" },
   ];
-
 
   return (
     <Disclosure
@@ -73,7 +66,6 @@ const Header = () => {
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
             <div className="relative flex h-16 items-center justify-between">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                {/* Mobile menu button*/}
                 <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="absolute -inset-0.5" />
                   <span className="sr-only">Open main menu</span>
@@ -103,76 +95,68 @@ const Header = () => {
                 <div className=" sm:ml-6 sm:block"></div>
               </div>
               <div className="flex space-x-4">
-         
-
                 {userName
-                  ? usernavigation.map((item) => (
-                      <a
-                        href={item.href}
-                        key={item.name}
-                        className={classNames(
-                          "rounded-md px-3 py-2 text-sm font-medium",
-                          "text-gray-300 hover:bg-gray-700 hover:text-white",
+                  ? usernavigation.map((item) => {
+                      const isActive = location.pathname === item.path;
 
-                          {
-                            "bg-red-500": location.pathname === item.href,
-                            "bg-red-800": location.pathname === item.href,
-                          }
-                        )}
-                        aria-current={item.current ? "page" : undefined}
-                      >
-                        {item.name}
-                      </a>
-                    ))
-                  : guestnavigation.map((item) => (
-                      <a
-                        href={item.href}
-                        key={item.name}
-                        className={classNames(
-                          "rounded-md px-3 py-2 text-sm font-medium",
-                          "text-gray-300 hover:bg-gray-700 hover:text-white",
-
-                          {
-                            "bg-red-800": location.pathname === item.href,
-                            "bg-white": location.pathname !== item.href,
-                          }
-                        )}
-                        aria-current={item.current ? "page" : undefined}
-                      >
-                        {item.name}
-                      </a>
-                    ))}
-
-
-                    
+                      return (
+                        <a
+                          href={item.path}
+                          key={item.name}
+                          className={classNames(
+                            "rounded-md px-3 py-2 text-sm font-semibold  hover:bg-gray-700 hover:text-white font-serif",
+                            isActive && "bg-gray-700 text-white"
+                          )}
+                          aria-current={item.current ? "page" : undefined}
+                        >
+                          {item.name}
+                        </a>
+                      );
+                    })
+                  : guestnavigation.map((item) => {
+                      const isActive = location.pathname === item.path;
+                      return (
+                        <a
+                          href={item.href}
+                          key={item.name}
+                          className={classNames(
+                            "rounded-md px-3 py-2 text-sm font-medium  hover:bg-gray-700 hover:text-white",
+                            isActive && "bg-gray-700 text-white"
+                          )}
+                          aria-current={item.current ? "page" : undefined}
+                        >
+                          {item.name}
+                        </a>
+                      );
+                    })}
               </div>
               <div className="relative">
                 <button
                   onClick={toggleDropdown}
-                  className="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent focus:outline-none"
+                  className="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent focus:outline-none font-serif font-semibold"
                 >
                   {userName ? userName : ""}
                 </button>
                 {isOpen && (
-                  <ul className="absolute top-8 right-0 mt-2 bg-white dark:bg-gray-800 border rounded shadow-md w-40 h-max">
+                  <ul className="absolute top-8 right-0 mt-2 bg-white dark:bg-gray-800 border rounded shadow-md w-40 h-max ">
                     <li>
                       <a
                         href="/userProfile"
-                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left"
+                        className="block px-4 py-2 text-sm text-gray-700  hover:bg-gray-700 hover:text-white font-serif font-semibold dark:hover:bg-gray-700 w-full text-left"
                       >
                         {" "}
                         Profile
                       </a>
                     </li>
                     <li>
-                      <button
+                      <button 
                         onClick={() => {
-                          localStorage.removeItem('token')
+                          localStorage.removeItem("token");
 
                           window.location.reload();
                           navigate("/");
                         }}
-                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left"
+                        className="block px-4 py-2 text-sm text-gray-700 font-serif font-semibold hover:bg-gray-700 hover:text-white dark:hover:bg-gray-700 w-full text-left"
                       >
                         Logout
                       </button>
@@ -190,7 +174,6 @@ const Header = () => {
                       <BellIcon className="h-6 w-6" aria-hidden="true" />
                     </button> */}
 
-                {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
                   {/* <div>
                         <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
@@ -286,6 +269,3 @@ const Header = () => {
 };
 
 export default Header;
-
-
-

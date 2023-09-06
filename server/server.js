@@ -5,7 +5,8 @@ const http = require("http");
 const userController = require('./controller/userController');
 
 
-const {Server} =require('socket.io')
+// const {Server} =require ('socket.io')
+
 const mongodb = require("./config/authdb");
 require("dotenv").config();
 
@@ -28,28 +29,29 @@ app.use("/hub", driverroute);
 const userroute = require("./routes/userRoutes");
 app.use("/", userroute);
 
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"],
-  },
-});
+// const io = new Server(server, {
+//   cors: {
+//     origin: "http://localhost:3000",
+//     methods: ["GET", "POST"],
+//   },
+// });
 
-io.on("connect", (socket) => {
-  console.log("User connected:");
-  socket.on("join-room", (data) => {
-    socket.join(data);
-    console.log(`user with id :${socket.id} joined room:${data}`);
-  });
+// io.on("connect", (socket) => {
+//   console.log("User connected:");
+//     socket.emit('join-room', trackid);
+//   socket.on('join-room', (data) => {
+//     socket.join(data);
+//     console.log(`user with id :${socket.id} joined room:${data}`);
+//   });
 
 
-  socket.on("send_message", async (data) => {
-    io.to(data.room).emit("receive_message", data);
-    const { room, author, message } = data;
-    console.log("here for chat ", data);
-    await userController.chatHistory(room, message, author);
-  });
-});
+//   socket.on("send_message", async (data) => {
+//     io.to(data.room).emit("receive_message", data);
+//     const { room, author, message } = data;
+//     console.log("here for chat ", data);
+//     await userController.chatHistory(room, message, author);
+//   });
+// });
 
 const port = process.env.PORT || 5000;
 

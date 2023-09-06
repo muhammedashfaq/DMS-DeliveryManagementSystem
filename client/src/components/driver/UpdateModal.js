@@ -54,7 +54,7 @@ const UpdateModal = ({ visible, onClose, data }) => {
 
         toast.success("Verification successful");
       } else {
-        toast.error("Verification failed");
+        toast.error(response.data.message);
       }
     } catch (error) {
       toast.error("Something went wrong");

@@ -6,29 +6,29 @@ import {
   ProtectedRoutesUser,
   ProtectedRoutesAdmin,
   ProtectedRoutesdriver,
-} from "./components/Routes/protectedRoutes";
+} from "./protectedRoutes";
 import {
   PublicRoutesUser,
   PublicRoutesAdmin,
   PublicRoutesdriver,
-} from "./components/Routes/publicRoutes";
+} from "./publicRoutes";
 
-import Landingpage from "./pages/user/Homepage/landingpage";
-import Login from "./pages/user/login";
-import Register from "./pages/user/register";
-import Otp from "./pages/user/otp";
-import Forget from "./pages/user/forget";
+import Landingpage from "../pages/user/Homepage/landingpage";
+import Login from "../pages/user/login";
+import Register from "../pages/user/register";
+import Otp from "../pages/user/otp";
+import Forget from "../pages/user/forget";
 
-import Hublogin from "./pages/driver/login";
-import Adminlogin from "./pages/admin/login";
-import AdminHome from "./pages/admin/Home/Home";
-import HubHome from "./pages/driver/home";
-import Hubtrack from "./pages/driver/hubTrack";
-import ChatBody from "./pages/driver/hubChat";
-import UserProfile from "./pages/user/UserProfile/userProfile";
-import BookShipment from "./pages/user/Bookshipment/BookShipment";
-import Reset from "./pages/user/forget2";
-import Test from "./components/test/Test";
+import Hublogin from "../pages/driver/login";
+import Adminlogin from "../pages/admin/login";
+import AdminHome from "../pages/admin/Home/Home";
+import HubHome from "../pages/driver/home";
+import Hubtrack from "../pages/driver/hubTrack";
+import ChatBody from "../pages/driver/hubChat";
+import UserProfile from "../pages/user/UserProfile/userProfile";
+import BookShipment from "../pages/user/Bookshipment/BookShipment";
+import Reset from "../pages/user/forget2";
+import Test from "../components/test/Test";
 
 const AppRoutes = () => {
   const { loading } = useSelector((state) => state.alerts);

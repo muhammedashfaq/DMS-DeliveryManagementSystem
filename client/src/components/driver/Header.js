@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import { useNavigate,Link,useLocation} from 'react-router-dom'
 import { hideloading, showloading } from "../../Helper/redux/alertSlice";
 import axios from 'axios';
+import { ClassNames } from '@emotion/react';
 
 const Header = () => {
 
@@ -49,7 +50,7 @@ const Header = () => {
 		},
 		{
 			name:"Chats",
-			path:"/chatbody",
+			// path:"/chatbody",
 		
 		},
 
@@ -64,19 +65,32 @@ const Header = () => {
 
 		<ul className="items-stretch hidden space-x-1 md:flex  mr-10 ">
 
-			{menu?.map((menuitem)=>{
-				const isActive = location.pathname===menuitem.path
-				return(
+		{menu?.map((menuitem, i) => {
+  const isActive = location.pathname === menuitem.path;
 
-			<li className="flex">
-				<Link to={menuitem.path}  rel="noopener noreferrer" href="#" className={`flex items-center px-4 -mb-1  border-b-4 border-white font-semibold ${isActive && "border-b-4 border-white font-semibold"}`}>{menuitem.name}</Link>
-			</li>
-				)
-			})}
+  return (
+    <li key={i} className="flex">
+      <Link
+        to={menuitem.path}
+        rel="noopener noreferrer"
+        href="#"
+        className=
+          {`flex items-center px-4 -mb-1
+		 ${
+			 isActive && "border-b-4"
+
+		 } `}
+        
+      >
+        {menuitem.name}
+      </Link>
+    </li>
+  );
+})}
 
 			
 			<li className="flex">
-				<a rel="noopener noreferrer" href="#" className="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent" onClick={()=>{localStorage.removeItem('drivertoken')
+				<a rel="noopener noreferrer" href="#" className= " flex items-center px-4 -mb-1 border-b-2 dark:border-transparent" onClick={()=>{localStorage.removeItem('drivertoken')
                     
                     
                     dispatch(showloading())

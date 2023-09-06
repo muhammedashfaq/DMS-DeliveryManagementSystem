@@ -28,7 +28,6 @@ const TransistUpdateModal = ({ visible, onClose, data }) => {
 
       if (response.data.success) {
         toast.success(response.data.message);
-
         window.location.reload();
       } else {
         toast.error(response.data.message);
@@ -46,12 +45,9 @@ const TransistUpdateModal = ({ visible, onClose, data }) => {
 
       if (response.data.success) {
         const statusdata = response.data.data.status;
-
+        console.log(statusdata, "stat");
         setStatus(statusdata);
-
-        console.log(statusdata, "dattaaaa");
-
-        toast.success("Verification successful");
+        toast.success(response.data.message);
       } else {
         toast.error("Verification failed");
       }

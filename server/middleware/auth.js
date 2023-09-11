@@ -1,26 +1,26 @@
+// 
+
 const jwt = require("jsonwebtoken");
 
-module.exports = async (req, res, next) => {
+module.exports = (req, res, next) => {
   try {
-    
-    const token = req.headers["authorization"]?.split(" ")[1];
-    if (!token) {
-      return res.status(401).send({ message: "Token missing", success: false });
+    const token = req.headers["authorization"];
+    if (!token || !token.startsWith("Bearer ")) {
+      return res.status(401).send({ message: "Token missing or invalid", success: false });
     }
-    
-    jwt.verify(token, process.env.JWT_SECRET_USER, (err, decoded) => {
+
+    const tokenValue = token.split(" ")[1];
+
+    jwt.verify(tokenValue, process.env.JWT_SECRET_USER, (err, decoded) => {
       if (err) {
-        console.log(err);
-        return res.status(401).send({ message: "Auth failed", success: false });
+        return res.status(401).send({ message: "Authentication failed", success: false });
       } else {
         req.userId = decoded.id;
-
         next();
       }
     });
   } catch (error) {
-    console.log(error);
-
-    return res.status(401).send({ message: "Auth failed", success: false });
+    console.error(error);
+    return res.status(500).send({ message: "Internal server error", success: false });
   }
 };

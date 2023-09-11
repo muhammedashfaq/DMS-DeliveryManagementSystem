@@ -24,9 +24,9 @@ import Adminlogin from "../pages/admin/login";
 import AdminHome from "../pages/admin/Home/Home";
 import HubHome from "../pages/driver/home";
 import Hubtrack from "../pages/driver/hubTrack";
-import ChatBody from "../pages/driver/hubChat";
 import UserProfile from "../pages/user/UserProfile/userProfile";
 import BookShipment from "../pages/user/Bookshipment/BookShipment";
+import UserContactForm from "../pages/user/UserContactform/userContactform";
 import Reset from "../pages/user/forget2";
 import Test from "../components/test/Test";
 
@@ -121,6 +121,14 @@ const AppRoutes = () => {
             </ProtectedRoutesUser>
           }
         />
+              <Route
+          path="/contact"
+          element={
+            <ProtectedRoutesUser>
+              <UserContactForm />{" "}
+            </ProtectedRoutesUser>
+          }
+        />
 
         {/* ADMIN_SIDE ------------------------------------------------------------------------*/}
         <Route
@@ -159,14 +167,7 @@ const AppRoutes = () => {
             </ProtectedRoutesdriver>
           }
         />
-             <Route
-          path="/chatbody"
-          element={
-            <ProtectedRoutesdriver>
-              <ChatBody />
-            </ProtectedRoutesdriver>
-          }
-        />
+    
 
 <Route
           path="/hubtrack"

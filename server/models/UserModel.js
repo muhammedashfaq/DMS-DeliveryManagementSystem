@@ -35,9 +35,9 @@ const userSchema = new mongoos.Schema(
       default: "",
     },
     mobile: {
-      type: Number,
+      type: String,
       trim: true,
-      default: 0,
+      default:""
     },
   },
   {

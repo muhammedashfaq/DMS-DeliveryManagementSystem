@@ -107,38 +107,34 @@ const BookShipment = () => {
 
   const PaymentUpdate = async (payment, order, id) => {
     try {
-      const response = await axios.post("/advancepaymentUpdate", {
-        payment,
-        order,
-        id,
-      });
+      userRequest({
+        url: "/advancepaymentUpdate",
+        method: "post",
+        data: {
+          payment: payment,
+          order: order,
+          id: id,
+        },
+      })
+        .then((response) => {
+          if (response.data.success) {
+            toast.success(response.data.message);
 
-      if (response.data.success) {
-        toast.success(response.data.message);
-
-        navigate("/userProfile");
-      } else {
-        toast.error(response.data.message);
-      }
+            navigate("/userProfile");
+          } else {
+            toast.error(response.data.message);
+          }
+        })
+        .catch((err) => {
+          toast.error("something went wrong");
+          console.log(err);
+          localStorage.removeItem("token");
+          navigate("/");
+        });
     } catch (error) {
       toast.error("something went wrong");
     }
   };
-
-  // const getData = async (req, res) => {
-  //   try {
-  //     const response = await axios.get("/getLocationData");
-  //     if (response.data.success) {
-  //       toast.success(response.data.message);
-  //       const city = response.data.data;
-  //       setfetchedCity(city);
-  //     } else {
-  //       toast.error(response.data.message);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   const getData = async (req, res) => {
     userRequest({
@@ -154,11 +150,12 @@ const BookShipment = () => {
           toast.error(response.data.message);
         }
       })
+
       .catch((err) => {
         toast.error("something went wrong");
         console.log(err);
         localStorage.removeItem("token");
-        navigate("/login");
+        navigate("/");
       });
   };
 

@@ -24,5 +24,9 @@ router.get("/getLocationData", userController.getLocationData);
 router.post("/bookshipment", authmiddleware, userController.bookshipment);
 router.post("/advancepaymentUpdate", userController.advancepaymentUpdate);
 router.post("/trackshipment", userController.trackshipment);
+router.post("/getchathistory", userController.getchathistory);
+router.post("/updateUserDetails",authmiddleware, userController.updateUserDetails);
+
+
 
 module.exports = router;

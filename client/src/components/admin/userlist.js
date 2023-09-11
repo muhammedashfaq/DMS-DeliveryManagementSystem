@@ -3,26 +3,18 @@ import { useDispatch } from "react-redux";
 import { hideloading, showloading } from "../../Helper/redux/alertSlice";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 const Userlist = () => {
-  
   const dispatch = useDispatch();
-  const [search,setSearch]=useState("")
+  const [search, setSearch] = useState("");
   const [user, setUser] = useState([]);
-
-
 
   const filteredUsers = user.filter((user) => {
     const lowerCaseSearchInput = search.toLowerCase();
-    return (
-      user.username.toLowerCase().includes(lowerCaseSearchInput)  
-      // user.email.toLowerCase().includes(lowerCaseSearchInput) 
-    );
+    return user.username.toLowerCase().includes(lowerCaseSearchInput);
+    // user.email.toLowerCase().includes(lowerCaseSearchInput)
   });
-
-
-
 
   const getUserData = async () => {
     try {
@@ -43,37 +35,39 @@ const Userlist = () => {
   const handleclick = async (email, status) => {
     try {
       if (status === false) {
-        const response = await axios.post("/admin/blockuser", { email: email },{
-          headers:{
-            Authorization: `Bearer ${localStorage.getItem("admintoken")}`,
-
+        const response = await axios.post(
+          "/admin/blockuser",
+          { email: email },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("admintoken")}`,
+            },
           }
-        });
-        console.log('falsw');
+        );
+        console.log("falsw");
         if (response.data.success) {
           toast.success(response.data.message);
-      
-          getUserData();
 
+          getUserData();
         } else {
           toast.error(response.data.message);
         }
       } else {
-        const response = await axios.post("/admin/unblockuser", {
-          email: email,
-        },{
-          headers:{
-            Authorization: `Bearer ${localStorage.getItem("admintoken")}`,
-
+        const response = await axios.post(
+          "/admin/unblockuser",
+          {
+            email: email,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("admintoken")}`,
+            },
           }
-        });
+        );
         if (response.data.success) {
           toast.success(response.data.message);
-        
-          
- 
-          getUserData();
 
+          getUserData();
         } else {
           toast.error(response.data.message);
         }
@@ -82,15 +76,18 @@ const Userlist = () => {
       toast.error("something went wrong");
     }
   };
-  
+
   useEffect(() => {
     getUserData();
-  },[]);
+  }, []);
   return (
     <div className="container mt-5">
       <div class="relative overflow-y-auto shadow-md sm:rounded-lg ">
         <div className=" flex justify-evenly w-full h-14 dark:bg-gray-700 text-sm text-left text-gray-500 dark:text-gray-400  ">
           <fieldset className=" space-y-1 dark:text-gray-100 mt-2">
+
+
+
             <label for="Search" className="hidden">
               Search
             </label>
@@ -114,12 +111,15 @@ const Userlist = () => {
                 type="search"
                 name="Search"
                 value={search}
-                placeholder="Search..."onChange={(e)=>setSearch(e.target.value)}
+                placeholder="Search..."
+                onChange={(e) => setSearch(e.target.value)}
                 className="w-32 py-2 pl-10 text-sm rounded-md sm:w-auto focus:outline-none dark:bg-gray-800 dark:text-gray-100 focus:dark:bg-gray-900 focus:dark:border-violet-400"
               />
             </div>
+
+
+            
           </fieldset>
-          
         </div>
         <hr className="bg-gray-400" />
 
@@ -141,7 +141,7 @@ const Userlist = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers?.length > 0 ?(
+            {filteredUsers?.length > 0 ? (
               filteredUsers?.map((user, index) => (
                 <tr
                   key={index}
@@ -160,30 +160,26 @@ const Userlist = () => {
                   <td className="px-6 py-2">
                     <a href="#">
                       <button
-                        className={`w-20 h-8  rounded-lg font-bold text-black hover:bg-slate-600 ${user.isBlocked? "bg-blue-500":"bg-red-800"}` }
+                        className={`w-20 h-8  rounded-lg font-bold text-black hover:bg-slate-600 ${
+                          user.isBlocked ? "bg-blue-500" : "bg-red-800"
+                        }`}
                         onClick={() => {
                           handleclick(user?.email, user?.isBlocked);
                         }}
-                      >   
-                         {user.isBlocked ? "Unblock  " : "Block"}
-                            </button>
+                      >
+                        {user.isBlocked ? "Unblock  " : "Block"}
+                      </button>
                     </a>
                   </td>
                 </tr>
               ))
-
-
-
-            ):(
-
+            ) : (
               <tr>
-          <td colSpan="5" className="px-6 py-4 bg-black text-center">
-            No matching data
-          </td>
-        </tr>
-
+                <td colSpan="5" className="px-6 py-4 bg-black text-center">
+                  No matching data
+                </td>
+              </tr>
             )}
-            
           </tbody>
         </table>
       </div>

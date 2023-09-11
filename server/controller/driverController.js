@@ -116,6 +116,7 @@ const getdashboardjobs = async (req, res) => {
         success: true,
         data: shipmentdata,
         transist: transisteddata,
+        hubid:hub._id
       });
     } else {
       res.status(200).send({ message: "error", success: false });

@@ -31,6 +31,15 @@ admin_router.post("/deletecity", adminController.deletecity);
 admin_router.post("/deleteplace", adminController.deleteplace);
 admin_router.post("/getshipmentdata", adminController.getshipmentdata);
 
-admin_router.get("/getLocationData", adminController.getLocationData);
+admin_router.get("/getLocationData",authmiddleware, adminController.getLocationData);
+admin_router.post("/getAllData", authmiddleware,adminController.getAllData);
+admin_router.post("/updateadminprofileimage", authmiddleware,  upload.upload.single("profileimage"),
+adminController.updateprofileimage);
+
+admin_router.post("/adminReportByHub", authmiddleware,adminController.adminReportByHub);
+admin_router.post("/updateadminDetails", authmiddleware,adminController.updateadminDetails);
+
+
+
 
 module.exports = admin_router;

@@ -149,6 +149,15 @@ const Header = () => {
                       </a>
                     </li>
                     <li>
+                      <a
+                        href="/contact"
+                        className="block px-4 py-2 text-sm text-gray-700  hover:bg-gray-700 hover:text-white font-serif font-semibold dark:hover:bg-gray-700 w-full text-left"
+                      >
+                        {" "}
+                        Contact Us
+                      </a>
+                    </li>
+                    <li>
                       <button 
                         onClick={() => {
                           localStorage.removeItem("token");
@@ -211,7 +220,7 @@ const Header = () => {
                       </Menu.Item>
                       <Menu.Item>
                         {({ active }) => (
-                          <a
+                          <a 
                             href="#"
                             className={classNames(
                               active ? "bg-gray-100" : "",

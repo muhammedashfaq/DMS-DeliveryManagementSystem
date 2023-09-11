@@ -48,11 +48,7 @@ const Header = () => {
 		
 		
 		},
-		{
-			name:"Chats",
-			// path:"/chatbody",
-		
-		},
+	
 
 	]
     const dispatch=useDispatch()

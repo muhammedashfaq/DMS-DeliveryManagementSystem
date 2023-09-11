@@ -1,0 +1,266 @@
+import React, { useEffect, useState } from "react";
+import Chart from "react-apexcharts";
+import { adminRequest } from "../../Helper/interceptor/axois";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+
+const AdminDashboard = () => {
+  const rupeeSymbol = "\u20B9";
+
+  const navigate = useNavigate();
+  const [selectedCity, setSelectedCity] = useState("All");
+  const [amt, setamt] = useState(null);
+  const [deliverCount, setDeliverycount] = useState(null);
+  const [unDeliveryCount, stUnDeliveryCount] = useState(null);
+  const [user, setUser] = useState(null);
+  const [hubCount, setHubCount] = useState(null);
+  const [shipmentCount, setShipmentCount] = useState(null);
+  const [hub, setHub] = useState([]);
+  const [shipment, setShipment] = useState([]);
+  // const [chartData, setChartData] = useState({ categories: [], series: [] });
+
+  const fetchDataByHub = async (city) => {
+    adminRequest({
+      url: "/admin/adminReportByHub",
+      method: "POST",
+      data: { city: city },
+    })
+      .then((response) => {
+        if (response.data.success) {
+          toast.success(response.data.message);
+          setamt(response.data.totalAdvanceAmount);
+          setDeliverycount(response.data.totalDeliveredShipment);
+          stUnDeliveryCount(response.data.totalUndeliveredShipments);
+        } else {
+          toast.error(response.data.message);
+        }
+      })
+      .catch((err) => {
+        toast.error("Something went wrong");
+        console.log(err);
+        localStorage.removeItem("admintoken");
+        navigate("/admin");
+      });
+  };
+  const handleCitySelect = (event) => {
+    const selectedValue = event.target.value;
+    setSelectedCity(selectedValue);
+    fetchDataByHub(selectedValue);
+  };
+  const getFullData = async () => {
+    adminRequest({
+      url: "/admin/getAllData",
+      method: "POST",
+    })
+      .then((response) => {
+        if (response.data.success) {
+          toast.success(response.data.message);
+
+          setUser(response.data.user);
+          setHubCount(response.data.hubCount);
+          setShipment(response.data.shipment);
+          setShipmentCount(response.data.shipmentcount);
+          setHub(response.data.hub);
+        } else {
+          toast.error(response.data.message);
+        }
+      })
+      .catch((err) => {
+        toast.error("Something went wrong");
+        console.log(err);
+        localStorage.removeItem("admintoken");
+        navigate("/admin");
+      });
+  };
+
+  useEffect(() => {
+    getFullData();
+    fetchDataByHub("All");
+
+  }, []);
+
+
+
+
+
+  const chartData = {
+    series: [
+      {
+        name: 'Desktops',
+        data: [55,12],
+      },
+    ],
+
+
+    
+    options: {
+      chart: {
+        height: 350,
+        type: 'line',
+        zoom: {
+          enabled: false,
+        },
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      stroke: {
+        curve: 'straight',
+      },
+      title: {
+        text: 'Product Trends by Month',
+        align: 'left',
+      },
+      grid: {
+        row: {
+          colors: ['#f3f3f3', 'transparent'], 
+          opacity: 0.5,
+        },
+      },
+      xaxis: {
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+      },
+    },
+  };
+
+
+  // pie chart
+  const chartDataPie = {
+    series: [5, 15, 13],
+    options: {
+      chart: {
+        width: 380,
+        type: 'pie',
+      },
+      labels: ['Malappuram', 'Calicut', 'Cochin'],
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200,
+            },
+            legend: {
+              position: 'bottom',
+            },
+          },
+        },
+      ],
+    },
+  };
+
+  return (
+    <div className="container ">
+      <div className="grid grid-cols-3 mt-9 ">
+        <div className="flex flex-col justify-center max-w-xs p-6 shadow-md rounded-xl sm:px-12 dark:bg-gray-900 dark:text-gray-100">
+          <div className="space-y-4 text-center divide-y divide-gray-700">
+            <div className="my-2 space-y-1">
+              <h2 className="text-xl font-semibold sm:text-2xl">{user}</h2>
+              <p className="px-5 text-xs sm:text-base dark:text-gray-400">
+                Total User
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col justify-center max-w-xs p-6 shadow-md rounded-xl sm:px-12 dark:bg-gray-900 dark:text-gray-100">
+          <div className="space-y-4 text-center divide-y divide-gray-700">
+            <div className="my-2 space-y-1">
+              <h2 className="text-xl font-semibold sm:text-2xl">{hubCount}</h2>
+              <p className="px-5 text-xs sm:text-base dark:text-gray-400">
+                Total Hub
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col justify-center max-w-xs p-6 shadow-md rounded-xl sm:px-12 dark:bg-gray-900 dark:text-gray-100">
+          <div className="space-y-4 text-center divide-y divide-gray-700">
+            <div className="my-2 space-y-1">
+              <h2 className="text-xl font-semibold sm:text-2xl">
+                {shipmentCount}
+              </h2>
+              <p className="px-5 text-xs sm:text-base dark:text-gray-400">
+                Total Shipment
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* <div id="chart" className="mt-12 shadow-md"> */}
+        {/* <Chart options={chartData.options} series={chartData.series} type="line" height={350} /> */}
+
+        {/* <Chart
+          options={options}
+          series={chartData.series}
+          type="bar"
+          height={350}
+        />
+      </div> */}
+
+<div id="chart">
+      <Chart options={chartData.options} series={chartData.series} type="line" height={350} />
+    </div>
+    <div id="chart">
+      <Chart options={chartDataPie.options} series={chartDataPie.series} type="pie" width={380} />
+    </div>
+
+      <div className="flex justify-center mt-2 ">
+        <h1 className=" pt-4 mt-2 font-serif font-extrabold text-2xl underline text-orange-600">
+          Reports From {selectedCity} Hub
+        </h1>
+      </div>
+      <div className="border-1 border-sky-100 rounded-md  flex justify-center mt-10  p-2 mb-16  shadow-xl">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-100">
+            <tr>
+              <th>
+                <select
+                  className="w-40 bg-gray-200 border rounded-md py-2 px-4 focus:outline-none focus:ring focus:border-blue-300 font-mono"
+                  onChange={handleCitySelect}
+                  value={selectedCity}
+                >
+                  <option value="All">-- All --</option>
+                  {hub.map((hubItem, i) => (
+                    <option key={i} value={hubItem.city}>
+                      {hubItem.city}
+                    </option>
+                  ))}
+                </select>
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Details
+              </th>
+            </tr>
+          </thead>
+          <tbody className=" divide-y divide-gray-200 font-mono bg-slate-200">
+            <tr>
+              <td className="px-6 py-4 whitespace-nowrap border-b-2 border-sky-950 text-xl">
+                Total Advance Collected from {selectedCity} Hub
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap border-b-2 border-sky-950">
+               {rupeeSymbol}{amt}
+              </td>
+            </tr>
+            <tr>
+              <td className="px-6 py-4 whitespace-nowrap  border-b-2 border-sky-950 text-xl">
+                Total Shipment Delivered from {selectedCity} Hub{" "}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap  border-b-2 border-sky-950">
+                {deliverCount}
+              </td>
+            </tr>
+            <tr>
+              <td className="px-6 py-4 whitespace-nowrap  border-b-2 border-sky-950  text-xl">
+                Total Pending Pending Delivery from {selectedCity} Hub
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap  border-b-2 border-sky-950">
+                {unDeliveryCount}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+export default AdminDashboard;

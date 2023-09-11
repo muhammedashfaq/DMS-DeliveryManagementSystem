@@ -5,11 +5,13 @@ import{Routes,Route} from 'react-router-dom'
 import UserDetails from '../../../components/admin/userlist'
 import DriverDetails from '../../../components/admin/driverlist'
 import AddDriver from "../../../components/admin/addDriver";
-import AdminProfile from "../../../components/admin/adminProfile";
+import AdminProfile from "../../../components/admin/AdminProfile";
 import DriverProfilePage from '../../../components/admin/driverProfile'
 import ShipmentList from '../../../components/admin/shipmentlist'
 import Services from '../../../components/admin/services'
 import Trackpage from '../../../components/admin/admintrack'
+import AdminDashboard from "../../../components/admin/AdminDashboard";
+import AdminReports from "../../../components/admin/Reports"
 import axios from "axios";
 const Home = () => {
 
@@ -40,12 +42,9 @@ const Home = () => {
 
 
   return (
-    <div className=" h-screen bg-gradient-to-bl from-slate-900 via-purple-900 to-slate-900"
+    <div className=" "
     
-    // style={{
-    //   backgroundImage: "url(./images/landingpage/track.jpg)",
-    // }}
-    
+  
     >
       <Header  />
       <SideNav />
@@ -60,13 +59,18 @@ const Home = () => {
           <Route path='/shipment_list' element={<ShipmentList/> }/>
           <Route path='/services' element={<Services/> }/>
           <Route path='/admintrack' element={<Trackpage/> }/>
+          <Route path='/admindashboard' element={<AdminDashboard/> }/>
+          <Route path='/reports' element={<AdminReports/> }/>
+          
 
 
 
 
 
         </Routes>
+
       </div>
+
 
 
    

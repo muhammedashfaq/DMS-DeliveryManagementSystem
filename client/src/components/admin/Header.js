@@ -19,8 +19,7 @@ const Header = () => {
         }
       );
       if(response.data.success){
-        const adminname = response.data.data.name
-        console.log(adminname,'name');
+        const adminname = response.data.data
         setHeadName(adminname)
 
       }
@@ -33,27 +32,28 @@ const Header = () => {
 
   
   useEffect(() => {
-    console.log('12222')
     getData();
   },[]);
 
 
 
   return (
-    <div className=" h-16 flex justify-end ">
-      <div className="flex justify-end  w-96 border-b-4 border-gray-500">
+    <div className=" h-18 flex justify-end  ">
+      <div className="flex justify-end  w-96 border-b-4 border-gray-500 ">
         <div className="hidden sm:ml-6 sm:block">
 
             <div className="flex space-x-4 pt-6">
-              <a className="text-white" href="#">Hi Admin   {headname} </a>
+              <a className="text-black" href="#">Hi Admin   {headname?.username} </a>
             </div>
          
         </div>
 
         <div className="hidden sm:ml-6 sm:block">
           <a href="/adminhome/adminprofile">
-            <div className="flex space-x-4  mr-7 pt-2 text-white  " >
-              <svg
+            <div className="flex space-x-4  mr-7 pt-2 text-black  p-2" >
+
+              <img src={headname?.profileimage}     className="w-14 h-14 rounded-full  border-slate-600 border-4  " />
+              {/* <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="50"
                 height="50"
@@ -66,7 +66,7 @@ const Header = () => {
                   fill-rule="evenodd"
                   d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
                 />
-              </svg>
+              </svg> */}
             </div>
           </a>
         </div>

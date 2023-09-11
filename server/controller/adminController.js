@@ -59,9 +59,8 @@ const adminLogin = async (req, res) => {
 
 const admindetails = async (req, res) => {
   try {
-
-    const id= req.adminId
-    const user = await User.findOne({ _id:id });
+    const id = req.adminId;
+    const user = await User.findOne({ _id: id });
     if (!user) {
       return res
         .status(200)
@@ -69,7 +68,7 @@ const admindetails = async (req, res) => {
     } else {
       res.status(200).send({
         success: true,
-        data: { name: user.username, email: user.email },
+        data: user,
       });
     }
   } catch (error) {
@@ -255,7 +254,10 @@ const driverstatusUpdate = async (req, res) => {
 
 const getLocationData = async (req, res) => {
   try {
+    console.log(req.adminId, "jjj");
+
     const locationdata = await service.find({});
+    console.log(locationdata, "city");
 
     res
       .status(200)
@@ -393,6 +395,210 @@ const getshipmentdata = async (req, res) => {
     res.status(500).send({ message: "something went wrong", success: false });
   }
 };
+
+const getAllData = async (req, res) => {
+  try {
+    const id = req.adminId;
+    const admin = await User.findById({ _id: id });
+
+    if (admin) {
+      const userCount = await User.countDocuments();
+
+      const hubDataCount = await Hub.countDocuments();
+      const hubData = await Hub.find();
+
+      const deliveredShipmentcount = await shipmentModel.countDocuments({
+        "shipment.shipmentStatus": "Delivered",
+      });
+      const deliveredShipment = await shipmentModel.find({
+        "shipment.shipmentStatus": "Delivered",
+      });
+      res.status(200).send({
+        message: "Data fetched successfully",
+        success: true,
+        user: userCount,
+        hubCount: hubDataCount,
+        hub: hubData,
+        shipment: deliveredShipment,
+        shipmentcount: deliveredShipmentcount,
+      });
+    } else {
+      res.status(200).send({
+        message: "Admin not found",
+        success: false,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: "Something went wrong",
+      success: false,
+    });
+  }
+};
+
+const updateprofileimage = async (req, res) => {
+  try {
+    const id = req.adminId;
+    const admin = await User.findById({ _id: id });
+
+    if (admin) {
+      await sharp("./public/multer/" + req.file.filename)
+        .resize(500, 500)
+        .toFile("./public/cloudinary/" + req.file.filename);
+
+      const data = await cloudinary.uploader.upload(
+        "./public/cloudinary/" + req.file.filename
+      );
+
+      const cdurl = data.secure_url;
+
+      await User.findOneAndUpdate(
+        { email: admin.email },
+        { $set: { profileimage: cdurl } }
+      );
+
+      res
+        .status(200)
+        .send({ message: "image uploaded", success: true, image: cdurl });
+    } else {
+      res.status(200).send({
+        message: "Admin not found",
+        success: false,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: "Something went wrong",
+      success: false,
+    });
+  }
+};
+
+const adminReportByHub = async (req, res) => {
+  try {
+    const id = req.adminId;
+    const admin = await User.findById({ _id: id });
+
+    if (admin) {
+      const { city } = req.body;
+      console.log(req.body, "body");
+
+      if(city==="All"){
+        const shipments = await shipmentModel.find();
+  
+        const totalAdvanceAmount = shipments.reduce((total, shipment) => {
+          return total + (shipment.shipment[0].advanceamount || 0);
+        }, 0);
+  
+        const totalDeliveredShipments = await shipmentModel.countDocuments({
+         
+          "shipment.shipmentStatus": "Delivered",
+        });
+  
+        const totalUndeliveredShipments = await shipmentModel.countDocuments({
+    
+          "shipment.shipmentStatus": { $ne: "Delivered" },
+        });
+        console.log(totalAdvanceAmount, "amt");
+  
+        res.status(200).send({
+          message: "Data fetched successfully",
+          success: true,
+          totalAdvanceAmount: totalAdvanceAmount,
+          totalDeliveredShipment: totalDeliveredShipments,
+          totalUndeliveredShipments: totalUndeliveredShipments,
+        });
+
+        
+
+      }else{
+
+        const shipments = await shipmentModel.find({
+          fromhub: city,
+        });
+  
+        const totalAdvanceAmount = shipments.reduce((total, shipment) => {
+          return total + (shipment.shipment[0].advanceamount || 0);
+        }, 0);
+  
+        const totalDeliveredShipments = await shipmentModel.countDocuments({
+          fromHub: city,
+          "shipment.shipmentStatus": "Delivered",
+        });
+  
+        const totalUndeliveredShipments = await shipmentModel.countDocuments({
+          fromHub: city,
+          "shipment.shipmentStatus": { $ne: "Delivered" },
+        });
+        console.log(totalAdvanceAmount, "amt");
+  
+        res.status(200).send({
+          message: "Data fetched successfully",
+          success: true,
+          totalAdvanceAmount: totalAdvanceAmount,
+          totalDeliveredShipment: totalDeliveredShipments,
+          totalUndeliveredShipments: totalUndeliveredShipments,
+        });
+      }
+
+    } else {
+      res.status(200).send({
+        message: "Admin not found",
+        success: false,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      message: "Something went wrong",
+      success: false,
+    });
+  }
+};
+
+const updateadminDetails = async (req, res) => {
+  try {
+    const id = req.adminId;
+    const admin = await User.findById({ _id: id });
+
+    if (admin) {
+      const { input, field } = req.body;
+
+      const updatedUser = await User.updateOne(
+        { _id: id },
+        { $set: { [field]: input } },
+        { new: true }
+      );
+
+      if (updatedUser) {
+        res
+          .status(200)
+          .send({
+            message: "User details updated successfully",
+            success: true,
+          });
+      } else {
+        res
+          .status(200)
+          .send({ message: "User details were not updated", success: false });
+      }
+    } else {
+      res.status(200).send({
+        message: "Admin not found",
+        success: false,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: "Something went wrong",
+      success: false,
+    });
+  }
+};
+
 module.exports = {
   adminLogin,
   admindetails,
@@ -410,4 +616,8 @@ module.exports = {
   deletecity,
   deleteplace,
   getshipmentdata,
+  getAllData,
+  updateprofileimage,
+  adminReportByHub,
+  updateadminDetails,
 };

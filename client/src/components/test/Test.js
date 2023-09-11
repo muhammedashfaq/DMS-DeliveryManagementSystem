@@ -7,37 +7,34 @@ const Test = () => {
   return (
     <div>
 
-<div className="grid max-w-screen-xl grid-cols-1 gap-8 px-8 py-16 mx-auto rounded-lg md:grid-cols-2 md:px-12 lg:px-16 xl:px-32 dark:bg-gray-800 dark:text-gray-100">
-	<div className="flex flex-col justify-between">
-		<div className="space-y-2">
-			<h2 className="text-4xl font-bold leadi lg:text-5xl">Let's talk!</h2>
-			<div className="dark:text-gray-400">Vivamus in nisl metus? Phasellus.</div>
+
+<div class="flex flex-col flex-grow w-full max-w-xl bg-white shadow-xl rounded-lg overflow-hidden">
+		<div class="flex flex-col flex-grow h-0 p-4 overflow-auto">
+			<div class="flex w-full mt-2 space-x-3 max-w-xs">
+				<div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
+				<div>
+					<div class="bg-gray-300 p-3 rounded-r-lg rounded-bl-lg">
+						<p class="text-sm">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+					</div>
+					<span class="text-xs text-gray-500 leading-none">2 min ago</span>
+				</div>
+			</div>
+			<div class="flex w-full mt-2 space-x-3 max-w-xs ml-auto justify-end">
+				<div>
+					<div class="bg-blue-600 text-white p-3 rounded-l-lg rounded-br-lg">
+						<p class="text-sm">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.</p>
+					</div>
+					<span class="text-xs text-gray-500 leading-none">2 min ago</span>
+				</div>
+				<div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
+			</div>
 		</div>
-		<img src="assets/svg/doodle.svg" alt="" className="p-6 h-52 md:h-64" />
+		
+		<div class="bg-gray-300 p-4">
+			<input class="flex items-center h-10 w-full rounded px-3 text-sm" type="text" placeholder="Type your message…" />
+		</div>
 	</div>
-	<form novalidate="" className="space-y-6">
-		<div>
-			<label for="name" className="text-sm">Full name</label>
-			<input id="name" type="text" placeholder="" className="w-full p-3 rounded dark:bg-gray-800" />
-		</div>
-		<div>
-			<label for="email" className="text-sm">Email</label>
-			<input id="email" type="email" className="w-full p-3 rounded dark:bg-gray-800" />
-		</div>
-		<div>
-			<label for="message" className="text-sm">Message</label>
-			<textarea id="message" rows="3" className="w-full p-3 rounded dark:bg-gray-800"></textarea>
-		</div>
-		<button type="submit" className="w-full p-3 text-sm font-bold tracki uppercase rounded dark:bg-violet-400 dark:text-gray-900">Send Message</button>
-	</form>
-</div>
 
-
-
-
-  <Popup trigger={<button> Trigger</button>} position="right center">
-    <div>Popup content here !! jfhksgkg</div>
-  </Popup>
 
     </div>
   )	

@@ -7,7 +7,7 @@ const Nav = () => {
   const menu = [
     {
       name: "Dashboard",
-      path: "/adminhome",
+      path: "/adminhome/admindashboard",
       icon: "material-symbols-outlined",
       iconname: "dashboard",
     },
@@ -18,12 +18,7 @@ const Nav = () => {
       icon: "material-symbols-outlined",
       iconname: "analytics",
     },
-    {
-      name: "Chats",
-      path: "/adminhome/adminchats",
-      icon: "material-symbols-outlined",
-      iconname: "chat",
-    },
+   
     {
       name: "Track Shipment",
       path: "/adminhome/admintrack",

@@ -69,6 +69,7 @@ const UpdateModal = ({ visible, onClose, data }) => {
           visible ? "opacity-100" : "opacity-0 pointer-events-none"
         } transition-opacity duration-300`}
       >
+        
         <div className="w-full flex justify-center">
           <div className="bg-white border rounded-lg overflow-hidden w-full max-w-md p-6">
             <div className="flex justify-end">

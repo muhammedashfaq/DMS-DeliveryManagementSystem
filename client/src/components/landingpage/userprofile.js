@@ -7,8 +7,14 @@ import { AddressModal } from "./addressModal";
 import ChatModal from "./ChatModal";
 import { SliderThumb } from "@mui/material";
 import { toast } from "react-hot-toast";
+import { userRequest } from "../../Helper/interceptor/axois";
+import { useNavigate } from "react-router-dom";
 
 const Userprofile = () => {
+  const navigate = useNavigate();
+  const [editname, setEditname] = useState(false);
+  const [editmobile, setEditmobile] = useState(false);
+
   const [trackid, settrackid] = useState("");
   const [shipmentid, setshipmentid] = useState("");
   const [hub, sethub] = useState("");
@@ -22,6 +28,9 @@ const Userprofile = () => {
   const [profileimage, setProfileimage] = useState(image);
   const dispatch = useDispatch();
   const [user, setUser] = useState("");
+  // updateUsername..
+  const [username, setUsername] = useState(user?.username);
+  const [usermobile, setUsermobile] = useState(user?.mobile);
   const [shipmetDetails, setshipmentDetails] = useState([]);
   const [search, setSearch] = useState("");
 
@@ -31,35 +40,44 @@ const Userprofile = () => {
       .toLowerCase()
       .includes(lowerCaseSearchInput);
   });
+
   const submitimage = async (e) => {
-    try {
+    if (profileimage) {
       const formdata = new FormData();
       formdata.append("profileimage", profileimage);
-      formdata.append("name", userName);
       e.preventDefault();
 
       dispatch(showloading());
-      const response = await axios.post("/updateprofileimage", formdata, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
-      });
 
-      console.log("res", response);
-
-      dispatch(hideloading());
-      if (response.data.success) {
-        getData();
-      }
-    } catch (error) {}
+      userRequest({
+        url: "/updateprofileimage",
+        method: "POST",
+        data: formdata,
+      })
+        .then((response) => {
+          dispatch(hideloading());
+          if (response.data.success) {
+            toast.success(response.data.message);
+            getData();
+          } else {
+            toast.error(response.data.message);
+          }
+        })
+        .catch((err) => {
+          dispatch(hideloading());
+          toast.error("something went wrong in catch");
+          console.log(err);
+          localStorage.removeItem("token");
+          navigate("/");
+        });
+    } else {
+      alert("no image");
+    }
   };
 
   const changeimage = (event) => {
     const file = event.target.files[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setImage(imageUrl);
       setProfileimage(file);
     }
   };
@@ -78,6 +96,35 @@ const Userprofile = () => {
     sethub(hub);
   };
 
+  const updateform = async (input, field) => {
+    userRequest({
+      url: "/updateUserDetails",
+      method: "POST",
+      data: {
+        input: input,
+
+        field: field,
+      },
+    })
+      .then((response) => {
+        if (response.data.success) {
+          toast.success(response.data.message);
+          setEditmobile(false);
+          setEditname(false);
+          getData();
+        } else {
+          toast.error(response.data.message);
+        }
+      })
+      .catch((err) => {
+        dispatch(hideloading());
+
+        toast.error("something went wrong");
+        console.log(err);
+        localStorage.removeItem("token");
+        navigate("/");
+      });
+  };
   const getData = async (req, res) => {
     try {
       dispatch(showloading());
@@ -97,11 +144,6 @@ const Userprofile = () => {
         toast.success(response.data.message);
         const data = response.data.data;
 
-        
-        console.log(response, "data");
-
-
-
         setUser(data);
         const shipmentdata = response.data.shipmentdata;
         setshipmentDetails(shipmentdata);
@@ -112,8 +154,6 @@ const Userprofile = () => {
   };
   useEffect(() => {
     getData();
-
-    console.log("123");
   }, []);
   return (
     <div>
@@ -123,40 +163,42 @@ const Userprofile = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="md:col-span-1">
               <div className="mb-4  dark:bg-gray-800 border-solid border-2 border-red-600">
-                <form enctype="multipart/form-data" onSubmit={submitimage}>
-                  <div className="text-center ">
-                    <img
-                      src={user?.profileimage ? user.profileimage : image}
-                      alt="avatar"
-                      className="  w-max h-max mt-8 md:w-52 lg:w-64 mx-auto"
-                    />
-                    <p className="text-muted mt-2 mb-1 text-sm md:text-base lg:text-lg">
-                      {user?.username}
-                    </p>
-                    <p className="text-muted mb-4 text-sm md:text-base lg:text-lg">
-                      {user?.email}
-                    </p>
+                <div className="text-center ">
+                  <img
+                    src={user?.profileimage ? user.profileimage : image}
+                    alt="avatar"
+                    className="  w-max h-max mt-8 md:w-52 lg:w-64 mx-auto"
+                  />
+                  <p className="text-muted mt-2 mb-1 text-sm md:text-base lg:text-lg">
+                    {user?.username}
+                  </p>
+                  <p className="text-muted mb-4 text-sm md:text-base lg:text-lg">
+                    {user?.email}
+                  </p>
 
-                    <div className="flex justify-center space-x-2">
-                      <label
-                        for="imageUpload"
-                        className="block mb-2 cursor-pointer text-white"
-                      >
-                        Click to Upload Image
-                      </label>
-                      <input
-                        type="file"
-                        id="imageUpload"
-                        name="profileimage"
-                        className="hidden"
-                        onChange={changeimage}
-                      />
-                      <button className="bg-blue-500 mb-2 ml-2 h-10 text-white py-2 px-4 rounded text-sm md:text-base lg:text-lg ">
-                        Upload
-                      </button>
-                    </div>
+                  <div className="flex justify-center space-x-2">
+                    <label
+                      for="imageUpload"
+                      className="block mb-2 cursor-pointer text-white"
+                    >
+                      Click to Upload Image
+                    </label>
+                    <input
+                      type="file"
+                      id="imageUpload"
+                      name="profileimage"
+                      className="hidden"
+                      onChange={changeimage}
+                    />
+                    <button
+                      type="submit"
+                      onClick={submitimage}
+                      className="bg-blue-500 mb-2 ml-2 h-10 text-white py-2 px-4 rounded text-sm md:text-base lg:text-lg "
+                    >
+                      Upload
+                    </button>
                   </div>
-                </form>
+                </div>
               </div>
             </div>
 
@@ -167,10 +209,36 @@ const Userprofile = () => {
                     <div className="mb-2 flex items-center">
                       <p className="w-1/4 text-sm md:text-base lg:text-lg">
                         Full Name
+                        {editname ? (
+                          <button
+                            onClick={() => updateform(username, "username")}
+                            class="material-symbols-outlined ml-4 absolute mt-1 bg-green-800 rounded-md text-white font-semibold"
+                          >
+                            done
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => setEditname(true)}
+                            className="material-symbols-outlined ml-4 absolute mt-1"
+                          >
+                            edit
+                          </button>
+                        )}
                       </p>
-                      <p className="w-3/4 text-muted text-sm md:text-base lg:text-lg">
-                        {user?.username}
-                      </p>
+
+                      {editname ? (
+                        <input
+                          type="text"
+                          className="w-3/4 text-muted text-sm md:text-base lg:text-lg bg-gray-300 rounded-md"
+                          value={username}
+                          defaultValue={user?.username}
+                          onChange={(e) => setUsername(e.target.value)}
+                        />
+                      ) : (
+                        <p className="w-3/4 text-muted text-sm md:text-base lg:text-lg">
+                          {user?.username}
+                        </p>
+                      )}
                     </div>
                     <hr className="my-2" />
                     <div className="mb-2 flex items-center">
@@ -182,22 +250,39 @@ const Userprofile = () => {
                       </p>
                     </div>
                     <hr className="my-2" />
-                    <div className="mb-2 flex items-center">
-                      <p className="w-1/4 text-sm md:text-base lg:text-lg">
-                        Phone
-                      </p>
-                      <p className="w-3/4 text-muted text-sm md:text-base lg:text-lg">
-                        {user?.mobile}
-                      </p>
-                    </div>
-                    <hr className="my-2" />
+
                     <div className="mb-2 flex items-center">
                       <p className="w-1/4 text-sm md:text-base lg:text-lg">
                         Mobile
+                        {editmobile ? (
+                          <button
+                            onClick={() => updateform(usermobile, "mobile")}
+                            class="material-symbols-outlined ml-4 absolute mt-1 bg-green-800 rounded-md text-white font-semibold"
+                          >
+                            done
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => setEditmobile(true)}
+                            className="material-symbols-outlined ml-4 absolute mt-1"
+                          >
+                            edit
+                          </button>
+                        )}
                       </p>
-                      <p className="w-3/4 text-muted text-sm md:text-base lg:text-lg">
-                        {user?.mobile}
-                      </p>
+
+                      {editmobile ? (
+                        <input
+                          onChange={(e) => setUsermobile(e.target.value)}
+                          value={usermobile}
+                          className="w-3/4 text-muted text-sm md:text-base lg:text-lg bg-gray-300 rounded-md"
+                          defaultValue={user?.mobile}
+                        />
+                      ) : (
+                        <p className="w-3/4 text-muted text-sm md:text-base lg:text-lg">
+                          {user?.mobile}
+                        </p>
+                      )}
                     </div>
                     <hr className="my-2" />
                     <div className="mb-2 flex  items-center">
@@ -301,11 +386,11 @@ const Userprofile = () => {
                 </div>
               </div>
             ))}
-            {/* <ChatModal
+            <ChatModal
               onClose={handlechatclose}
               visible={showchatModal}
               data={{ trackID: trackid, shipmentId: shipmentid, hub: hub }}
-            /> */}
+            />
           </div>
         </div>
       </div>

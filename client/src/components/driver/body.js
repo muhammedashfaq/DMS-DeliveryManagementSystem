@@ -2,12 +2,21 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import UpdateModal from "./UpdateModal";
 import TransistUpdateModal from "./transistUpdateModal";
+import ChatIcon from "@mui/icons-material/Chat";
+
+import HubChatModal from "./HubChatModal";
 
 import axios from "axios";
 
 function Body() {
-  const [updatetrackid,setupdatetrackid]=useState("")
-  const [transistTrackid,settransistTrackid]=useState("")
+  const [hubid, setHubid] = useState();
+  const [showchatModal, setShowchatModal] = useState(false);
+  const [trackid, settrackid] = useState("");
+  const [shipmentid, setshipmentid] = useState("");
+  const [username, setUsername] = useState("");
+
+  const [updatetrackid, setupdatetrackid] = useState("");
+  const [transistTrackid, settransistTrackid] = useState("");
 
   const [showModal, setShowModal] = useState(false);
   const [showtransistModal, setshowtransistModal] = useState(false);
@@ -16,36 +25,34 @@ function Body() {
   const [jobs, setJobs] = useState([]);
   const [transist, setTransist] = useState([]);
 
-
-
-  const [search,setsearch]=useState("")
+  const [search, setsearch] = useState("");
 
   const searchdatajobs = jobs.filter((shipment) => {
-    
     return shipment.shipment[0].trackid.includes(search);
   });
 
-  const [searchtransist,setsearchtransist]=useState("")
+  const [searchtransist, setsearchtransist] = useState("");
 
   const searchdatatransist = transist.filter((shipment) => {
-    
     return shipment.shipment[0].trackid.includes(searchtransist);
   });
 
+  const updatechatmodaldata = (trackID, shipmentid, username) => {
+    setShowchatModal(true);
+    settrackid(trackID);
+    setshipmentid(shipmentid);
+    setUsername(username);
+  };
 
+  const updatemodaldata = (trackid) => {
+    setShowModal(true);
+    setupdatetrackid(trackid);
+  };
 
-  const updatemodaldata =(trackid)=>{
-    setShowModal(true)
-    setupdatetrackid(trackid)
-
-  }
-
-  const transistmodaldata =(trackid)=>{
-    setshowtransistModal(true)
-    settransistTrackid(trackid)
-
-  }
-
+  const transistmodaldata = (trackid) => {
+    setshowtransistModal(true);
+    settransistTrackid(trackid);
+  };
 
   const sendtransist = async (e, trackid) => {
     try {
@@ -73,7 +80,6 @@ function Body() {
       if (response.data.success) {
         toast.success(response.data.message);
         getjobs();
-
       } else {
         toast.error(response.data.message);
       }
@@ -97,6 +103,9 @@ function Body() {
       if (response.data.success) {
         setTransist(response.data.transist);
         setJobs(response.data.data);
+        setHubid(response.data.hubid);
+
+        console.log(response, "hub ");
       } else {
       }
     } catch (error) {}
@@ -115,6 +124,10 @@ function Body() {
 
   const handletransistclose = () => {
     setshowtransistModal(false);
+  };
+
+  const handlechatclose = () => {
+    setShowchatModal(false);
   };
 
   return (
@@ -148,26 +161,24 @@ function Body() {
         <hr />
 
         {tabs === "joblist" && (
-      
-            <div className="flex  justify-center ">
-              <div className="flex bg-gray-50  p-2 rounded-md m-3 border-2 ">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 text-gray-400"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                </svg>
-                <input
-                  className=" outline-none ml-1 block w-full "
-                  type="text"
-                  name="search"
-                  value={search}
-                  placeholder="Search..."onChange={(e)=>setsearch(e.target.value)}
-                />
-              </div>
-       
+          <div className="flex  justify-center ">
+            <div className="flex bg-gray-50  p-2 rounded-md m-3 border-2 ">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 text-gray-400"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              ></svg>
+              <input
+                className=" outline-none ml-1 block w-full "
+                type="text"
+                name="search"
+                value={search}
+                placeholder="Search..."
+                onChange={(e) => setsearch(e.target.value)}
+              />
             </div>
+          </div>
         )}
 
         {tabs === "joblist" && (
@@ -196,30 +207,36 @@ function Body() {
                     </th>
                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Advance
-                    </th>{" "}
+                    </th>
                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Transist to
-                    </th>{" "}
+                    </th>
+
                     <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Action
+                    </th>
+                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Chats
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                <UpdateModal
-                          onClose={handleclose}
-                          visible={showModal}
-                          data={updatetrackid}
-                        />
+                  <UpdateModal
+                    onClose={handleclose}
+                    visible={showModal}
+                    data={updatetrackid}
+                  />
                   {searchdatajobs.map((shipment, index) => (
                     <tr
                       key={index}
-                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 "
                     >
-                      <td className="px-6 py-4"  >
-                       
-
-                        <button onClick={() => updatemodaldata(shipment.shipment[0].trackid)}>
+                      <td className="px-6 py-4">
+                        <button
+                          onClick={() =>
+                            updatemodaldata(shipment.shipment[0].trackid)
+                          }
+                        >
                           {shipment.shipment[0].trackid}
                         </button>
                       </td>
@@ -237,35 +254,38 @@ function Body() {
                       </td>
                       <td className="px-6 py-4">
                         {shipment.shipment[0].tomobile}
-                      </td>{" "}
-                      <td className="px-6 py-4">
+                      </td>
+                      <td className="px-10 py-4">
                         {shipment.shipment[0].advanceamountStatus
                           ? "Paid"
                           : "NotPaid"}
-                      </td>{" "}
+                      </td>
                       <td className="px-6 py-4">
                         {shipment.shipment[0].tocity}
-                      </td>{" "}
+                      </td>
                       <td className="px-6 py-4">
-                        {" "}
-                        {
-                        shipment.shipment[0].shipmentStatus !== "approved" && shipment.shipment[0].shipmentStatus !== "Hub Recived" ? (
+                        
+                        {shipment.shipment[0].shipmentStatus !== "approved" &&
+                        shipment.shipment[0].shipmentStatus !==
+                          "Hub Recived" ? (
                           <button
                             type="submit"
                             onClick={(e) =>
                               aproveShipment(e, shipment.shipment[0].trackid)
                             }
-                            className=" w-full px-8 py-3 font-semibold rounded  text-white bg-teal-800"
+                            className=" w-full px-0 py-1 font-semibold rounded  text-white bg-teal-800"
                           >
                             Approve
                           </button>
-                        ) : shipment.fromhub !== shipment.shipment[0].tocity && shipment.shipment[0].shipmentStatus === "Hub Recived" ? (
+                        ) : shipment.fromhub !== shipment.shipment[0].tocity &&
+                          shipment.shipment[0].shipmentStatus ===
+                            "Hub Recived" ? (
                           <button
                             type="submit"
                             onClick={(e) =>
                               sendtransist(e, shipment.shipment[0].trackid)
                             }
-                            className=" w-full px-8 py-3 font-semibold rounded  text-white bg-indigo-600"
+                            className=" w-full px-0 py-1 font-semibold rounded  text-white bg-indigo-600"
                           >
                             send
                           </button>
@@ -273,9 +293,23 @@ function Body() {
                           ""
                         )}
                       </td>
+                      <td className="px-6 py-4 ">
+                        {shipment.shipment[0].shipmentStatus == "approved" && (
+                          <button
+                            onClick={() =>
+                              updatechatmodaldata(
+                                shipment.shipment[0].trackid,
+                                shipment._id,
+                                shipment.username
+                              )
+                            }
+                          >
+                            <ChatIcon />
+                          </button>
+                        )}
+                      </td>
                     </tr>
                   ))}
-
                 </tbody>
               </table>
               <div className="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between">
@@ -295,26 +329,31 @@ function Body() {
           </div>
         )}
 
+        <HubChatModal
+          onClose={handlechatclose}
+          visible={showchatModal}
+          data={{ trackID: trackid, hubid: hubid, username: username }}
+        />
+
         {tabs === "transist" && (
-                <div className="flex  justify-center ">
-                <div className="flex bg-gray-50  p-2 rounded-md m-3 border-2 ">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 text-gray-400"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                  </svg>
-                  <input
-                    className=" outline-none ml-1 block w-full "
-                    type="text"
-                    name="search"
-                    value={search}
-                    placeholder="Search..."onChange={(e)=>setsearch(e.target.value)}
-                  />
-                </div>
-         
-              </div>
+          <div className="flex  justify-center ">
+            <div className="flex bg-gray-50  p-2 rounded-md m-3 border-2 ">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 text-gray-400"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              ></svg>
+              <input
+                className=" outline-none ml-1 block w-full "
+                type="text"
+                name="search"
+                value={search}
+                placeholder="Search..."
+                onChange={(e) => setsearch(e.target.value)}
+              />
+            </div>
+          </div>
         )}
 
         {tabs === "transist" && (
@@ -361,8 +400,11 @@ function Body() {
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                     >
                       <td className="px-6 py-4">
-
-                        <button onClick={() => transistmodaldata(shipment.shipment[0].trackid)}>
+                        <button
+                          onClick={() =>
+                            transistmodaldata(shipment.shipment[0].trackid)
+                          }
+                        >
                           {shipment.shipment[0].trackid}
                         </button>
                       </td>

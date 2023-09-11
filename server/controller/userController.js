@@ -16,6 +16,7 @@ const {
   sendVerifymail,
   securePassword,
 } = require("../config/nodemailer");
+const hubModels = require("../models/hubModels");
 
 cloudinary.config({
   cloud_name: process.env.cloud_name,
@@ -240,30 +241,37 @@ const getprofile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   try {
+    console.log('reached back');
     const id = req.userId;
     const userdata = await User.findOne({ _id: id });
-
+    
+    
+    
     if (userdata) {
+      console.log('id');
+
+
+
       await sharp("./public/multer/" + req.file.filename)
-        .resize(500, 500)
-        .toFile("./public/cloudinary/" + req.file.filename);
+      .resize(500, 500)
+      .toFile("./public/cloudinary/" + req.file.filename);
 
-      const data = await cloudinary.uploader.upload(
-        "./public/cloudinary/" + req.file.filename
-      );
+    const data = await cloudinary.uploader.upload(
+      "./public/cloudinary/" + req.file.filename
+    );
 
-      const cdurl = data.secure_url;
+    const cdurl = data.secure_url;
 
-      await User.findOneAndUpdate(
-        { email: userdata.email },
-        { $set: { profileimage: cdurl } }
-      );
+    await User.findOneAndUpdate(
+      { email: admin.email },
+      { $set: { profileimage: cdurl } }
+    );
 
-      res
-        .status(200)
-        .send({ message: "image uploaded", success: true, image: cdurl });
+    res
+      .status(200)
+      .send({ message: "image uploaded", success: true, image: cdurl });
     } else {
-      return res
+       res
         .status(200)
         .send({ message: "user does no exist", success: false });
     }
@@ -273,6 +281,8 @@ const updateProfile = async (req, res) => {
       .send({ message: "error getting info", success: false, error });
   }
 };
+
+
 
 const addAddress = async (req, res) => {
   try {
@@ -416,39 +426,22 @@ const advancepaymentUpdate = async (req, res) => {
   }
 };
 
-const chatHistory = async (room, message, author) => {
-  console.log("reach");
-  const roomexist = await ChatModel.findOne({ chatRoom: room });
 
-  if (roomexist) {
-    const id = roomexist._id;
-    const chatUpdate = await Chat.findByIdAndUpdate(
-      id,
-      {
-        $push: {
-          chathistory: {
-            author: author,
-            message: message,
-            time: new Date(),
-          },
-        },
-      },
-      { new: true }
-    );
-  } else {
-    const savechat = new Chat({
-      chatRoom: room,
-      chathistory: [
-        {
-          author: author,
-          message: message,
-          time: new Date(),
-        },
-      ],
-    });
-    await savechat.save();
-  }
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const trackshipment = async (req, res) => {
   try {
@@ -479,6 +472,110 @@ const trackshipment = async (req, res) => {
   }
 };
 
+
+
+
+const chatHistory = async (room, message, author) => {
+
+  console.log(room,message,author)
+  const roomexist = await ChatModel.findOne({ chatRoom: room });
+
+  if (roomexist) {
+    const id = roomexist._id;
+    const chatUpdate = await ChatModel.findByIdAndUpdate(
+      id,
+      {
+        $push: {
+          chathistory: {
+            author: author,
+            message: message,
+            time: new Date(),
+          },
+        },
+      },
+      { new: true }
+    );
+  } else {
+    const savechat = new ChatModel({
+      chatRoom: room,
+      chathistory: [
+        {
+          author: author,
+          message: message,
+          time: new Date(),
+        },
+      ],
+    });
+    await savechat.save();
+  }
+};
+
+
+const getchathistory= async (req,res)=>{
+  try {
+
+    const { trackid, hubid} =req.body
+
+    const gethistory = await ChatModel.findOne({chatRoom:trackid})
+    const chat = gethistory?.gethistory
+    const senderchats = chat?.filter((item)=>item.auther !== hubid)
+
+    let senderid
+    if(senderchats){
+      senderid = senderchats[0]?.auther
+    }
+    const profile = await hubModels.findOne({_id:senderid})
+
+    const hubname=profile.city
+    if(gethistory){
+      res.status(200).send({ chat,hubname,success:true})
+
+    }
+
+
+    
+  } catch (error) {
+    res.status(500).send({message:"wrong" , success:false})
+    
+  }
+}
+
+const updateUserDetails =async(req,res)=>{
+  try {
+      const id = req.userId
+      
+      const user = await User.findOne({ _id: id });
+      if(user){
+        
+        console.log(id,'id')
+        const {input ,field} = req.body
+        console.log(req.body,'body')
+
+      const updatedUser = await User.updateOne({ _id: id },{ $set: { [field]: input } },{new:true});
+
+      if(updatedUser){
+      
+        res.status(200).send({ message: "User details updated successfully", success: true });
+
+      }else{
+        res.status(200).send({ message: "User details were not updated", success: false });
+
+      }
+
+
+      }else{
+        res.status(200).send({message:"user Not Found" ,success:false})
+      }
+
+
+
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: "Internal server error", success: false });
+    
+  }
+}
 module.exports = {
   registerpage,
   loginpage,
@@ -494,4 +591,6 @@ module.exports = {
   advancepaymentUpdate,
   chatHistory,
   trackshipment,
+  getchathistory,
+  updateUserDetails
 };

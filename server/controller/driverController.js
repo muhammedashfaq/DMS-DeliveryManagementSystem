@@ -116,7 +116,7 @@ const getdashboardjobs = async (req, res) => {
         success: true,
         data: shipmentdata,
         transist: transisteddata,
-        hubid:hub._id
+        hubid: hub._id,
       });
     } else {
       res.status(200).send({ message: "error", success: false });
@@ -128,125 +128,139 @@ const getdashboardjobs = async (req, res) => {
 
 const updateShipmentStatus = async (req, res) => {
   try {
-    console.log(req.body, "body");
+    const id = req.driverId;
 
-    const { trackid, status, comments } = req.body;
+    const hub = await Hub.findOne({ _id: id });
 
-    const user = await shipmentModel
-      .findOne({ shipment: { $elemMatch: { trackid: trackid } } })
-      .populate("shipment");
+    if (hub) {
+      const { trackid, status, comments } = req.body;
 
-    const verifytrackid = await shipmentModel.findOne({
-      shipment: { $elemMatch: { trackid: trackid } },
-    });
-    if (!verifytrackid) {
-      res.status(200).send({ message: "TrackID NOt Valid", success: false });
-    } else {
-      const updatestatus = await updatesModel.findOne({ TrackID: trackid });
-      if (!updatestatus) {
-        const newstatus = new updatesModel({
-          user: user.user,
-          shipment: user._id,
-          TrackID: trackid,
-          status: status,
-          comments: comments,
-        });
+      const user = await shipmentModel
+        .findOne({ shipment: { $elemMatch: { trackid: trackid } } })
+        .populate("shipment");
 
-        await newstatus.save();
-        res.status(200).send({ message: "Updated", success: true });
+      const verifytrackid = await shipmentModel.findOne({
+        shipment: { $elemMatch: { trackid: trackid } },
+      });
+      if (!verifytrackid) {
+        res.status(200).send({ message: "TrackID NOt Valid", success: false });
       } else {
-        if (status === "Shipment picked") {
-          await updatesModel.findOneAndUpdate(
-            { TrackID: trackid },
-            {
-              $set: {
-                status: status,
-                comments: comments,
-                pickupdate: Date.now(),
-              },
-            }
-          );
-          res
-            .status(200)
-            .send({ message: "Updated", success: true, data: updatestatus });
-        } else if (status === "Shipment Delivered") {
-          console.log("ivdethy");
-          const updatedUpdateStatus = await updatesModel.findOneAndUpdate(
-            { TrackID: trackid },
-            {
-              $set: {
-                status: status,
-                comments: comments,
-                deliverydate: Date.now(),
-              },
-            },
-            { new: true }
-          );
+        const updatestatus = await updatesModel.findOne({ TrackID: trackid });
+        if (!updatestatus) {
+          const newstatus = new updatesModel({
+            user: user.user,
+            shipment: user._id,
+            TrackID: trackid,
+            status: status,
+            comments: comments,
+          });
 
-          if (updatedUpdateStatus) {
-            await shipmentModel.findOneAndUpdate(
-              {
-                $and: [
-                  { "shipment.trackid": trackid },
-                  { "shipment.shipmentStatus": { $ne: "Delivered" } },
-                ],
-              },
-              {
-                $set: { "shipment.$.shipmentStatus": "Delivered" },
-              }
-            );
-
-            res
-              .status(200)
-              .send({ message: "Updated", success: true, data: updatestatus });
-          }
-        } else if (status === "Hub Recived") {
-          const updatedUpdateStatus = await updatesModel.findOneAndUpdate(
-            { TrackID: trackid },
-            {
-              $set: {
-                status: status,
-                comments: comments,
-              },
-            },
-            { new: true }
-          );
-
-          if (updatedUpdateStatus) {
-            await shipmentModel.findOneAndUpdate(
-              {
-                $and: [
-                  { "shipment.trackid": trackid },
-                  { "shipment.shipmentStatus": { $ne: "Hub Recived" } },
-                ],
-              },
-              {
-                $set: { "shipment.$.shipmentStatus": "Hub Recived" },
-              }
-            );
-
-            res
-              .status(200)
-              .send({ message: "Updated", success: true, data: updatestatus });
-          }
+          await newstatus.save();
+          res.status(200).send({ message: "Updated", success: true });
         } else {
-          await updatesModel.findOneAndUpdate(
-            { TrackID: trackid },
-            {
-              $set: {
-                status: status,
-                comments: comments,
+          if (status === "Shipment picked") {
+            await updatesModel.findOneAndUpdate(
+              { TrackID: trackid },
+              {
+                $set: {
+                  status: status,
+                  comments: comments,
+                  pickupdate: Date.now(),
+                },
+              }
+            );
+            res
+              .status(200)
+              .send({ message: "Updated", success: true, data: updatestatus });
+          } else if (status === "Shipment Delivered") {
+            const updatedUpdateStatus = await updatesModel.findOneAndUpdate(
+              { TrackID: trackid },
+              {
+                $set: {
+                  status: status,
+                  comments: comments,
+                  deliveredBy: hub.city,
+                  deliverydate: Date.now(),
+                },
               },
+              { new: true }
+            );
+
+            if (updatedUpdateStatus) {
+              await shipmentModel.findOneAndUpdate(
+                {
+                  $and: [
+                    { "shipment.trackid": trackid },
+                    { "shipment.shipmentStatus": { $ne: "Delivered" } },
+                  ],
+                },
+                {
+                  $set: { "shipment.$.shipmentStatus": "Delivered" },
+                }
+              );
+
+              res
+                .status(200)
+                .send({
+                  message: "Updated",
+                  success: true,
+                  data: updatestatus,
+                });
             }
-          );
-          res
-            .status(200)
-            .send({ message: "Updated", success: true, data: updatestatus });
+          } else if (status === "Hub Recived") {
+            const updatedUpdateStatus = await updatesModel.findOneAndUpdate(
+              { TrackID: trackid },
+              {
+                $set: {
+                  status: status,
+                  comments: comments,
+                },
+              },
+              { new: true }
+            );
+
+            if (updatedUpdateStatus) {
+              await shipmentModel.findOneAndUpdate(
+                {
+                  $and: [
+                    { "shipment.trackid": trackid },
+                    { "shipment.shipmentStatus": { $ne: "Hub Recived" } },
+                  ],
+                },
+                {
+                  $set: { "shipment.$.shipmentStatus": "Hub Recived" },
+                }
+              );
+
+              res
+                .status(200)
+                .send({
+                  message: "Updated",
+                  success: true,
+                  data: updatestatus,
+                });
+            }
+          } else {
+            await updatesModel.findOneAndUpdate(
+              { TrackID: trackid },
+              {
+                $set: {
+                  status: status,
+                  comments: comments,
+                },
+              }
+            );
+            res
+              .status(200)
+              .send({ message: "Updated", success: true, data: updatestatus });
+          }
         }
       }
+    } else {
+      res.status(200).send({ message: "user not Found", success: false });
     }
   } catch (error) {
-    res.status(200).send({ message: "Someting went wrong", success: false });
+    res.status(500).send({ message: "Someting went wrong", success: false });
   }
 };
 
@@ -300,19 +314,22 @@ const approveShipment = async (req, res) => {
 
       await newstatus.save();
 
-      await shipmentModel.findOneAndUpdate(
-        {
-          $and: [
-            { "shipment.trackid": trackid },
-            { "shipment.shipmentStatus": { $ne: "approved" } },
-          ],
-        },
-        {
-          $set: { "shipment.$.shipmentStatus": "approved" },
-        }
-      );
+      if(newstatus){
 
-      res.status(200).send({ message: "Updated", success: true });
+        await shipmentModel.findOneAndUpdate(
+          {
+            $and: [
+              { "shipment.trackid": trackid },
+              { "shipment.shipmentStatus": { $ne: "approved" } },
+            ],
+          },
+          {
+            $set: { "shipment.$.shipmentStatus": "approved" },
+          }
+        );
+  
+        res.status(200).send({ message: "Updated", success: true });
+      }
     } else {
       res.status(200).send({ message: "Id not exist", success: false });
     }

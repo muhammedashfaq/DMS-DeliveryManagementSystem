@@ -15,7 +15,7 @@ driver_router.post(
   driverController.getdashboardjobs
 );
 driver_router.post(
-  "/updateShipmentStatus",
+  "/updateShipmentStatus",authmiddleware,
   driverController.updateShipmentStatus
 );
 

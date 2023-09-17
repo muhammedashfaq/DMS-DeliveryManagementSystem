@@ -358,7 +358,7 @@ const Userprofile = () => {
                       </a>
                     </span>
 
-                    {shipment.shipment[0].shipmentStatus !== "Deliverd" &&
+                    {shipment.shipment[0].shipmentStatus !== "Delivered" &&
                     shipment.shipment[0].shipmentStatus !== "Pending" ? (
                       <span>
                         <a

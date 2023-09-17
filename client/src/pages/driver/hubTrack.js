@@ -1,5 +1,5 @@
 import React from 'react'
-import Footer from "../../components/driver/footer";
+import Footer from "../../components/driver/Hubfooter";
 import Header from "../../components/driver/Header";
 import Hubtrack from  "../../components/driver/hubtrack"
 

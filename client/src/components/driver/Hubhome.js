@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import UpdateModal from "./UpdateModal";
-import TransistUpdateModal from "./transistUpdateModal";
+import TransistUpdateModal from "./TransistUpdateModal";
 import ChatIcon from "@mui/icons-material/Chat";
 
 import HubChatModal from "./HubChatModal";
@@ -264,7 +264,6 @@ function Body() {
                         {shipment.shipment[0].tocity}
                       </td>
                       <td className="px-6 py-4">
-                        
                         {shipment.shipment[0].shipmentStatus !== "approved" &&
                         shipment.shipment[0].shipmentStatus !==
                           "Hub Recived" ? (

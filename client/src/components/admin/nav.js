@@ -13,13 +13,6 @@ const Nav = () => {
     },
 
     {
-      name: "Reports",
-      path: "/adminhome/reports",
-      icon: "material-symbols-outlined",
-      iconname: "analytics",
-    },
-   
-    {
       name: "Track Shipment",
       path: "/adminhome/admintrack",
       icon: "material-symbols-outlined",
@@ -41,13 +34,9 @@ const Nav = () => {
           marginRight: "300px",
         }}
       >
-        <div>
-          <div>
-            <Link to="/adminhome">
-              <img src="./images/adminlogin/logo.png" />
-            </Link>
-          </div>
-        </div>
+       
+           
+    
         <hr className="my-2 text-gray-600 " />
         <div className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer bg-gray-500">
           <svg
@@ -129,7 +118,15 @@ const Nav = () => {
             </Dropdown.Item>
           </Dropdown>
         </div>
+        <div className="absolute bottom-0 mb-6">
+
+        <Link to="/adminhome">
+              <img src="./images/adminlogin/logo.png" />
+            </Link>
+        </div>
       </div>
+
+      
 
       {/* <div className=" h-max ml-64">
         <Routes>

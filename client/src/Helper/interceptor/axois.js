@@ -31,3 +31,18 @@ export const adminRequest = ({ ...options }) => {
 };
 
 
+
+export const hubRequest = ({ ...options }) => {
+  user.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem(
+    "drivertoken"
+  )}`;
+
+  const onSuccess = (response) => response;
+  const onError = (error) => {
+    console.log("axios interceptor", error);
+    return error;
+  };
+  return user(options).then(onSuccess).catch(onError);
+};
+
+

@@ -6,6 +6,7 @@ const Hub = require("../models/hubModels");
 const cloudinary = require("cloudinary").v2;
 const sharp = require("sharp");
 const service = require("../models/servicesModel");
+const shipmentupdates = require("../models/shipmetUpdatesModel");
 
 const { sendmailtoDriver } = require("../config/nodemailer");
 const shipmentModel = require("../models/shipmentModel");
@@ -407,9 +408,65 @@ const getAllData = async (req, res) => {
       const hubDataCount = await Hub.countDocuments();
       const hubData = await Hub.find();
 
-      const deliveredShipmentcount = await shipmentModel.countDocuments({
-        "shipment.shipmentStatus": "Delivered",
+      const shipmentCountByMonth = await shipmentupdates.aggregate([
+        {
+          $match: {
+            status: "Shipment Delivered",
+          },
+        },
+        {
+          $group: {
+            _id: {
+              month: { $month: "$deliverydate" },
+            },
+            count: { $sum: 1 },
+          },
+        },
+      ]);
+
+      const monthNames = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+
+      const shipmentCountByMonthWithNames = shipmentCountByMonth.map(
+        (item) => ({
+          month: monthNames[item._id.month - 1],
+          count: item.count,
+        })
+      );
+
+      console.log(shipmentCountByMonthWithNames, "aaaa");
+
+      const deliveredShipmentcount = await shipmentupdates.countDocuments({
+        status: "Shipment Delivered",
       });
+      // const deliveredShipmentcount = await shipmentModel.aggregate([
+      //   {
+      //     $match: {
+      //       status: "Shipment Delivered",
+      //     },
+      //   },
+      //   {
+      //     $group: {
+      //       _id: {
+      //         month: { $month: "$deliverydate" },
+      //       },
+      //       count: { $sum: 1 },
+      //     },
+      //   },
+      // ]);
+
       const deliveredShipment = await shipmentModel.find({
         "shipment.shipmentStatus": "Delivered",
       });
@@ -421,6 +478,7 @@ const getAllData = async (req, res) => {
         hub: hubData,
         shipment: deliveredShipment,
         shipmentcount: deliveredShipmentcount,
+        shipmentCountByMonth: shipmentCountByMonthWithNames,
       });
     } else {
       res.status(200).send({
@@ -485,24 +543,22 @@ const adminReportByHub = async (req, res) => {
       const { city } = req.body;
       console.log(req.body, "body");
 
-      if(city==="All"){
+      if (city === "All") {
         const shipments = await shipmentModel.find();
-  
+
         const totalAdvanceAmount = shipments.reduce((total, shipment) => {
           return total + (shipment.shipment[0].advanceamount || 0);
         }, 0);
-  
+
         const totalDeliveredShipments = await shipmentModel.countDocuments({
-         
           "shipment.shipmentStatus": "Delivered",
         });
-  
+
         const totalUndeliveredShipments = await shipmentModel.countDocuments({
-    
           "shipment.shipmentStatus": { $ne: "Delivered" },
         });
         console.log(totalAdvanceAmount, "amt");
-  
+
         res.status(200).send({
           message: "Data fetched successfully",
           success: true,
@@ -510,30 +566,26 @@ const adminReportByHub = async (req, res) => {
           totalDeliveredShipment: totalDeliveredShipments,
           totalUndeliveredShipments: totalUndeliveredShipments,
         });
-
-        
-
-      }else{
-
+      } else {
         const shipments = await shipmentModel.find({
           fromhub: city,
         });
-  
+
         const totalAdvanceAmount = shipments.reduce((total, shipment) => {
           return total + (shipment.shipment[0].advanceamount || 0);
         }, 0);
-  
+
         const totalDeliveredShipments = await shipmentModel.countDocuments({
           fromHub: city,
           "shipment.shipmentStatus": "Delivered",
         });
-  
+
         const totalUndeliveredShipments = await shipmentModel.countDocuments({
           fromHub: city,
           "shipment.shipmentStatus": { $ne: "Delivered" },
         });
         console.log(totalAdvanceAmount, "amt");
-  
+
         res.status(200).send({
           message: "Data fetched successfully",
           success: true,
@@ -542,7 +594,6 @@ const adminReportByHub = async (req, res) => {
           totalUndeliveredShipments: totalUndeliveredShipments,
         });
       }
-
     } else {
       res.status(200).send({
         message: "Admin not found",
@@ -573,12 +624,10 @@ const updateadminDetails = async (req, res) => {
       );
 
       if (updatedUser) {
-        res
-          .status(200)
-          .send({
-            message: "User details updated successfully",
-            success: true,
-          });
+        res.status(200).send({
+          message: "User details updated successfully",
+          success: true,
+        });
       } else {
         res
           .status(200)

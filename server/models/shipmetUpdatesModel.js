@@ -17,6 +17,18 @@ const updatesSchema = new mongoose.Schema(
       ref: "shipment",
       required: true,
     },
+    Hub: {
+      type: mongoose.Types.ObjectId,
+      ref: "Hub",
+      required: true,
+    },
+    deliveredBy:{
+      type: String,
+      trim: true,
+      default: "",
+
+
+    },
 
     status: {
       type: String,

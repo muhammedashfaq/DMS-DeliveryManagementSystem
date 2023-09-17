@@ -36,6 +36,9 @@ const ChatModal = ({ visible, onClose, data }) => {
 
   useEffect(() => {
     socket.emit("join-room", trackid);
+    
+
+
   }, [trackid, shipmentid]);
 
   const getChatHistory = async () => {
@@ -104,7 +107,7 @@ const ChatModal = ({ visible, onClose, data }) => {
           visible ? "opacity-100" : "opacity-0 pointer-events-none bg-zinc-600"
         } transition-opacity duration-300`}
       >
-        <div className="w-full flex justify-center">
+        <div className="flex justify-center">
           <div className="bg-white border rounded-lg overflow-hidden w-full max-w-md shadow-lg">
             <div className="bg-blue-500 text-white p-2 flex justify-between items-center relative">
               <h1 className="font-semibold ml-3" >
@@ -163,7 +166,7 @@ const ChatModal = ({ visible, onClose, data }) => {
                 <span className="px-4 py-2 rounded-lg inline-block rounded-tl-none bg-gray-300 text-gray-600 break-words">
                   {items.message}
                 </span>
-                <p className="text-xs text-left text-gray-500 mt-1">
+                <p className="text-xs text-left text-gray-500 ">
                   {timeAgo}
                 </p>
               </div>
@@ -182,12 +185,12 @@ const ChatModal = ({ visible, onClose, data }) => {
             className="chat-message w-full flex justify-end mb-4"
             key={index}
           >
-            <div className="flex flex-col space-y-2 text-xs max-w-md mx-2 items-end">
+            <div className="flex flex-col space-y-2 text-xs max-w-md  items-end">
               <div>
-                <span className="px-4 py-2 my-4 rounded-lg inline-block rounded-tr-none bg-blue-600 text-white break-words">
+                <span className="px-4 py-2 my-1 rounded-lg inline-block rounded-tr-none bg-blue-600 text-white break-words">
                   {items.currentmessage}
                 </span>
-                <p className="text-xs text-right text-gray-500 mt-1">
+                <p className="text-xs text-right text-gray-500  ">
                   {timeAgos}
                 </p>
               </div>

@@ -10,9 +10,9 @@ import { loginValidate } from "../../Helper/Validations/validation";
 import { BiEnvelope, BiSolidLock } from "react-icons/bi";
 import { useUserContext } from "../../Helper/context/userContext";
 
-// import { GoogleOAuthProvider } from "@react-oauth/google";
-// import { GoogleLogin } from "@react-oauth/google";
-// import jwt_decode from 'jwt-decode'
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
+import jwt_decode from "jwt-decode";
 
 export const LoginModal = ({ visible, onClose }) => {
   const dispatch = useDispatch();
@@ -63,94 +63,135 @@ export const LoginModal = ({ visible, onClose }) => {
     }
   };
 
+
+  // GOOGLE SIGN -------------
+  const googleSign = async (name, email, password) => {
+    try {
+      const formData = {
+        name,
+        email,
+        password,
+      };
+      if (formData) {
+        const response = await axios.post("/googlelogin", formData);
+
+        if (response.data.success) {
+          toast.success(response.data.message);
+          localStorage.setItem("token", response.data.data);
+          const name = response.data.name;
+          setUserName(name);
+          onClose();
+          navigate("/");
+        } else {
+          toast.error(response.data.message);
+        }
+      } else {
+        console.log("something went wrong");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   if (!visible) return null;
   return (
     <div
       id="container"
       className=" fixed inset-0 backdrop-blur-xl w-screen h-screen  flex justify-center items-center z-50"
     >
-      <div className="relative w-96 h-auto z-50 bg-slate-300 bg-opacity-70 rounded-3xl flex justify-center b items-center login_border">
-        <div className="form-value">
-          <div className="flex justify-end mt-2">
-            <button
-              className="bg-white rounded-md p-1 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-              onClick={() => onClose()}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
-          <form onSubmit={handleSubmit}>
-            <div className="inputbox">
-              <p className="absolute right-0 mt-4 mr-2 ">
-                <BiEnvelope />
-              </p>
+      <div className="flex  bg-slate-300 bg-opacity-70 rounded-3xl">
+        <div className="relative w-96 h-auto z-50  flex justify-center b items-center  ">
+          <div className="bg-red-700">
 
-              <input
-                placeholder="Email"
-                type="text"
-                name="email"
-                onChange={handleInputchange}
-              />
+          <GoogleOAuthProvider clientId={process.env.REACT_APP_ClientID}>
+              
 
-              {errors.email && (
-                <Alert variant="filled" severity="error">
-                  {errors.email}
-                </Alert>
-              )}
-            </div>
-            <div className="inputbox">
-              <p className="absolute right-0 mt-4 mr-2 ">
-                {/* icon */}
-                <BiSolidLock />
-              </p>
-              <input
-                placeholder="password"
-                type="password"
-                name="password"
-                onChange={handleInputchange}
-              />
-              {errors.password && (
-                <Alert variant="filled" severity="error">
-                  {errors.password}
-                </Alert>
-              )}
-            </div>
-            <div className="forget">
-              <label>
-                <Link to="/forget"> forgot password</Link>
-              </label>
-            </div>
-            <button className="w-full h-10 rounded-full bg-blue-950 border-none text-base  text-white font-semibold">
-              Login
-            </button>
-            <div className="register">
-              <Link to="/register">dont have account ?</Link>
-            </div>
-          </form>
-
-          {/* <GoogleOAuthProvider clientId={process.env.REACT_APP_ClientID}>
             <GoogleLogin
-              onSuccess={handlegoglelogin}
-
+              onSuccess={(credentialResponse) => {
+                const details = jwt_decode(credentialResponse.credential);
+                console.log(details.jti);
+                googleSign(details.name, details.email, details.jti);
+              }}
               onError={() => {
                 console.log("Login Failed");
               }}
-            />
-            
-          </GoogleOAuthProvider>  */}
+              />
+          </GoogleOAuthProvider>
+              </div>
+        </div>
+
+        <div className="relative w-96 h-auto z-50 flex justify-center  items-center ">
+          <div className="form-value">
+            <div className="flex justify-end mt-2">
+              <button
+                className="bg-white rounded-md p-1 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+                onClick={() => onClose()}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <form onSubmit={handleSubmit}>
+              <div className="inputbox">
+                <p className="absolute right-0 mt-4 mr-2 ">
+                  <BiEnvelope />
+                </p>
+
+                <input
+                  placeholder="Email"
+                  type="text"
+                  name="email"
+                  onChange={handleInputchange}
+                />
+
+                {errors.email && (
+                  <Alert variant="filled" severity="error">
+                    {errors.email}
+                  </Alert>
+                )}
+              </div>
+              <div className="inputbox">
+                <p className="absolute right-0 mt-4 mr-2 ">
+                  {/* icon */}
+                  <BiSolidLock />
+                </p>
+                <input
+                  placeholder="password"
+                  type="password"
+                  name="password"
+                  onChange={handleInputchange}
+                />
+                {errors.password && (
+                  <Alert variant="filled" severity="error">
+                    {errors.password}
+                  </Alert>
+                )}
+              </div>
+              <div className="forget">
+                <label>
+                  <Link to="/forget"> forgot password</Link>
+                </label>
+              </div>
+              <button className="w-full h-10 rounded-full bg-blue-950 border-none text-base  text-white font-semibold">
+                Login
+              </button>
+              <div className="register">
+                <Link to="/register">dont have account ?</Link>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
 

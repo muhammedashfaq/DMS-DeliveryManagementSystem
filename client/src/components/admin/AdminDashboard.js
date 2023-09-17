@@ -15,9 +15,9 @@ const AdminDashboard = () => {
   const [user, setUser] = useState(null);
   const [hubCount, setHubCount] = useState(null);
   const [shipmentCount, setShipmentCount] = useState(null);
-  const [hub, setHub] = useState([]);
   const [shipment, setShipment] = useState([]);
-  // const [chartData, setChartData] = useState({ categories: [], series: [] });
+  const [deliverByMonth, setdeliveryByMonth] = useState([]);
+
 
   const fetchDataByHub = async (city) => {
     adminRequest({
@@ -61,6 +61,7 @@ const AdminDashboard = () => {
           setShipment(response.data.shipment);
           setShipmentCount(response.data.shipmentcount);
           setHub(response.data.hub);
+          setdeliveryByMonth(response.data.shipmentCountByMonth);
         } else {
           toast.error(response.data.message);
         }
@@ -76,63 +77,71 @@ const AdminDashboard = () => {
   useEffect(() => {
     getFullData();
     fetchDataByHub("All");
-
   }, []);
 
-
-
-
-
-  const chartData = {
+  const [chartData, setChartData] = useState({
     series: [
       {
-        name: 'Desktops',
-        data: [55,12],
+        name: "Total Shipment Delivered",
+        data: [],
       },
     ],
-
-
-    
     options: {
       chart: {
+        type: "bar",
         height: 350,
-        type: 'line',
-        zoom: {
-          enabled: false,
+      },
+      plotOptions: {
+        bar: {
+          borderRadius: 4,
+          horizontal: false,
         },
       },
       dataLabels: {
         enabled: false,
       },
-      stroke: {
-        curve: 'straight',
-      },
-      title: {
-        text: 'Product Trends by Month',
-        align: 'left',
-      },
-      grid: {
-        row: {
-          colors: ['#f3f3f3', 'transparent'], 
-          opacity: 0.5,
-        },
-      },
       xaxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+        name: "Month",
+        categories: [],
       },
     },
-  };
+  });
+  useEffect(() => {
+    if (deliverByMonth !== null) {
+      const counts = deliverByMonth.map((shipment) => shipment.count);
+      const months = deliverByMonth.map((shipment) => shipment.month);
 
+      setChartData({
+        ...chartData,
+        series: [
+          {
+            data: counts,
+          },
+        ],
+        options: {
+          xaxis: {
+            categories: months,
+          },
+        },
+      });
+    }
+  }, [deliverByMonth]);
 
   // pie chart
-  const chartDataPie = {
+  const [hub, setHub] = useState([]);
+
+  const [chartDataPie, setChartDataPie] = useState({
     series: [5, 15, 13],
     options: {
       chart: {
         width: 380,
-        type: 'pie',
+        type: "pie",
       },
-      labels: ['Malappuram', 'Calicut', 'Cochin'],
+      title: {
+        text: "Product Trends by Month",
+        align: "middle",
+      },
+      labels: [],
       responsive: [
         {
           breakpoint: 480,
@@ -141,14 +150,24 @@ const AdminDashboard = () => {
               width: 200,
             },
             legend: {
-              position: 'bottom',
+              position: "bottom",
             },
           },
         },
       ],
     },
-  };
+  });
 
+  useEffect(() => {
+    const labels = hub.map((hubName) => hubName.city);
+    setChartDataPie((prevChartDataPie) => ({
+      ...prevChartDataPie,
+      options: {
+        ...prevChartDataPie.options,
+        labels: labels,
+      },
+    }));
+  }, [hub]);
   return (
     <div className="container ">
       <div className="grid grid-cols-3 mt-9 ">
@@ -185,23 +204,25 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
-      {/* <div id="chart" className="mt-12 shadow-md"> */}
-        {/* <Chart options={chartData.options} series={chartData.series} type="line" height={350} /> */}
 
-        {/* <Chart
-          options={options}
-          series={chartData.series}
-          type="bar"
-          height={350}
-        />
-      </div> */}
-
-<div id="chart">
-      <Chart options={chartData.options} series={chartData.series} type="line" height={350} />
-    </div>
-    <div id="chart">
-      <Chart options={chartDataPie.options} series={chartDataPie.series} type="pie" width={380} />
-    </div>
+      <div className="grid grid-cols-2 p-4 mt-8 ">
+        <div id="chart">
+          <Chart
+            options={chartData.options}
+            series={chartData.series}
+            type="bar"
+            height={350}
+          />
+        </div>
+        <div id="chart" className="flex justify-center items-center">
+          <Chart
+            options={chartDataPie.options}
+            series={chartDataPie.series}
+            type="pie"
+            width={380}
+          />
+        </div>
+      </div>
 
       <div className="flex justify-center mt-2 ">
         <h1 className=" pt-4 mt-2 font-serif font-extrabold text-2xl underline text-orange-600">
@@ -231,28 +252,29 @@ const AdminDashboard = () => {
               </th>
             </tr>
           </thead>
-          <tbody className=" divide-y divide-gray-200 font-mono bg-slate-200">
+          <tbody className="  divide-gray-200  font-semibold bg-slate-200 text-lg">
             <tr>
-              <td className="px-6 py-4 whitespace-nowrap border-b-2 border-sky-950 text-xl">
+              <td className="px-6 py-4 whitespace-nowrap border-b-2 border-sky-950 ">
                 Total Advance Collected from {selectedCity} Hub
               </td>
-              <td className="px-6 py-4 whitespace-nowrap border-b-2 border-sky-950">
-               {rupeeSymbol}{amt}
+              <td className="px-6 py-4 whitespace-nowrap border-b-2 border-sky-950 shadow-inner bg-slate-100">
+                {rupeeSymbol}
+                {amt}
               </td>
             </tr>
             <tr>
-              <td className="px-6 py-4 whitespace-nowrap  border-b-2 border-sky-950 text-xl">
-                Total Shipment Delivered from {selectedCity} Hub{" "}
+              <td className="px-6 py-4 whitespace-nowrap  border-b-2 border-sky-950 ">
+                Total Shipment Delivered from {selectedCity} Hub
               </td>
-              <td className="px-6 py-4 whitespace-nowrap  border-b-2 border-sky-950">
+              <td className="px-6 py-4 whitespace-nowrap  border-b-2 border-sky-950 shadow-inner bg-slate-100">
                 {deliverCount}
               </td>
             </tr>
             <tr>
-              <td className="px-6 py-4 whitespace-nowrap  border-b-2 border-sky-950  text-xl">
+              <td className="px-6 py-4 whitespace-nowrap  border-b-2 border-sky-950  ">
                 Total Pending Pending Delivery from {selectedCity} Hub
               </td>
-              <td className="px-6 py-4 whitespace-nowrap  border-b-2 border-sky-950">
+              <td className="px-6 py-4 whitespace-nowrap  border-b-2 border-sky-950 shadow-inner bg-slate-100">
                 {unDeliveryCount}
               </td>
             </tr>

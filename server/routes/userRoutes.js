@@ -8,6 +8,9 @@ const upload = require("../config/multer");
 // router.post('/',userController.landingPageLoad)
 router.post("/register", userController.registerpage);
 router.post("/login", userController.loginpage);
+router.post("/googlelogin", userController.googlelogin);
+
+
 router.post("/get-userinfo-id", authmiddleware, userController.userdetails);
 router.post("/otp", userController.otpVerification);
 router.post("/forget", userController.forgetMail);

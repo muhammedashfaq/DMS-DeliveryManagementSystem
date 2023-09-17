@@ -1,8 +1,11 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
+import { hubRequest } from "../../Helper/interceptor/axois";
+import { useNavigate } from "react-router-dom";
 
 const UpdateModal = ({ visible, onClose, data }) => {
+  const navigate=useNavigate()
   const [trackidInput, setTrackidInput] = useState("");
   const [status, setStatus] = useState("");
 
@@ -20,19 +23,38 @@ const UpdateModal = ({ visible, onClose, data }) => {
     }));
   };
   const updatestatus = async (e) => {
+    
     try {
       e.preventDefault();
+    
+        hubRequest({
+          url: "/hub/updateShipmentStatus",
+          method: "post",
+          data:formdata
+        })
+          .then((response) => {
+            if (response.data.success) {
+              toast.success(response.data.message);
+      
+              window.location.reload();
+            } else {
+              toast.error(response.data.message);
+            }
+          })
+          .catch((err) => {
+            toast.error("something went wrong");
+            console.log(err);
+            localStorage.removeItem("drivertoken");
+            navigate("/hublogin");
+          });
 
 
-      const response = await axios.post("/hub/updateShipmentStatus", formdata);
 
-      if (response.data.success) {
-        toast.success(response.data.message);
 
-        window.location.reload();
-      } else {
-        toast.error(response.data.message);
-      }
+
+
+
+ 
     } catch (error) {
       toast.error("something went wrong");
     }

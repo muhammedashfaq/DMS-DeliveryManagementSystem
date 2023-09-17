@@ -58,7 +58,7 @@ const registerpage = async (req, res) => {
       const otpGenarated = Math.floor(1000 + Math.random() * 9999);
       savedOtp = otpGenarated;
       useremail = req.body.email;
-      console.log(otpGenarated,'otp')
+      console.log(otpGenarated, "otp");
 
       sendVerifymail(req.body.username, req.body.email, otpGenarated);
     }
@@ -79,13 +79,85 @@ const loginpage = async (req, res) => {
 
     if (!user) {
       res.status(200).send({ message: "user not exist", success: false });
-    } else if (user.isVerified) {
-      const isMatch = await bcrypt.compare(req.body.password, user.password);
-      if (!isMatch) {
-        res.status(200).send({ message: "incorrect password", success: false });
+    }
+    if (user.isVerified) {
+      if (!user.isBlocked) {
+        const isMatch = await bcrypt.compare(req.body.password, user.password);
+        if (!isMatch) {
+          res
+            .status(200)
+            .send({ message: "incorrect password", success: false });
+        } else {
+          const token = jwt.sign(
+            { id: user._id, name: user.username },
+            process.env.JWT_SECRET_USER,
+            {
+              expiresIn: "1d",
+            }
+          );
+
+          res.status(200).send({
+            message: "successfully logged",
+            success: true,
+            data: token,
+            name: user.username,
+          });
+        }
       } else {
+        res.status(200).send({ message: "user is Blocked", success: false });
+      }
+    } else {
+      res.status(200).send({ message: "user not verified", success: false });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "something went wrong", success: false });
+  }
+};
+
+const googlelogin = async (req, res) => {
+  try {
+    const { email, name, passwordbody } = req.body;
+
+    const user = await User.findOne({ email: email });
+    if (user) {
+      if (user.isVerified) {
+        if (!user.isBlocked) {
+          const token = jwt.sign(
+            { id: user._id, name: user.username },
+            process.env.JWT_SECRET_USER,
+            {
+              expiresIn: "1d",
+            }
+          );
+
+          res.status(200).send({
+            message: "successfully logged",
+            success: true,
+            data: token,
+            name: user.username,
+          });
+        } else {
+          res.status(200).send({ message: "user is Blocked", success: false });
+        }
+      } else {
+        res.status(200).send({ message: "user not verified", success: false });
+      }
+    } else {
+      const password = passwordbody;
+      const passwordHash = await securePassword(password);
+
+      const newuser = new User({
+        username: name,
+        email: email,
+        password: passwordHash,
+        isVarified: true,
+      });
+      const newuserData = await newuser.save();
+
+      if (newuserData) {
         const token = jwt.sign(
-          { id: user._id, name: user.username },
+          { id: newuserData._id, name: newuserData.username },
           process.env.JWT_SECRET_USER,
           {
             expiresIn: "1d",
@@ -96,11 +168,11 @@ const loginpage = async (req, res) => {
           message: "successfully logged",
           success: true,
           data: token,
-          name: user.username,
+          name: newuserData.username,
         });
+      } else {
+        res.status(200).send({ message: "user login failed", success: false });
       }
-    } else {
-      res.status(200).send({ message: "user not verified", success: false });
     }
   } catch (error) {
     console.log(error);
@@ -211,21 +283,20 @@ const resetPassword = async (req, res) => {
 
 const getprofile = async (req, res) => {
   try {
-    
     const id = req.userId;
-    
+
     const user = await User.findOne({ _id: id });
-    
+
     // const address = await userAddress.findOne({ user: user._id });
     // const addressdetails = address.address;
     if (!user) {
       return res
-      .status(200)
-      .send({ message: "user does no exist", success: false });
+        .status(200)
+        .send({ message: "user does no exist", success: false });
     } else {
       const shipmentdata = await shipmentModel
-      .find({ user: user._id })
-      .populate("shipment");
+        .find({ user: user._id })
+        .populate("shipment");
       res.status(200).send({
         success: true,
         data: user,
@@ -241,39 +312,33 @@ const getprofile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   try {
-    console.log('reached back');
+    console.log("reached back");
     const id = req.userId;
     const userdata = await User.findOne({ _id: id });
-    
-    
-    
+
     if (userdata) {
-      console.log('id');
-
-
+      console.log("id");
 
       await sharp("./public/multer/" + req.file.filename)
-      .resize(500, 500)
-      .toFile("./public/cloudinary/" + req.file.filename);
+        .resize(500, 500)
+        .toFile("./public/cloudinary/" + req.file.filename);
 
-    const data = await cloudinary.uploader.upload(
-      "./public/cloudinary/" + req.file.filename
-    );
+      const data = await cloudinary.uploader.upload(
+        "./public/cloudinary/" + req.file.filename
+      );
 
-    const cdurl = data.secure_url;
+      const cdurl = data.secure_url;
 
-    await User.findOneAndUpdate(
-      { email: admin.email },
-      { $set: { profileimage: cdurl } }
-    );
+      await User.findOneAndUpdate(
+        { email: userdata.email },
+        { $set: { profileimage: cdurl } }
+      );
 
-    res
-      .status(200)
-      .send({ message: "image uploaded", success: true, image: cdurl });
-    } else {
-       res
+      res
         .status(200)
-        .send({ message: "user does no exist", success: false });
+        .send({ message: "image uploaded", success: true, image: cdurl });
+    } else {
+      res.status(200).send({ message: "user does no exist", success: false });
     }
   } catch (error) {
     res
@@ -281,8 +346,6 @@ const updateProfile = async (req, res) => {
       .send({ message: "error getting info", success: false, error });
   }
 };
-
-
 
 const addAddress = async (req, res) => {
   try {
@@ -426,23 +489,6 @@ const advancepaymentUpdate = async (req, res) => {
   }
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const trackshipment = async (req, res) => {
   try {
     const { id } = req.body;
@@ -455,14 +501,12 @@ const trackshipment = async (req, res) => {
         TrackID: id,
       });
 
-      res
-        .status(200)
-        .send({
-          message: "fetched",
-          success: true,
-          shipment: shipmentdetails,
-          updates: shipmentupdatedetails,
-        });
+      res.status(200).send({
+        message: "fetched",
+        success: true,
+        shipment: shipmentdetails,
+        updates: shipmentupdatedetails,
+      });
     } else {
       res.status(200).send({ message: "Invalid TrackID", success: false });
     }
@@ -472,12 +516,8 @@ const trackshipment = async (req, res) => {
   }
 };
 
-
-
-
 const chatHistory = async (room, message, author) => {
-
-  console.log(room,message,author)
+  console.log(room, message, author);
   const roomexist = await ChatModel.findOne({ chatRoom: room });
 
   if (roomexist) {
@@ -510,75 +550,67 @@ const chatHistory = async (room, message, author) => {
   }
 };
 
-
-const getchathistory= async (req,res)=>{
+const getchathistory = async (req, res) => {
   try {
+    const { trackid, hubid } = req.body;
 
-    const { trackid, hubid} =req.body
+    const gethistory = await ChatModel.findOne({ chatRoom: trackid });
+    const chat = gethistory?.gethistory;
+    const senderchats = chat?.filter((item) => item.auther !== hubid);
 
-    const gethistory = await ChatModel.findOne({chatRoom:trackid})
-    const chat = gethistory?.gethistory
-    const senderchats = chat?.filter((item)=>item.auther !== hubid)
-
-    let senderid
-    if(senderchats){
-      senderid = senderchats[0]?.auther
+    let senderid;
+    if (senderchats) {
+      senderid = senderchats[0]?.auther;
     }
-    const profile = await hubModels.findOne({_id:senderid})
+    const profile = await hubModels.findOne({ _id: senderid });
 
-    const hubname=profile.city
-    if(gethistory){
-      res.status(200).send({ chat,hubname,success:true})
-
+    const hubname = profile.city;
+    if (gethistory) {
+      res.status(200).send({ chat, hubname, success: true });
     }
-
-
-    
   } catch (error) {
-    res.status(500).send({message:"wrong" , success:false})
-    
+    res.status(500).send({ message: "wrong", success: false });
   }
-}
+};
 
-const updateUserDetails =async(req,res)=>{
+const updateUserDetails = async (req, res) => {
   try {
-      const id = req.userId
-      
-      const user = await User.findOne({ _id: id });
-      if(user){
-        
-        console.log(id,'id')
-        const {input ,field} = req.body
-        console.log(req.body,'body')
+    const id = req.userId;
 
-      const updatedUser = await User.updateOne({ _id: id },{ $set: { [field]: input } },{new:true});
+    const user = await User.findOne({ _id: id });
+    if (user) {
+      console.log(id, "id");
+      const { input, field } = req.body;
+      console.log(req.body, "body");
 
-      if(updatedUser){
-      
-        res.status(200).send({ message: "User details updated successfully", success: true });
+      const updatedUser = await User.updateOne(
+        { _id: id },
+        { $set: { [field]: input } },
+        { new: true }
+      );
 
-      }else{
-        res.status(200).send({ message: "User details were not updated", success: false });
-
+      if (updatedUser) {
+        res.status(200).send({
+          message: "User details updated successfully",
+          success: true,
+        });
+      } else {
+        res
+          .status(200)
+          .send({ message: "User details were not updated", success: false });
       }
-
-
-      }else{
-        res.status(200).send({message:"user Not Found" ,success:false})
-      }
-
-
-
-
+    } else {
+      res.status(200).send({ message: "user Not Found", success: false });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).send({ message: "Internal server error", success: false });
-    
   }
-}
+};
 module.exports = {
   registerpage,
   loginpage,
+  googlelogin,
   userdetails,
   otpVerification,
   resetPassword,
@@ -592,5 +624,5 @@ module.exports = {
   chatHistory,
   trackshipment,
   getchathistory,
-  updateUserDetails
+  updateUserDetails,
 };

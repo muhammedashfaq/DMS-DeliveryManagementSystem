@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from "react";
-import Header from "../../../components/admin/Header";
-import SideNav from "../../../components/admin/nav";
+import Header from "../../../components/admin/AdminHeader";
+import SideNav from "../../../components/admin/Nav";
 import{Routes,Route} from 'react-router-dom'
-import UserDetails from '../../../components/admin/userlist'
-import DriverDetails from '../../../components/admin/driverlist'
-import AddDriver from "../../../components/admin/addDriver";
+import UserDetails from '../../../components/admin/Userlist'
+import DriverDetails from '../../../components/admin/Driverlist'
+import AddDriver from "../../../components/admin/AddDriver";
 import AdminProfile from "../../../components/admin/AdminProfile";
-import DriverProfilePage from '../../../components/admin/driverProfile'
-import ShipmentList from '../../../components/admin/shipmentlist'
-import Services from '../../../components/admin/services'
-import Trackpage from '../../../components/admin/admintrack'
+import DriverProfilePage from '../../../components/admin/DriverProfile'
+import ShipmentList from '../../../components/admin/Shipmentlist'
+import Services from '../../../components/admin/Services'
+import Trackpage from '../../../components/admin/Admintrack'
 import AdminDashboard from "../../../components/admin/AdminDashboard";
-import AdminReports from "../../../components/admin/Reports"
 import axios from "axios";
 const Home = () => {
 
@@ -60,7 +59,6 @@ const Home = () => {
           <Route path='/services' element={<Services/> }/>
           <Route path='/admintrack' element={<Trackpage/> }/>
           <Route path='/admindashboard' element={<AdminDashboard/> }/>
-          <Route path='/reports' element={<AdminReports/> }/>
           
 
 

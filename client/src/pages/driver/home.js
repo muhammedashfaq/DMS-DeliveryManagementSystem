@@ -1,14 +1,14 @@
 import React from "react";
-import Footer from "../../components/driver/footer";
+import Footer from "../../components/driver/Hubfooter";
 import Header from "../../components/driver/Header";
-import Body from "../../components/driver/body";
+import HubHome from "../../components/driver/Hubhome";
 
 const Home = () => {
 
   return (
     <div className="w-full h-full bg-slate-400">
       <Header />
-      <Body />
+      <HubHome />
 
       <Footer />
     </div>

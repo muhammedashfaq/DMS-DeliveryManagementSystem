@@ -3,15 +3,18 @@ import myimage from "../../components/images/def.jpg";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { hideloading, showloading } from "../../Helper/redux/alertSlice";
-import{drivervalidate} from '../../Helper/Validations/validation'
+import { drivervalidate } from "../../Helper/Validations/validation";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { adminRequest } from "../../Helper/interceptor/axois";
+import { RouteObjects } from "../../Routes/RouteObject";
+import { getCityDetails } from "./adminutil/api";
 
 const AddDriver = () => {
-  const [hubcity,sethubcity]=useState([])
-  const navigate=useNavigate()
+  const [hubcity, sethubcity] = useState([]);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [errors,setError] =useState([])
+  const [errors, setError] = useState([]);
   const [image, setImage] = useState(myimage);
   const [formData, setformData] = useState({
     fname: "",
@@ -26,7 +29,7 @@ const AddDriver = () => {
     bio: "",
     profileimage: null,
   });
-  
+
   console.log(formData);
   console.log("Error message:", errors.lname);
 
@@ -42,40 +45,38 @@ const AddDriver = () => {
     try {
       e.preventDefault();
 
-      const error = drivervalidate( formData)
-    
+      const error = drivervalidate(formData);
 
       if (Object.keys(error).length === 0) {
-        
-        
         dispatch(showloading());
         const formDataToSend = new FormData();
-        
+
         for (const key in formData) {
           if (formData.hasOwnProperty(key)) {
             formDataToSend.append(key, formData[key]);
+          }
         }
-      }
 
-      if (formData.profileimage) {
-        formDataToSend.append("profileimage", formData.profileimage);
-      }
+        if (formData.profileimage) {
+          formDataToSend.append("profileimage", formData.profileimage);
+        }
 
-      const response = await axios.post("/admin/add_driver", formDataToSend, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      dispatch(hideloading());
-      if (response.data.success) {
-        navigate('/adminhome/driver_details')
+        const response = await axios.post("/admin/add_driver", formDataToSend, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("admintoken"),
+
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        dispatch(hideloading());
+        if (response.data.success) {
+          navigate(RouteObjects.DriverList);
+        } else {
+          toast.error(response.data.message);
+        }
       } else {
-        toast.error(response.data.message)
-        
+        setError(error);
       }
-    }else{
-      setError(error)
-
-    }
-   
     } catch (error) {
       dispatch(hideloading());
     }
@@ -93,25 +94,24 @@ const AddDriver = () => {
     }
   };
 
-  const getCity = async(req,res)=>{
+  const fetchData = async () => {
     try {
-      const response = await axios.get('/admin/getcitydetails')
-      if(response.data.success){
-        toast.success(response.data.message)
-        const city=response.data.data
-        sethubcity(city)
-
-        console.log(city,'cityyyy')
-
+      const response = await getCityDetails();
+      if (response.data.success) {
+        toast.success(response.data.message);
+        const city = response.data.data;
+        sethubcity(city);
       }
-      
     } catch (error) {
-      
+      dispatch(hideloading());
+      toast.error("Something went wrong");
+      localStorage.removeItem("admintoken");
+      navigate(RouteObjects.AdminLogin);
     }
-  }
-  useEffect(()=>{
-    getCity()
-  },[])
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <div>
@@ -132,8 +132,7 @@ const AddDriver = () => {
                   name="profileimage"
                   className="w-full"
                   onChange={handleChange}
-                  />
-
+                />
               </div>
             </div>
             <div className="grid grid-cols-6 gap-2 col-span-full lg:col-span-3">
@@ -149,8 +148,7 @@ const AddDriver = () => {
                   placeholder="First name"
                   className="w-full h-8 rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900"
                 />
-                               {errors.fname && ( <p className="text-red-500">{errors.fname}</p>)}
-
+                {errors.fname && <p className="text-red-500">{errors.fname}</p>}
               </div>
               <div className="col-span-full sm:col-span-3">
                 <label for="lastname" className="text-sm">
@@ -164,7 +162,7 @@ const AddDriver = () => {
                   placeholder="Last name"
                   className="w-full h-8 rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900"
                 />
-               {errors.lname && ( <p className="text-red-500">{errors.lname}</p>)}
+                {errors.lname && <p className="text-red-500">{errors.lname}</p>}
               </div>
               <div className="col-span-full sm:col-span-3">
                 <label for="email" className="text-sm">
@@ -178,8 +176,7 @@ const AddDriver = () => {
                   placeholder="Email"
                   className="w-full h-8 rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900"
                 />
-                               {errors.email && ( <p className="text-red-500">{errors.email}</p>)}
-
+                {errors.email && <p className="text-red-500">{errors.email}</p>}
               </div>
               <div className="col-span-full sm:col-span-3">
                 <label htmlFor="city" className="text-sm">
@@ -187,21 +184,19 @@ const AddDriver = () => {
                 </label>
 
                 <select
-  id="city"
-  name="city"
-  onChange={handleinputchange}
-  className="w-full h-8 rounded-md focus:ring focus:ring-dark focus:border-gray-700 dark:text-gray-900"
->
-  <option value="">Select City</option>
-  {hubcity.map((city, index) => (
-    <option key={index} value={city.value}>
-      {city.city}
-    </option>
-  ))}
-</select>
-
+                  id="city"
+                  name="city"
+                  onChange={handleinputchange}
+                  className="w-full h-8 rounded-md focus:ring focus:ring-dark focus:border-gray-700 dark:text-gray-900"
+                >
+                  <option value="">Select City</option>
+                  {hubcity.map((city, index) => (
+                    <option key={index} value={city.value}>
+                      {city.city}
+                    </option>
+                  ))}
+                </select>
               </div>
-
 
               <div className="col-span-full">
                 <label for="email" className="text-sm">
@@ -215,10 +210,11 @@ const AddDriver = () => {
                   cols="50"
                   placeholder="Type your text here..."
                 ></textarea>
-                               {errors.address && ( <p className="text-red-500">{errors.address}</p>)}
-
+                {errors.address && (
+                  <p className="text-red-500">{errors.address}</p>
+                )}
               </div>
-          
+
               <div className="col-span-full sm:col-span-2">
                 <label for="state" className="text-sm">
                   Mobile
@@ -231,8 +227,9 @@ const AddDriver = () => {
                   placeholder="Mobile"
                   className="w-full h-8 rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900"
                 />
-                               {errors.mobile && ( <p className="text-red-500">{errors.mobile}</p>)}
-
+                {errors.mobile && (
+                  <p className="text-red-500">{errors.mobile}</p>
+                )}
               </div>
               <div className="col-span-full sm:col-span-2">
                 <label for="zip" className="text-sm">
@@ -246,8 +243,7 @@ const AddDriver = () => {
                   placeholder="PIN"
                   className="w-full h-8 rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900"
                 />
-                               {errors.pin && ( <p className="text-red-500">{errors.pin}</p>)}
-
+                {errors.pin && <p className="text-red-500">{errors.pin}</p>}
               </div>
             </div>
           </fieldset>
@@ -281,7 +277,6 @@ const AddDriver = () => {
                   placeholder="Username"
                   className="w-full h-8 rounded-md focus:ring focus:ri focus:ri dark:border-gray-700 dark:text-gray-900"
                 />
-
               </div>
               <div className="col-span-full sm:col-span-3">
                 <label for="website" className="text-sm">

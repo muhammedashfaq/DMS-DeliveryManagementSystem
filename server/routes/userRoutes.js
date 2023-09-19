@@ -9,12 +9,13 @@ const upload = require("../config/multer");
 router.post("/register", userController.registerpage);
 router.post("/login", userController.loginpage);
 router.post("/googlelogin", userController.googlelogin);
-
-
-router.post("/get-userinfo-id", authmiddleware, userController.userdetails);
 router.post("/otp", userController.otpVerification);
 router.post("/forget", userController.forgetMail);
 router.post("/reset/:token", userController.resetPassword);
+router.post("/trackshipment", userController.trackshipment);
+
+
+router.post("/get-userinfo-id", authmiddleware, userController.userdetails);
 router.post("/get-dataprofils",authmiddleware,userController.getprofile);
 router.post(
   "/updateprofileimage",
@@ -23,10 +24,10 @@ router.post(
   userController.updateProfile
 );
 router.post("/add_address", authmiddleware, userController.addAddress);
-router.get("/getLocationData", userController.getLocationData);
+router.get("/getLocationData",authmiddleware, userController.getLocationData);
 router.post("/bookshipment", authmiddleware, userController.bookshipment);
-router.post("/advancepaymentUpdate", userController.advancepaymentUpdate);
-router.post("/trackshipment", userController.trackshipment);
+router.post("/advancepaymentUpdate",authmiddleware, userController.advancepaymentUpdate);
+
 router.post("/getchathistory", userController.getchathistory);
 router.post("/updateUserDetails",authmiddleware, userController.updateUserDetails);
 

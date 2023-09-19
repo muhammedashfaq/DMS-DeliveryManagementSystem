@@ -13,6 +13,7 @@ import { useUserContext } from "../../Helper/context/userContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
 import jwt_decode from "jwt-decode";
+import { RouteObjects } from "../../Routes/RouteObject";
 
 export const LoginModal = ({ visible, onClose }) => {
   const dispatch = useDispatch();
@@ -181,14 +182,14 @@ export const LoginModal = ({ visible, onClose }) => {
               </div>
               <div className="forget">
                 <label>
-                  <Link to="/forget"> forgot password</Link>
+                  <Link to={RouteObjects.ForgetPassword}> forgot password</Link>
                 </label>
               </div>
               <button className="w-full h-10 rounded-full bg-blue-950 border-none text-base  text-white font-semibold">
                 Login
               </button>
               <div className="register">
-                <Link to="/register">dont have account ?</Link>
+                <Link to={RouteObjects.Register}>dont have account ?</Link>
               </div>
             </form>
           </div>

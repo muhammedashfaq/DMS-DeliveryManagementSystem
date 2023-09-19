@@ -1,26 +1,27 @@
 import { Dropdown } from "flowbite-react";
 import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { RouteObjects } from "../../Routes/RouteObject";
 
 const Nav = () => {
   const location = useLocation();
   const menu = [
     {
       name: "Dashboard",
-      path: "/adminhome/admindashboard",
+      path: RouteObjects.AdminDashboard,
       icon: "material-symbols-outlined",
       iconname: "dashboard",
     },
 
     {
       name: "Track Shipment",
-      path: "/adminhome/admintrack",
+      path: RouteObjects.AdminTracking,
       icon: "material-symbols-outlined",
       iconname: "location_on",
     },
     {
       name: "Services",
-      path: "/adminhome/services",
+      path: RouteObjects.ServicesPage,
       icon: "material-symbols-outlined",
       iconname: "device_hub",
     },
@@ -85,14 +86,14 @@ const Nav = () => {
             label="Management"
           >
             <Dropdown.Item className=" text-white p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
-              <Link to="/adminhome/user_details">
+              <Link to={RouteObjects.UserList}>
                 User
                 <span class="material-symbols-outlined">person_search</span>
               </Link>
             </Dropdown.Item>
             <Dropdown.Item className="text-white p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
               {" "}
-              <Link to="/adminhome/driver_details">
+              <Link to={RouteObjects.DriverList}>
                 HUB
                 <span class="material-symbols-outlined">local_shipping</span>
               </Link>
@@ -100,7 +101,7 @@ const Nav = () => {
 
             <Dropdown.Item className="text-white p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
               {" "}
-              <Link to="/adminhome/shipment_list">
+              <Link to={RouteObjects.ShipmentList}>
                 Shipment
                 <span class="material-symbols-outlined">package_2</span>
               </Link>
@@ -109,7 +110,7 @@ const Nav = () => {
               <span
                 onClick={() => {
                   localStorage.removeItem("admintoken");
-                  navigate("/admin");
+                  navigate(RouteObjects.AdminLogin);
                 }}
               >
                 Logout
@@ -120,7 +121,7 @@ const Nav = () => {
         </div>
         <div className="absolute bottom-0 mb-6">
 
-        <Link to="/adminhome">
+        <Link to={RouteObjects.AdminDashboard}>
               <img src="./images/adminlogin/logo.png" />
             </Link>
         </div>
@@ -128,13 +129,7 @@ const Nav = () => {
 
       
 
-      {/* <div className=" h-max ml-64">
-        <Routes>
-          <Route path="/user_details" element={<UserDetails />} />
-          <Route path="/driver_details" element={<DriverDetails />} />
-
-        </Routes>
-      </div> */}
+      
     </div>
   );
 };

@@ -44,7 +44,6 @@ const Userlist = () => {
             },
           }
         );
-        console.log("falsw");
         if (response.data.success) {
           toast.success(response.data.message);
 
@@ -85,9 +84,6 @@ const Userlist = () => {
       <div class="relative overflow-y-auto shadow-md sm:rounded-lg ">
         <div className=" flex justify-evenly w-full h-14 dark:bg-gray-700 text-sm text-left text-gray-500 dark:text-gray-400  ">
           <fieldset className=" space-y-1 dark:text-gray-100 mt-2">
-
-
-
             <label for="Search" className="hidden">
               Search
             </label>
@@ -116,9 +112,6 @@ const Userlist = () => {
                 className="w-32 py-2 pl-10 text-sm rounded-md sm:w-auto focus:outline-none dark:bg-gray-800 dark:text-gray-100 focus:dark:bg-gray-900 focus:dark:border-violet-400"
               />
             </div>
-
-
-            
           </fieldset>
         </div>
         <hr className="bg-gray-400" />

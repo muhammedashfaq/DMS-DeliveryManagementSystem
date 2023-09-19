@@ -1,7 +1,7 @@
 import React from 'react'
-import Header from "../../../components/landingpage/header";
-import Footer from "../../../components/landingpage/footer";
-import BookShipments from '../../../components/landingpage/bookShipment';
+import Header from "../../../components/landingpage/Header";
+import Footer from "../../../components/landingpage/Footer";
+import BookShipments from '../../../components/landingpage/BookShipment';
 
 const BookShipment = () => {
   return (

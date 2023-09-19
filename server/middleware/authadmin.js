@@ -10,7 +10,7 @@ module.exports = (req, res, next) => {
     const tokenValue = token.split(" ")[1];
 
     jwt.verify(tokenValue, process.env.JWT_SECRET_ADMIN, (err, decoded) => {
-      if (err) {
+      if (err || decoded.role !== "ADMIN") {
         return res.status(401).send({ message: "Authentication failed", success: false });
       } else {
         req.adminId = decoded.id;

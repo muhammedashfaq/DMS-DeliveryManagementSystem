@@ -1,7 +1,7 @@
-import Header from "../../../components/landingpage/header";
-import Footer from "../../../components/landingpage/footer";
-import Banner from "../../../components/landingpage/banner";
-import Body from "../../../components/landingpage/body";
+import Header from "../../../components/landingpage/Header";
+import Footer from "../../../components/landingpage/Footer";
+import Banner from "../../../components/landingpage/Banner";
+import Body from "../../../components/landingpage/Homebody";
 import axios from "axios";
 import { useEffect } from "react";
 // import {Modal} from '../components/landingpage/modal'
@@ -19,10 +19,10 @@ const Landingpage = () => {
       );
       console.log("Server Response:", response);
 
-      if (response.data.success) {
-        console.log(response.data.data.name);
-      }
-    } catch (error) {}
+     
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   useEffect(() => {

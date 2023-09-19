@@ -3,11 +3,14 @@ import Chart from "react-apexcharts";
 import { adminRequest } from "../../Helper/interceptor/axois";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { RouteObjects } from "../../Routes/RouteObject";
+import { adminreports ,getAllDashboardData} from "./adminutil/api";
 
 const AdminDashboard = () => {
   const rupeeSymbol = "\u20B9";
 
   const navigate = useNavigate();
+  const [pieChart,setPieChat]=useState([])
   const [selectedCity, setSelectedCity] = useState("All");
   const [amt, setamt] = useState(null);
   const [deliverCount, setDeliverycount] = useState(null);
@@ -18,60 +21,60 @@ const AdminDashboard = () => {
   const [shipment, setShipment] = useState([]);
   const [deliverByMonth, setdeliveryByMonth] = useState([]);
 
-
   const fetchDataByHub = async (city) => {
-    adminRequest({
-      url: "/admin/adminReportByHub",
-      method: "POST",
-      data: { city: city },
-    })
-      .then((response) => {
-        if (response.data.success) {
-          toast.success(response.data.message);
-          setamt(response.data.totalAdvanceAmount);
-          setDeliverycount(response.data.totalDeliveredShipment);
-          stUnDeliveryCount(response.data.totalUndeliveredShipments);
-        } else {
-          toast.error(response.data.message);
-        }
-      })
-      .catch((err) => {
-        toast.error("Something went wrong");
-        console.log(err);
-        localStorage.removeItem("admintoken");
-        navigate("/admin");
-      });
+    try {
+      const response = await adminreports(city);
+
+      if (response.data.success) {
+        toast.success(response.data.message);
+        setamt(response.data.totalAdvanceAmount);
+        setDeliverycount(response.data.totalDeliveredShipment);
+        stUnDeliveryCount(response.data.totalUndeliveredShipments);
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (err) {
+      toast.error("Something went wrong");
+      console.log(err);
+      localStorage.removeItem("admintoken");
+      navigate(RouteObjects.AdminLogin);
+    }
   };
   const handleCitySelect = (event) => {
     const selectedValue = event.target.value;
     setSelectedCity(selectedValue);
     fetchDataByHub(selectedValue);
   };
-  const getFullData = async () => {
-    adminRequest({
-      url: "/admin/getAllData",
-      method: "POST",
-    })
-      .then((response) => {
-        if (response.data.success) {
-          toast.success(response.data.message);
 
-          setUser(response.data.user);
-          setHubCount(response.data.hubCount);
-          setShipment(response.data.shipment);
-          setShipmentCount(response.data.shipmentcount);
-          setHub(response.data.hub);
-          setdeliveryByMonth(response.data.shipmentCountByMonth);
-        } else {
-          toast.error(response.data.message);
-        }
-      })
-      .catch((err) => {
-        toast.error("Something went wrong");
-        console.log(err);
-        localStorage.removeItem("admintoken");
-        navigate("/admin");
-      });
+
+
+  const getFullData = async () => {
+
+    try {
+      
+      const response = await getAllDashboardData()
+      if (response.data.success) {
+        toast.success(response.data.message);
+
+        setUser(response.data.user);
+        setHubCount(response.data.hubCount);
+        setShipment(response.data.shipment);
+        setShipmentCount(response.data.shipmentcount);
+        setHub(response.data.hub);
+        setdeliveryByMonth(response.data.shipmentCountByMonth);
+        setPieChat(response.data.deliveredShipmentCountpie)
+        console.log(response.data.deliveredShipmentCountpie,'pieeeee')
+      } else {
+        toast.error(response.data.message);
+      }
+
+    } catch (error) {
+      toast.error("Something went wrong");
+      localStorage.removeItem("admintoken");
+      navigate(RouteObjects.AdminLogin);
+      
+    }
+    
   };
 
   useEffect(() => {
@@ -131,7 +134,7 @@ const AdminDashboard = () => {
   const [hub, setHub] = useState([]);
 
   const [chartDataPie, setChartDataPie] = useState({
-    series: [5, 15, 13],
+    series: [],
     options: {
       chart: {
         width: 380,
@@ -159,15 +162,21 @@ const AdminDashboard = () => {
   });
 
   useEffect(() => {
-    const labels = hub.map((hubName) => hubName.city);
+
+    const labels = pieChart
+    .filter((hubName) => hubName._id !== null)
+    .map((hubName) => hubName._id);    
+    const series = pieChart.map((count) => count.count);
+
     setChartDataPie((prevChartDataPie) => ({
       ...prevChartDataPie,
+      series:series,
       options: {
         ...prevChartDataPie.options,
         labels: labels,
       },
     }));
-  }, [hub]);
+  }, [pieChart]);
   return (
     <div className="container ">
       <div className="grid grid-cols-3 mt-9 ">

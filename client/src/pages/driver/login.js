@@ -8,6 +8,7 @@ import { toast } from "react-hot-toast";
 import { useUserContext } from "../../Helper/context/userContext";
 import axios from "axios";
 import "./dlogin.css";
+import { RouteObjects } from "../../Routes/RouteObject";
 const Login = () => {
   const { setUserName } = useUserContext();
   const navigate = useNavigate();
@@ -43,10 +44,9 @@ const Login = () => {
         toast.success(response.data.message);
         localStorage.setItem("drivertoken", response.data.data);
 
-        console.log('res',response);
         const name = response.data.name;
         setUserName(name);
-        navigate("/hubhome");
+        navigate(RouteObjects.HubHome);
         
       } else {
         toast.error(response.data.message);
@@ -112,7 +112,7 @@ const Login = () => {
         </form>
 
         <p className="text-center m-2">
-          <a href="/forget">Forgot password</a>
+          <a href={RouteObjects.ForgetPassword}>Forgot password</a>
         </p>
       </div>
     </div>

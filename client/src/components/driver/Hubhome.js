@@ -7,8 +7,13 @@ import ChatIcon from "@mui/icons-material/Chat";
 import HubChatModal from "./HubChatModal";
 
 import axios from "axios";
+import { hubRequest } from "../../Helper/interceptor/axois";
+import { useNavigate } from "react-router-dom";
+import { RouteObjects } from "../../Routes/RouteObject";
+import { getHubJobs, shipmentAproving, transistsend } from "./hubutil/api";
 
 function Body() {
+  const navigate = useNavigate();
   const [hubid, setHubid] = useState();
   const [showchatModal, setShowchatModal] = useState(false);
   const [trackid, settrackid] = useState("");
@@ -58,8 +63,7 @@ function Body() {
     try {
       e.preventDefault();
 
-      const response = await axios.post("/hub/transistshipment", { trackid });
-
+      const response = await transistsend(trackid);
       if (response.data.success) {
         toast.success(response.data.message);
         getjobs();
@@ -67,38 +71,39 @@ function Body() {
         toast.error(response.data.message);
       }
     } catch (error) {
-      toast.error("Something went wrong");
+      toast.error("something went wrong");
+      localStorage.removeItem("drivertoken");
+      navigate(RouteObjects.HubLogin);
     }
   };
 
   const aproveShipment = async (e, trackid) => {
+
     try {
       e.preventDefault();
-
-      const response = await axios.post("/hub/approveShipment", { trackid });
-
+      const response = await shipmentAproving(trackid)
       if (response.data.success) {
         toast.success(response.data.message);
         getjobs();
       } else {
         toast.error(response.data.message);
       }
+      
     } catch (error) {
-      toast.error("Something went wrong");
+      toast.error("something went wrong");
+        localStorage.removeItem("drivertoken");
+        navigate(RouteObjects.HubLogin);
+      
     }
+
+    
   };
 
-  const getjobs = async (req, res) => {
+  const getjobs = async () => {
     try {
-      const response = await axios.post(
-        "/hub/getjobs",
-        {},
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("drivertoken"),
-          },
-        }
-      );
+      const response = await getHubJobs()
+      
+      
 
       if (response.data.success) {
         setTransist(response.data.transist);

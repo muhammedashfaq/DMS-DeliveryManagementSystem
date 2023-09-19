@@ -30,16 +30,13 @@ const io = new Server(server, {
   },
 });
 io.on("connection", (socket) => {
-  console.log(`user connected : ${socket.id}`);
 
   socket.on("join-room", (data) => {
     socket.join(data);
-    console.log(`user with id :${socket.id} joined room:${data}`);
 
     socket.on("send_message", async (data) => {
       io.to(data.room).emit("receive_message", data);
       const { room, author, message } = data;
-      console.log("here for chat ", data);
       await userController.chatHistory(room, message, author);
     });
   });

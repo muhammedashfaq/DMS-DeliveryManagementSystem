@@ -35,7 +35,7 @@ const adminLogin = async (req, res) => {
         res.status(200).send({ message: "incorrect password", success: false });
       } else {
         const token = jwt.sign(
-          { id: user._id, name: user.username },
+          { id: user._id, name: user.username, role: "ADMIN" },
           process.env.JWT_SECRET_ADMIN,
           {
             expiresIn: "1d",
@@ -81,8 +81,18 @@ const admindetails = async (req, res) => {
 
 const userlistLoad = async (req, res) => {
   try {
-    const userData = await User.find({});
-    res.status(200).send({ message: "fetched", success: true, data: userData });
+    const id = req.adminId;
+    const user = await User.findOne({ _id: id });
+    if (!user) {
+      return res
+        .status(200)
+        .send({ message: "user does no exist", success: false });
+    } else {
+      const userData = await User.find({});
+      res
+        .status(200)
+        .send({ message: "fetched", success: true, data: userData });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: "Error", success: false, error });
@@ -91,19 +101,29 @@ const userlistLoad = async (req, res) => {
 
 const blockuser = async (req, res) => {
   try {
-    const email = req.body.email;
-    console.log(req.body);
-
-    const userdata = await User.findOne({ email: email });
-
-    if (userdata) {
-      await User.findOneAndUpdate(
-        { email: email },
-        { $set: { isBlocked: true } }
-      );
-      res.status(200).send({ message: "successfully blocked", success: true });
+    const id = req.adminId;
+    const user = await User.findOne({ _id: id });
+    if (!user) {
+      return res
+        .status(200)
+        .send({ message: "user does no exist", success: false });
     } else {
-      res.status(200).send({ message: "User Not Blocked", success: false });
+      const email = req.body.email;
+      console.log(req.body);
+
+      const userdata = await User.findOne({ email: email });
+
+      if (userdata) {
+        await User.findOneAndUpdate(
+          { email: email },
+          { $set: { isBlocked: true } }
+        );
+        res
+          .status(200)
+          .send({ message: "successfully blocked", success: true });
+      } else {
+        res.status(200).send({ message: "User Not Blocked", success: false });
+      }
     }
   } catch (error) {
     console.error(error);
@@ -113,20 +133,28 @@ const blockuser = async (req, res) => {
 
 const unblockuser = async (req, res) => {
   try {
-    const email = req.body.email;
-    console.log(req.body);
-
-    const userdata = await User.find({ email: email });
-    if (userdata) {
-      await User.findOneAndUpdate(
-        { email: email },
-        { $set: { isBlocked: false } }
-      );
-      res
+    const id = req.adminId;
+    const user = await User.findOne({ _id: id });
+    if (!user) {
+      return res
         .status(200)
-        .send({ message: "successfully Unblocked", success: true });
+        .send({ message: "user does no exist", success: false });
     } else {
-      res.status(200).send({ message: "User Not Found", success: false });
+      const email = req.body.email;
+      console.log(req.body);
+
+      const userdata = await User.find({ email: email });
+      if (userdata) {
+        await User.findOneAndUpdate(
+          { email: email },
+          { $set: { isBlocked: false } }
+        );
+        res
+          .status(200)
+          .send({ message: "successfully Unblocked", success: true });
+      } else {
+        res.status(200).send({ message: "User Not Found", success: false });
+      }
     }
   } catch (error) {
     console.error(error);
@@ -136,55 +164,63 @@ const unblockuser = async (req, res) => {
 
 const addDriver = async (req, res) => {
   try {
-    // const id=req.userId
-    // console.log(id,'iddd')
-
-    // console.log(req.file[0].filename)
-
-    // if (!req.body.fname || !req.body.lname || !req.body.email || !req.body.city ||
-    //     !req.body.address || !req.body.age || !req.body.mobile || !req.body.pin || !req.body.licence ||
-    //     !req.files.fileImage || !req.files.profileimage) {
-    //   return res.status(400).send({
-    //     message: "All required fields and images are necessary.",
-    //     success: false
-    //   });
-    // }
-
-    await sharp("./public/multer/" + req.files[0].filename)
-      .resize(500, 500)
-      .toFile("./public/cloudinary/" + req.files[0].filename);
-
-    const data = await cloudinary.uploader.upload(
-      "./public/cloudinary/" + req.files[0].filename
-    );
-
-    const cdurl = [data.secure_url];
-
-    const saveData = new hub({
-      fname: req.body.fname,
-      lname: req.body.lname,
-      email: req.body.email,
-      city: req.body.city,
-      address: req.body.address,
-      mobile: req.body.mobile,
-      pin: req.body.pin,
-      licence: req.body.licence,
-      website: req.body.website,
-      bio: req.body.bio,
-      profileimage: cdurl,
-    });
-
-    const driverdata = await saveData.save();
-
-    const name = req.body.fname + " " + req.body.lname;
-    const email = req.body.email;
-    const employeeId = driverdata.employeeId;
-    if (driverdata) {
-      sendmailtoDriver(name, email, employeeId);
-
-      res.status(200).send({ message: "successfully saved", success: true });
+    const id = req.adminId;
+    const user = await User.findOne({ _id: id });
+    if (!user) {
+      return res
+        .status(200)
+        .send({ message: "user does no exist", success: false });
     } else {
-      res.status(200).send({ message: "Error", success: fals });
+      // const id=req.userId
+      // console.log(id,'iddd')
+
+      // console.log(req.file[0].filename)
+
+      // if (!req.body.fname || !req.body.lname || !req.body.email || !req.body.city ||
+      //     !req.body.address || !req.body.age || !req.body.mobile || !req.body.pin || !req.body.licence ||
+      //     !req.files.fileImage || !req.files.profileimage) {
+      //   return res.status(400).send({
+      //     message: "All required fields and images are necessary.",
+      //     success: false
+      //   });
+      // }
+
+      await sharp("./public/multer/" + req.files[0].filename)
+        .resize(500, 500)
+        .toFile("./public/cloudinary/" + req.files[0].filename);
+
+      const data = await cloudinary.uploader.upload(
+        "./public/cloudinary/" + req.files[0].filename
+      );
+
+      const cdurl = [data.secure_url];
+
+      const saveData = new Hub({
+        fname: req.body.fname,
+        lname: req.body.lname,
+        email: req.body.email,
+        city: req.body.city,
+        address: req.body.address,
+        mobile: req.body.mobile,
+        pin: req.body.pin,
+        licence: req.body.licence,
+        website: req.body.website,
+        bio: req.body.bio,
+        profileimage: cdurl,
+      });
+
+      const driverdata = await saveData.save();
+
+      const name = req.body.fname + " " + req.body.lname;
+      const email = req.body.email;
+      const employeeId = driverdata.employeeId;
+      if (driverdata) {
+        sendmailtoDriver(name, email, employeeId);
+
+        res.status(200).send({ message: "successfully saved", success: true });
+      } else {
+        res.status(200).send({ message: "Error", success: fals });
+      }
     }
   } catch (error) {
     console.log("saveerror", error);
@@ -194,19 +230,37 @@ const addDriver = async (req, res) => {
 
 const getcitydetails = async (req, res) => {
   try {
-    const citydata = await service.find();
+    const id = req.adminId;
+    const user = await User.findOne({ _id: id });
+    if (!user) {
+      return res
+        .status(200)
+        .send({ message: "user does no exist", success: false });
+    } else {
+      const citydata = await service.find();
 
-    res.status(200).send({ message: "fetched", success: true, data: citydata });
+      res
+        .status(200)
+        .send({ message: "fetched", success: true, data: citydata });
+    }
   } catch (error) {
     res.status(200).send({ message: "error", success: false });
   }
 };
 const driverlistLoad = async (req, res) => {
   try {
-    const driverdata = await Hub.find({});
-    res
-      .status(200)
-      .send({ message: "fetched", success: true, data: driverdata });
+    const id = req.adminId;
+    const user = await User.findOne({ _id: id });
+    if (!user) {
+      return res
+        .status(200)
+        .send({ message: "user does no exist", success: false });
+    } else {
+      const driverdata = await Hub.find({});
+      res
+        .status(200)
+        .send({ message: "fetched", success: true, data: driverdata });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: "Error", success: false, error });
@@ -235,17 +289,25 @@ const driverProfile = async (req, res) => {
 
 const driverstatusUpdate = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { status } = req.body;
-
-    const updatedriver = await hub.findByIdAndUpdate(
-      { _id: id },
-      { $set: { activestatus: status } }
-    );
-    if (updatedriver) {
-      res.status(200).send({ message: "status updated", success: true });
+    const authid = req.adminId;
+    const admin = await User.findOne({ _id: authid });
+    if (!admin) {
+      return res
+        .status(200)
+        .send({ message: "user does no exist", success: false });
     } else {
-      res.status(200).send({ message: "failed to update", success: false });
+      const { id } = req.params;
+      const { status } = req.body;
+
+      const updatedriver = await hub.findByIdAndUpdate(
+        { _id: id },
+        { $set: { activestatus: status } }
+      );
+      if (updatedriver) {
+        res.status(200).send({ message: "status updated", success: true });
+      } else {
+        res.status(200).send({ message: "failed to update", success: false });
+      }
     }
   } catch (error) {
     console.log(error);
@@ -255,14 +317,19 @@ const driverstatusUpdate = async (req, res) => {
 
 const getLocationData = async (req, res) => {
   try {
-    console.log(req.adminId, "jjj");
+    const authid = req.adminId;
+    const admin = await User.findOne({ _id: authid });
+    if (!admin) {
+      return res
+        .status(200)
+        .send({ message: "user does no exist", success: false });
+    } else {
+      const locationdata = await service.find({});
 
-    const locationdata = await service.find({});
-    console.log(locationdata, "city");
-
-    res
-      .status(200)
-      .send({ message: "fetched", success: true, data: locationdata });
+      res
+        .status(200)
+        .send({ message: "fetched", success: true, data: locationdata });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: "something went wrong", success: false });
@@ -270,29 +337,37 @@ const getLocationData = async (req, res) => {
 };
 const addserviceCity = async (req, res) => {
   try {
-    if (!req.body.city) {
-      res
+    const authid = req.adminId;
+    const admin = await User.findOne({ _id: authid });
+    if (!admin) {
+      return res
         .status(200)
-        .send({ message: "This field is required", success: false });
-    }
-    const city = req.body.city;
-    const alredy = await service.findOne({
-      city: { $regex: city, $options: "i" },
-    });
-
-    if (!alredy) {
-      const insertdata = new service({
-        city: req.body.city,
+        .send({ message: "user does no exist", success: false });
+    } else {
+      if (!req.body.city) {
+        res
+          .status(200)
+          .send({ message: "This field is required", success: false });
+      }
+      const city = req.body.city;
+      const alredy = await service.findOne({
+        city: { $regex: city, $options: "i" },
       });
 
-      const citydata = insertdata.save();
-      if (citydata) {
-        res.status(200).send({ message: "updated", success: true });
+      if (!alredy) {
+        const insertdata = new service({
+          city: req.body.city,
+        });
+
+        const citydata = insertdata.save();
+        if (citydata) {
+          res.status(200).send({ message: "updated", success: true });
+        } else {
+          res.status(200).send({ message: "update failed", success: false });
+        }
       } else {
-        res.status(200).send({ message: "update failed", success: false });
+        res.status(200).send({ message: "data already exist", success: false });
       }
-    } else {
-      res.status(200).send({ message: "data already exist", success: false });
     }
   } catch (error) {
     res.status(500).send({ message: "something went wrong", success: false });
@@ -303,38 +378,46 @@ const addserviceCity = async (req, res) => {
 
 const addservicePlace = async (req, res) => {
   try {
-    const { city, place } = req.body;
-    if (!place) {
+    const authid = req.adminId;
+    const admin = await User.findOne({ _id: authid });
+    if (!admin) {
       return res
-        .status(400)
-        .send({ message: "Place field is required", success: false });
-    }
-
-    const citydata = await service.findOne({ city: city });
-
-    if (citydata) {
-      const placeExist = await service.findOne({
-        city: city,
-        place: { $elemMatch: { $regex: new RegExp(place, "i") } },
-      });
-
-      if (!placeExist) {
-        await service.findOneAndUpdate(
-          { city: city },
-          { $addToSet: { place: place } }
-        );
+        .status(200)
+        .send({ message: "user does no exist", success: false });
+    } else {
+      const { city, place } = req.body;
+      if (!place) {
         return res
-          .status(200)
-          .send({ message: "Place added successfully", success: true });
+          .status(400)
+          .send({ message: "Place field is required", success: false });
+      }
+
+      const citydata = await service.findOne({ city: city });
+
+      if (citydata) {
+        const placeExist = await service.findOne({
+          city: city,
+          place: { $elemMatch: { $regex: new RegExp(place, "i") } },
+        });
+
+        if (!placeExist) {
+          await service.findOneAndUpdate(
+            { city: city },
+            { $addToSet: { place: place } }
+          );
+          return res
+            .status(200)
+            .send({ message: "Place added successfully", success: true });
+        } else {
+          return res
+            .status(200)
+            .send({ message: "Place existed", success: false });
+        }
       } else {
         return res
-          .status(200)
-          .send({ message: "Place existed", success: false });
+          .status(404)
+          .send({ message: "City not found", success: false });
       }
-    } else {
-      return res
-        .status(404)
-        .send({ message: "City not found", success: false });
     }
   } catch (error) {
     console.log(error);
@@ -343,11 +426,19 @@ const addservicePlace = async (req, res) => {
 
 const deletecity = async (req, res) => {
   try {
-    const { city } = req.body;
+    const authid = req.adminId;
+    const admin = await User.findOne({ _id: authid });
+    if (!admin) {
+      return res
+        .status(200)
+        .send({ message: "user does no exist", success: false });
+    } else {
+      const { city } = req.body;
 
-    const deletedata = await service.deleteOne({ city: city });
+      const deletedata = await service.deleteOne({ city: city });
 
-    res.status(200).send({ message: "deleted", success: true });
+      res.status(200).send({ message: "deleted", success: true });
+    }
   } catch (error) {
     res.status(500).send({ message: "somthing went wrong", success: false });
   }
@@ -355,26 +446,34 @@ const deletecity = async (req, res) => {
 
 const deleteplace = async (req, res) => {
   try {
-    const { position, city } = req.body;
-
-    const findcity = await service.findOne({ city: city });
-
-    if (!findcity) {
+    const authid = req.adminId;
+    const admin = await User.findOne({ _id: authid });
+    if (!admin) {
       return res
-        .status(404)
-        .send({ message: "City not found", success: false });
+        .status(200)
+        .send({ message: "user does no exist", success: false });
+    } else {
+      const { position, city } = req.body;
+
+      const findcity = await service.findOne({ city: city });
+
+      if (!findcity) {
+        return res
+          .status(404)
+          .send({ message: "City not found", success: false });
+      }
+
+      findcity.place.splice(position, 1);
+      const updatedCity = await findcity.save();
+
+      if (!updatedCity) {
+        return res
+          .status(500)
+          .send({ message: "Failed to update city", success: false });
+      }
+
+      res.status(200).send({ message: "Place deleted", success: true });
     }
-
-    findcity.place.splice(position, 1);
-    const updatedCity = await findcity.save();
-
-    if (!updatedCity) {
-      return res
-        .status(500)
-        .send({ message: "Failed to update city", success: false });
-    }
-
-    res.status(200).send({ message: "Place deleted", success: true });
   } catch (error) {
     console.error(error);
     res.status(500).send({ message: "Something went wrong", success: false });
@@ -438,7 +537,6 @@ const getAllData = async (req, res) => {
         "November",
         "December",
       ];
-
       const shipmentCountByMonthWithNames = shipmentCountByMonth.map(
         (item) => ({
           month: monthNames[item._id.month - 1],
@@ -446,26 +544,29 @@ const getAllData = async (req, res) => {
         })
       );
 
-      console.log(shipmentCountByMonthWithNames, "aaaa");
-
       const deliveredShipmentcount = await shipmentupdates.countDocuments({
         status: "Shipment Delivered",
       });
-      // const deliveredShipmentcount = await shipmentModel.aggregate([
-      //   {
-      //     $match: {
-      //       status: "Shipment Delivered",
-      //     },
-      //   },
-      //   {
-      //     $group: {
-      //       _id: {
-      //         month: { $month: "$deliverydate" },
-      //       },
-      //       count: { $sum: 1 },
-      //     },
-      //   },
-      // ]);
+
+      const deliveredShipmentCountpie = await shipmentupdates.aggregate([
+        {
+          $match: {
+            status: "Shipment Delivered",
+            deliveredBy: { $ne: null },
+          },
+        },
+        {
+          $group: {
+            _id: "$deliveredBy",
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $match: {
+            _id: { $ne: null },
+          },
+        },
+      ]);
 
       const deliveredShipment = await shipmentModel.find({
         "shipment.shipmentStatus": "Delivered",
@@ -479,6 +580,7 @@ const getAllData = async (req, res) => {
         shipment: deliveredShipment,
         shipmentcount: deliveredShipmentcount,
         shipmentCountByMonth: shipmentCountByMonthWithNames,
+        deliveredShipmentCountpie: deliveredShipmentCountpie,
       });
     } else {
       res.status(200).send({
@@ -580,11 +682,12 @@ const adminReportByHub = async (req, res) => {
           "shipment.shipmentStatus": "Delivered",
         });
 
+        console.log(totalDeliveredShipments, "llll");
+
         const totalUndeliveredShipments = await shipmentModel.countDocuments({
           fromHub: city,
           "shipment.shipmentStatus": { $ne: "Delivered" },
         });
-        console.log(totalAdvanceAmount, "amt");
 
         res.status(200).send({
           message: "Data fetched successfully",
@@ -625,7 +728,7 @@ const updateadminDetails = async (req, res) => {
 
       if (updatedUser) {
         res.status(200).send({
-          message: "User details updated successfully",
+          message: " details updated successfully",
           success: true,
         });
       } else {

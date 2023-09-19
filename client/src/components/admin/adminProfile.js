@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { hideloading, showloading } from "../../Helper/redux/alertSlice";
 import axios from "axios";
+import { RouteObjects } from "../../Routes/RouteObject";
 
 const AdminProfile = () => {
   const dispatch = useDispatch();
@@ -46,7 +47,7 @@ const AdminProfile = () => {
           toast.error("something went wrong");
           console.log(err);
           localStorage.removeItem("admintoken");
-          navigate("/admin");
+          navigate(RouteObjects.AdminLogin);
         });
     } else {
     }
@@ -58,7 +59,6 @@ const AdminProfile = () => {
       const imageUrl = URL.createObjectURL(file);
       setImage(imageUrl);
       setProfileimage(file);
-      console.log(file,'imaaaaaaaaaaaa')
     }
   };
 
@@ -113,7 +113,7 @@ const AdminProfile = () => {
         toast.error("something went wrong");
         console.log(err);
         localStorage.removeItem("admintoken");
-        navigate("/admin");
+        navigate(RouteObjects.AdminLogin);
       });
   };
   useEffect(() => {

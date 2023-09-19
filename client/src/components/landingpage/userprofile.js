@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { hideloading, showloading } from "../../Helper/redux/alertSlice";
 import axios from "axios";
 import { useUserContext } from "../../Helper/context/userContext";
-import { AddressModal } from "./addressModal";
+import { AddressModal } from "./AddressModal";
 import ChatModal from "./ChatModal";
 import { SliderThumb } from "@mui/material";
 import { toast } from "react-hot-toast";

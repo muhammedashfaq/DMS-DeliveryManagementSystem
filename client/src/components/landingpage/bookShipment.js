@@ -4,6 +4,7 @@ import { bookshipmentvalidation } from "../../Helper/Validations/validation";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { userRequest } from "../../Helper/interceptor/axois";
+import { RouteObjects } from "../../Routes/RouteObject";
 
 // import { loadScript } from "https://checkout.razorpay.com/v1/checkout.js";
 
@@ -120,7 +121,7 @@ const BookShipment = () => {
           if (response.data.success) {
             toast.success(response.data.message);
 
-            navigate("/userProfile");
+            navigate(RouteObjects.UserProfile);
           } else {
             toast.error(response.data.message);
           }

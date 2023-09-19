@@ -23,7 +23,7 @@ const logindriver = async (req, res) => {
           );
 
           const token = jwt.sign(
-            { id: idexist._id, name: drivername },
+            { id: idexist._id, name: drivername, role: "HUB" },
             process.env.JWT_SECRET_DRIVER,
             {
               expiresIn: "1d",
@@ -47,7 +47,7 @@ const logindriver = async (req, res) => {
               .send({ message: "incorrect password", success: false });
           } else {
             const token = jwt.sign(
-              { id: idexist._id, name: drivername },
+              { id: idexist._id, name: drivername, role: "HUB" },
               process.env.JWT_SECRET_DRIVER,
               {
                 expiresIn: "1d",
@@ -199,13 +199,11 @@ const updateShipmentStatus = async (req, res) => {
                 }
               );
 
-              res
-                .status(200)
-                .send({
-                  message: "Updated",
-                  success: true,
-                  data: updatestatus,
-                });
+              res.status(200).send({
+                message: "Updated",
+                success: true,
+                data: updatestatus,
+              });
             }
           } else if (status === "Hub Recived") {
             const updatedUpdateStatus = await updatesModel.findOneAndUpdate(
@@ -232,13 +230,11 @@ const updateShipmentStatus = async (req, res) => {
                 }
               );
 
-              res
-                .status(200)
-                .send({
-                  message: "Updated",
-                  success: true,
-                  data: updatestatus,
-                });
+              res.status(200).send({
+                message: "Updated",
+                success: true,
+                data: updatestatus,
+              });
             }
           } else {
             await updatesModel.findOneAndUpdate(
@@ -266,28 +262,37 @@ const updateShipmentStatus = async (req, res) => {
 
 const idverify = async (req, res) => {
   try {
-    const { trackid } = req.body;
+    const id = req.driverId;
+    const hubdata = await Hub.findOne({ _id: id });
 
-    const verifytrackid = await shipmentModel.findOne({
-      shipment: { $elemMatch: { trackid: trackid } },
-    });
-
-    if (verifytrackid) {
-      console.log(req.body, "body");
-
-      const updatestatus = await updatesModel.findOne({ TrackID: trackid });
-
-      if (updatestatus) {
-        res
-          .status(200)
-          .send({ message: "Verified", success: true, data: updatestatus });
-      } else {
-        res
-          .status(200)
-          .send({ message: "No updates found for this ID", success: false });
-      }
+    if (!hubdata) {
+      return res
+        .status(200)
+        .send({ message: "user does no exist", success: false });
     } else {
-      res.status(200).send({ message: "ID not found", success: false });
+      const { trackid } = req.body;
+
+      const verifytrackid = await shipmentModel.findOne({
+        shipment: { $elemMatch: { trackid: trackid } },
+      });
+
+      if (verifytrackid) {
+        console.log(req.body, "body");
+
+        const updatestatus = await updatesModel.findOne({ TrackID: trackid });
+
+        if (updatestatus) {
+          res
+            .status(200)
+            .send({ message: "Verified", success: true, data: updatestatus });
+        } else {
+          res
+            .status(200)
+            .send({ message: "No updates found for this ID", success: false });
+        }
+      } else {
+        res.status(200).send({ message: "ID not found", success: false });
+      }
     }
   } catch (error) {
     console.error(error);
@@ -297,41 +302,48 @@ const idverify = async (req, res) => {
 
 const approveShipment = async (req, res) => {
   try {
-    const { trackid } = req.body;
+    console.log(req.body, "ff");
+    const id = req.driverId;
+    const hubdata = await Hub.findOne({ _id: id });
 
-    console.log(req.body, "body");
+    if (!hubdata) {
+      return res
+        .status(200)
+        .send({ message: "user does no exist", success: false });
+    } else {
+      const { trackid } = req.body;
 
-    const verifytrackid = await shipmentModel.findOne({
-      shipment: { $elemMatch: { trackid: trackid } },
-    });
-
-    if (verifytrackid) {
-      const newstatus = new updatesModel({
-        user: verifytrackid.user,
-        shipment: verifytrackid._id,
-        TrackID: trackid,
+      const verifytrackid = await shipmentModel.findOne({
+        shipment: { $elemMatch: { trackid: trackid } },
       });
 
-      await newstatus.save();
+      if (verifytrackid) {
+        const newstatus = new updatesModel({
+          user: verifytrackid.user,
+          shipment: verifytrackid._id,
+          TrackID: trackid,
+        });
 
-      if(newstatus){
+        await newstatus.save();
 
-        await shipmentModel.findOneAndUpdate(
-          {
-            $and: [
-              { "shipment.trackid": trackid },
-              { "shipment.shipmentStatus": { $ne: "approved" } },
-            ],
-          },
-          {
-            $set: { "shipment.$.shipmentStatus": "approved" },
-          }
-        );
-  
-        res.status(200).send({ message: "Updated", success: true });
+        if (newstatus) {
+          await shipmentModel.findOneAndUpdate(
+            {
+              $and: [
+                { "shipment.trackid": trackid },
+                { "shipment.shipmentStatus": { $ne: "approved" } },
+              ],
+            },
+            {
+              $set: { "shipment.$.shipmentStatus": "approved" },
+            }
+          );
+
+          res.status(200).send({ message: "Updated", success: true });
+        }
+      } else {
+        res.status(200).send({ message: "Id not exist", success: false });
       }
-    } else {
-      res.status(200).send({ message: "Id not exist", success: false });
     }
   } catch (error) {
     console.error(error);
@@ -341,43 +353,52 @@ const approveShipment = async (req, res) => {
 
 const transistshipment = async (req, res) => {
   try {
-    const { trackid, comments } = req.body;
+    const id = req.driverId;
+    const hub = await Hub.findOne({ _id: id });
 
-    const verifytrackid = await shipmentModel.findOne({
-      "shipment.trackid": trackid,
-    });
+    if (!hub) {
+      return res
+        .status(200)
+        .send({ message: "user does no exist", success: false });
+    } else {
+      const { trackid, comments } = req.body;
 
-    if (verifytrackid) {
-      const updated = await updatesModel.findOneAndUpdate(
-        { TrackID: trackid },
-        {
-          $set: {
-            status: "Transisted",
-            comments: comments,
-          },
-        },
-        { new: true }
-      );
+      const verifytrackid = await shipmentModel.findOne({
+        "shipment.trackid": trackid,
+      });
 
-      if (updated) {
-        await shipmentModel.findOneAndUpdate(
+      if (verifytrackid) {
+        const updated = await updatesModel.findOneAndUpdate(
+          { TrackID: trackid },
           {
-            $and: [
-              { "shipment.trackid": trackid },
-              { "shipment.shipmentStatus": { $ne: "Transisted" } },
-            ],
+            $set: {
+              status: "Transisted",
+              comments: comments,
+            },
           },
-          {
-            $set: { "shipment.$.shipmentStatus": "Transisted" },
-          }
+          { new: true }
         );
 
-        res.status(200).send({ message: "Updated", success: true });
+        if (updated) {
+          await shipmentModel.findOneAndUpdate(
+            {
+              $and: [
+                { "shipment.trackid": trackid },
+                { "shipment.shipmentStatus": { $ne: "Transisted" } },
+              ],
+            },
+            {
+              $set: { "shipment.$.shipmentStatus": "Transisted" },
+            }
+          );
+
+          res.status(200).send({ message: "Updated", success: true });
+        } else {
+          res.status(200).send({ message: "Update failed", success: false });
+        }
       } else {
-        res.status(200).send({ message: "Update failed", success: false });
+        res.status(200).send({ message: "Id not exist", success: false });
       }
-    } else {
-      res.status(200).send({ message: "Id not exist", success: false });
     }
   } catch (error) {
     console.error(error);

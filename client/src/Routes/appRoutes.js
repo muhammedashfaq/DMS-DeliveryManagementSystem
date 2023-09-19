@@ -14,7 +14,6 @@ import {
 } from "./publicRoutes";
 
 import Landingpage from "../pages/user/Homepage/landingpage";
-import Login from "../pages/user/login";
 import Register from "../pages/user/register";
 import Otp from "../pages/user/otp";
 import Forget from "../pages/user/forget";
@@ -28,7 +27,8 @@ import UserProfile from "../pages/user/UserProfile/userProfile";
 import BookShipment from "../pages/user/Bookshipment/BookShipment";
 import UserContactForm from "../pages/user/UserContactform/userContactform";
 import Reset from "../pages/user/forget2";
-import Test from "../components/test/Test";
+
+import { RouteObjects } from "./RouteObject";
 
 const AppRoutes = () => {
   const { loading } = useSelector((state) => state.alerts);
@@ -47,16 +47,9 @@ const AppRoutes = () => {
       <Routes>
         {/* USER_SIDE ----------------------------------------------------------------------- */}
 
-        <Route
-          path="/test"
-          element={
-              <Test />
-          }
-        />
-        
 
         <Route
-          path="/register"
+          path={RouteObjects.Register}
           element={
             <PublicRoutesUser>
               <Register />{" "}
@@ -64,7 +57,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="/otp"
+          path={RouteObjects.OTP}
           element={
             <PublicRoutesUser>
               <Otp />
@@ -72,23 +65,9 @@ const AppRoutes = () => {
           }
         />
 
-        <Route
-          path="/login"
-          element={
-            <PublicRoutesUser>
-
-
-              {" "}
-              <Login />{" "}
-
-
-              
-            </PublicRoutesUser>
-          }
-        />
 
         <Route
-          path="/forget"
+          path={RouteObjects.ForgetPassword}
           element={
             <PublicRoutesUser>
               <Forget />
@@ -96,7 +75,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="/reset"
+          path={RouteObjects.ResetPassword}
           element={
             <PublicRoutesUser>
               <Reset />
@@ -106,23 +85,23 @@ const AppRoutes = () => {
         <Route path="/" element={<Landingpage />} />
 
         <Route
-          path="/userProfile"
+          path={RouteObjects.UserProfile}
           element={
             <ProtectedRoutesUser>
-              <UserProfile />{" "}
+              <UserProfile />
             </ProtectedRoutesUser>
           }
         />
         <Route
-          path="/book_shipment"
+          path={RouteObjects.BookShipment}
           element={
             <ProtectedRoutesUser>
               <BookShipment />{" "}
             </ProtectedRoutesUser>
           }
         />
-              <Route
-          path="/contact"
+        <Route
+          path={RouteObjects.contact}
           element={
             <ProtectedRoutesUser>
               <UserContactForm />{" "}
@@ -132,7 +111,7 @@ const AppRoutes = () => {
 
         {/* ADMIN_SIDE ------------------------------------------------------------------------*/}
         <Route
-          path="/admin"
+          path={RouteObjects.AdminLogin}
           element={
             <PublicRoutesAdmin>
               <Adminlogin />
@@ -140,7 +119,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="/adminhome*"
+          path={RouteObjects.Adminhome}
           element={
             <ProtectedRoutesAdmin>
               <AdminHome />{" "}
@@ -151,7 +130,7 @@ const AppRoutes = () => {
         {/* DRIVER_SIDE ----------------------------------------------------------------*/}
 
         <Route
-          path="/hublogin"
+          path={RouteObjects.HubLogin}
           element={
             <PublicRoutesdriver>
               <Hublogin />
@@ -160,17 +139,16 @@ const AppRoutes = () => {
         />
 
         <Route
-          path="/hubhome"
+          path={RouteObjects.HubHome}
           element={
             <ProtectedRoutesdriver>
               <HubHome />
             </ProtectedRoutesdriver>
           }
         />
-    
 
-<Route
-          path="/hubtrack"
+        <Route
+          path={RouteObjects.HubTracking}
           element={
             <ProtectedRoutesdriver>
               <Hubtrack />

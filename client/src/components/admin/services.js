@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { adminRequest } from "../../Helper/interceptor/axois";
 import { useNavigate } from "react-router-dom";
+import { RouteObjects } from "../../Routes/RouteObject";
 
 const CityPlaces = () => {
   const navigate = useNavigate();
@@ -15,37 +16,65 @@ const CityPlaces = () => {
     try {
       e.preventDefault();
 
-      const response = await axios.post("/admin/addserviceCity", {
-        city: city,
-      });
-      if (response.data.success) {
-        toast.success(response.data.message);
-        window.location.reload();
-        getData();
-      } else {
-        toast.error(response.data.message);
-      }
+
+      adminRequest({
+        url: "/admin/addserviceCity",
+        method: "POST",
+        data: { city: city },
+      })
+        .then((response) => {
+          if (response.data.success) {
+            toast.success(response.data.message);
+            window.location.reload();
+
+            getData();
+
+          } else {
+            toast.error(response.data.message);
+          }
+        })
+        .catch((err) => {
+          toast.error("Something went wrong");
+          console.log(err);
+          localStorage.removeItem("admintoken");
+          navigate(RouteObjects.AdminLogin);
+        });
+
+
     } catch (error) {
       console.log(error);
       toast.success("something wrong");
     }
   };
-
+  
   const submitplaceform = async (e) => {
     try {
+      
       e.preventDefault();
+      adminRequest({
+        url: "/admin/addservicePlace",
+        method: "POST",
+        data: { place: place,
+          city: selectedcity, },
+      })
+        .then((response) => {
+          if (response.data.success) {
+            toast.success(response.data.message);
+            window.location.reload();
+            getData();
+  
+          } else {
+            toast.error(response.data.message);
+          }
+        })
+        .catch((err) => {
+          toast.error("Something went wrong");
+          console.log(err);
+          localStorage.removeItem("admintoken");
+          navigate(RouteObjects.AdminLogin);
+        });
 
-      const response = await axios.post("/admin/addservicePlace", {
-        place: place,
-        city: selectedcity,
-      });
-      if (response.data.success) {
-        toast.success(response.data.message);
-        window.location.reload();
-        getData();
-      } else {
-        toast.error(response.data.success);
-      }
+      
     } catch (error) {
       console.log(error);
       toast.success("something wrong");
@@ -69,8 +98,8 @@ const CityPlaces = () => {
       .catch((err) => {
         toast.error("something went wrong");
         console.log(err);
-        localStorage.removeItem("token");
-        navigate("/admin");
+        localStorage.removeItem("admintoken");
+        navigate(RouteObjects.AdminLogin);
       });
   };
   const deletecity = async (city) => {
@@ -91,7 +120,7 @@ const CityPlaces = () => {
         toast.error("something went wrong");
         console.log(err);
         localStorage.removeItem("admintoken");
-        navigate("/admin");
+        navigate(RouteObjects.AdminLogin);
       });
   };
   const deleteplace = async (position, city) => {
@@ -115,7 +144,7 @@ const CityPlaces = () => {
         toast.error("something went wrong");
         console.log(err);
         localStorage.removeItem("admintoken");
-        navigate("/admin");
+        navigate(RouteObjects.AdminLogin);
       });
   };
 

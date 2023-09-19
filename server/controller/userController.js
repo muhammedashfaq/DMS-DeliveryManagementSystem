@@ -58,8 +58,6 @@ const registerpage = async (req, res) => {
       const otpGenarated = Math.floor(1000 + Math.random() * 9999);
       savedOtp = otpGenarated;
       useremail = req.body.email;
-      console.log(otpGenarated, "otp");
-
       sendVerifymail(req.body.username, req.body.email, otpGenarated);
     }
     res.status(200).send({ message: "user created ", success: true });
@@ -89,7 +87,7 @@ const loginpage = async (req, res) => {
             .send({ message: "incorrect password", success: false });
         } else {
           const token = jwt.sign(
-            { id: user._id, name: user.username },
+            { id: user._id, name: user.username, role: "USER" },
             process.env.JWT_SECRET_USER,
             {
               expiresIn: "1d",
@@ -124,7 +122,7 @@ const googlelogin = async (req, res) => {
       if (user.isVerified) {
         if (!user.isBlocked) {
           const token = jwt.sign(
-            { id: user._id, name: user.username },
+            { id: user._id, name: user.username, role: "USER" },
             process.env.JWT_SECRET_USER,
             {
               expiresIn: "1d",
@@ -312,13 +310,10 @@ const getprofile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   try {
-    console.log("reached back");
     const id = req.userId;
     const userdata = await User.findOne({ _id: id });
 
     if (userdata) {
-      console.log("id");
-
       await sharp("./public/multer/" + req.file.filename)
         .resize(500, 500)
         .toFile("./public/cloudinary/" + req.file.filename);
@@ -400,11 +395,19 @@ const addAddress = async (req, res) => {
 
 const getLocationData = async (req, res) => {
   try {
-    const locationdata = await service.find({});
+    const id = req.userId;
+    const user = await User.findOne({ _id: id });
+    if (!user) {
+      return res
+        .status(200)
+        .send({ message: "user does no exist", success: false });
+    } else {
+      const locationdata = await service.find({});
 
-    res
-      .status(200)
-      .send({ message: "fetched", success: true, data: locationdata });
+      res
+        .status(200)
+        .send({ message: "fetched", success: true, data: locationdata });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: "something went wrong", success: false });
@@ -453,6 +456,8 @@ const bookshipment = async (req, res) => {
         data: shipmantdata,
         id: id,
       });
+    } else {
+      res.status(200).send({ message: "user does no exist", success: false });
     }
   } catch (error) {
     console.log(error);
@@ -461,28 +466,36 @@ const bookshipment = async (req, res) => {
 };
 
 const advancepaymentUpdate = async (req, res) => {
-  const id = req.body.id;
+  const idbody = req.body.id;
   const paymentid = req.body.payment.razorpay_payment_id;
 
   try {
-    const updateOrder = await shipmentModel.findOneAndUpdate(
-      { _id: id, "shipment._id": req.body.order._id },
-      {
-        $set: {
-          "shipment.$.advanceamountStatus": true,
-          "shipment.$.paymentid": paymentid,
-        },
-      },
-      { new: true }
-    );
-
-    if (updateOrder) {
-      res.status(200).send({ message: "Payment successful", success: true });
+    const id = req.userId;
+    const user = await User.findOne({ _id: id });
+    if (!user) {
+      return res
+        .status(200)
+        .send({ message: "user does no exist", success: false });
     } else {
-      res.status(200).send({
-        message: "Something went wrong, please try again later",
-        success: false,
-      });
+      const updateOrder = await shipmentModel.findOneAndUpdate(
+        { _id: idbody, "shipment._id": req.body.order._id },
+        {
+          $set: {
+            "shipment.$.advanceamountStatus": true,
+            "shipment.$.paymentid": paymentid,
+          },
+        },
+        { new: true }
+      );
+
+      if (updateOrder) {
+        res.status(200).send({ message: "Payment successful", success: true });
+      } else {
+        res.status(200).send({
+          message: "Something went wrong, please try again later",
+          success: false,
+        });
+      }
     }
   } catch (error) {
     res.status(500).send({ error });

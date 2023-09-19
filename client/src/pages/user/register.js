@@ -8,6 +8,7 @@ import { BiEnvelope, BiSolidLock } from "react-icons/bi";
 import { hideloading, showloading } from "../../Helper/redux/alertSlice";
 import { Alert } from "@mui/material";
 import {registervalidate} from '../../Helper/Validations/validation'
+import { RouteObjects } from "../../Routes/RouteObject";
 
 const Register = () => {
   const [errors, setError] = useState([]);
@@ -52,7 +53,7 @@ const Register = () => {
 
       if (response.data.success) {
         toast.success(response.data.message);
-        navigate("/otp");
+        navigate(RouteObjects.OTP);
       } else {
         toast.error(response.data.message);
       }

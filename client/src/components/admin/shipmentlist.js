@@ -18,7 +18,7 @@ const Shipmentlist = () => {
         {},
         {
           headers: {
-            Authorization: "Bearer " + localStorage.getItem("drivertoken"),
+            Authorization: "Bearer " + localStorage.getItem("admintoken"),
           },
         }
       );

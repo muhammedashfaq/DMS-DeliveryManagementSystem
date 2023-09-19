@@ -12,24 +12,24 @@ admin_router.post(
   adminController.admindetails
 );
 
-admin_router.get("/get-useDetials", adminController.userlistLoad);
+admin_router.get("/get-useDetials",authmiddleware, adminController.userlistLoad);
 admin_router.post("/blockuser", authmiddleware, adminController.blockuser);
 admin_router.post("/unblockuser", authmiddleware, adminController.unblockuser);
 admin_router.post(
-  "/add_driver",
+  "/add_driver",authmiddleware,
   upload.upload.array("profileimage", 5),
   adminController.addDriver
 );
-admin_router.get("/getcitydetails", adminController.getcitydetails);
+admin_router.get("/getcitydetails", authmiddleware,adminController.getcitydetails);
 
-admin_router.get("/get-driverDetials", adminController.driverlistLoad);
+admin_router.get("/get-driverDetials", authmiddleware,adminController.driverlistLoad);
 admin_router.post("/get-profile/:id", adminController.driverProfile);
-admin_router.put("/driverstatusUpdat/:id", adminController.driverstatusUpdate);
-admin_router.post("/addserviceCity", adminController.addserviceCity);
-admin_router.post("/addservicePlace", adminController.addservicePlace);
-admin_router.post("/deletecity", adminController.deletecity);
-admin_router.post("/deleteplace", adminController.deleteplace);
-admin_router.post("/getshipmentdata", adminController.getshipmentdata);
+admin_router.put("/driverstatusUpdat/:id",authmiddleware, adminController.driverstatusUpdate);
+admin_router.post("/addserviceCity",authmiddleware, adminController.addserviceCity);
+admin_router.post("/addservicePlace",authmiddleware, adminController.addservicePlace);
+admin_router.post("/deletecity",authmiddleware, adminController.deletecity);
+admin_router.post("/deleteplace",authmiddleware, adminController.deleteplace);
+admin_router.post("/getshipmentdata",authmiddleware, adminController.getshipmentdata);
 
 admin_router.get("/getLocationData",authmiddleware, adminController.getLocationData);
 admin_router.post("/getAllData", authmiddleware,adminController.getAllData);

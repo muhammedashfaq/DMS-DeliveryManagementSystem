@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useAsyncValue } from "react-router-dom";
-import { LoginModal } from "./loginModal";
-import TrackdetailsModal from "./trackdetailsModal";
+import { LoginModal } from "./LoginModal";
+import TrackdetailsModal from "./TrackdetailsModal";
 import { useUserContext } from "../../Helper/context/userContext";
 import axios from "axios";
 import { toast } from "react-hot-toast";

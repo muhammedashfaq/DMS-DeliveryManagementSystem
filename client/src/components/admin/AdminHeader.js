@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useUserContext } from "../../Helper/context/userContext";
 import axios from "axios";
+import { RouteObjects } from "../../Routes/RouteObject";
+import { getAdminDetails } from "./adminutil/api";
 
 const Header = () => {
   const[headname,setHeadName]=useState()
@@ -9,15 +11,7 @@ const Header = () => {
 
   const getData = async (req, res) => {
     try {
-      const response = await axios.post(
-        "/admin/get-admininfo-id",
-        {},
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("admintoken"),
-          },
-        }
-      );
+      const response = await getAdminDetails()
       if(response.data.success){
         const adminname = response.data.data
         setHeadName(adminname)
@@ -49,7 +43,7 @@ const Header = () => {
         </div>
 
         <div className="hidden sm:ml-6 sm:block">
-          <a href="/adminhome/adminprofile">
+          <a href={RouteObjects.AdminProfile}>
             <div className="flex space-x-4  mr-7 pt-2 text-black  p-2" >
 
               <img src={headname?.profileimage}     className="w-14 h-14 rounded-full  border-slate-600 border-4  " />

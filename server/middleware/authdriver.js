@@ -10,8 +10,9 @@ module.exports = (req, res, next) => {
     const tokenValue = token.split(" ")[1];
 
     jwt.verify(tokenValue, process.env.JWT_SECRET_DRIVER, (err, decoded) => {
-      if (err) {
+      if (err || decoded.role !== "HUB") {
         return res.status(401).send({ message: "Authentication failed", success: false });
+        
       } else {
         req.driverId = decoded.id;
 

@@ -142,7 +142,7 @@ const Hubtrack = () => {
 
             <div className="w-full  border-gray-200 mt-4 border-t-4 rounded-md h-28">
               {/* Timeline */}
-              <div className="p-4">
+              {/* <div className="p-4">
                 <div className="flex items-center justify-evenly space-x-4">
                   <div className="relative ">
                     <div className="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center">
@@ -187,7 +187,7 @@ const Hubtrack = () => {
                     </span>
                   </div>
                 </div>
-              </div>
+              </div> */}
               {/* End of Timeline */}
             </div>
           </div>

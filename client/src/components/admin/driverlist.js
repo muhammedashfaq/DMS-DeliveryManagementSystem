@@ -3,6 +3,9 @@ import { useDispatch } from "react-redux";
 import { hideloading, showloading } from "../../Helper/redux/alertSlice";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { adminRequest } from "../../Helper/interceptor/axois";
+import toast from "react-hot-toast";
+import { RouteObjects } from "../../Routes/RouteObject";
 
 const Driverlist = () => {
   const navigate = useNavigate();
@@ -19,19 +22,31 @@ const Driverlist = () => {
   });
 
   const getDriverrData = async () => {
+
     try {
       dispatch(showloading());
+    adminRequest({
+      url: "/admin/get-driverDetials",
+      method: "GET",
+    })
+      .then((response) => {
+        dispatch(hideloading());
+        if (response.data.success) {
+          toast.success(response.data.message);
+          setDriver(response.data.data);
 
-      const response = await axios.get("/admin/get-driverDetials", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+        } else {
+          toast.error(response.data.message);
+        }
+      })
+      .catch((err) => {
+        toast.error("Something went wrong");
+        console.log(err);
+        localStorage.removeItem("admintoken");
+        navigate(RouteObjects.AdminLogin);
       });
-      dispatch(hideloading());
-      if (response.data.message) {
-        setDriver(response.data.data);
-        console.log(response.data.data);
-      }
+
+
     } catch (error) {
       dispatch(hideloading());
     }
@@ -47,7 +62,7 @@ const Driverlist = () => {
     <div className="container mt-5">
       <div class="relative overflow-y-auto shadow-md sm:rounded-lg ">
         <div className=" w-full h-14 flex justify-evenly dark:bg-gray-700 text-sm text-left text-gray-500 dark:text-gray-400 ">
-          <Link to="/adminhome/add_driver">
+          <Link to={RouteObjects.AddDriver}>
             {" "}
             <button className="w-36 h-10 bg-blue-500 m-2 rounded-lg font-bold text-black hover:bg-slate-600">
               Add
@@ -114,7 +129,7 @@ const Driverlist = () => {
                     scope="row"
                     className="px-6 py-3   font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    <Link to={`/adminhome/driver_profile/?id=${driver?._id}`}>
+                    <Link to={`{RouteObjects.DriverProfile}/?id=${driver?._id}`}>
                       {driver?.fname + " " + driver?.lname}
                     </Link>
                   </th>

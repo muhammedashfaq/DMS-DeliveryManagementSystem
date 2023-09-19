@@ -3,9 +3,10 @@ import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { hubRequest } from "../../Helper/interceptor/axois";
 import { useNavigate } from "react-router-dom";
+import { RouteObjects } from "../../Routes/RouteObject";
 
 const UpdateModal = ({ visible, onClose, data }) => {
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const [trackidInput, setTrackidInput] = useState("");
   const [status, setStatus] = useState("");
 
@@ -23,64 +24,58 @@ const UpdateModal = ({ visible, onClose, data }) => {
     }));
   };
   const updatestatus = async (e) => {
-    
     try {
       e.preventDefault();
-    
-        hubRequest({
-          url: "/hub/updateShipmentStatus",
-          method: "post",
-          data:formdata
+
+      hubRequest({
+        url: "/hub/updateShipmentStatus",
+        method: "post",
+        data: formdata,
+      })
+        .then((response) => {
+          if (response.data.success) {
+            toast.success(response.data.message);
+
+            window.location.reload();
+          } else {
+            toast.error(response.data.message);
+          }
         })
-          .then((response) => {
-            if (response.data.success) {
-              toast.success(response.data.message);
-      
-              window.location.reload();
-            } else {
-              toast.error(response.data.message);
-            }
-          })
-          .catch((err) => {
-            toast.error("something went wrong");
-            console.log(err);
-            localStorage.removeItem("drivertoken");
-            navigate("/hublogin");
-          });
-
-
-
-
-
-
-
- 
+        .catch((err) => {
+          toast.error("something went wrong");
+          console.log(err);
+          localStorage.removeItem("drivertoken");
+          navigate(RouteObjects.HubLogin);
+        });
     } catch (error) {
       toast.error("something went wrong");
     }
   };
 
   const verify = async (e, trackid) => {
-    try {
-      e.preventDefault();
+    e.preventDefault();
 
-      console.log(trackid, "idddd");
-      const response = await axios.post("/hub/idverify", { trackid });
+    hubRequest({
+      url: "/hub/idverify",
+      method: "post",
+      data: { trackid: trackid },
+    })
+      .then((response) => {
+        if (response.data.success) {
+          const statusdata = response.data.data.status;
 
-      if (response.data.success) {
-        const statusdata = response.data.data.status;
-
-        setStatus(statusdata);
-
-        console.log(statusdata, "dattaaaa");
-
-        toast.success("Verification successful");
-      } else {
-        toast.error(response.data.message);
-      }
-    } catch (error) {
-      toast.error("Something went wrong");
-    }
+          setStatus(statusdata);
+          toast.success(response.data.message);
+        } else {
+          toast.error(response.data.message);
+        }
+      })
+      .catch((err) => {
+        toast.error("something went wrong");
+        console.log(err);
+        localStorage.removeItem("drivertoken");
+        navigate(RouteObjects.HubLogin);
+      });
   };
 
   return (
@@ -91,7 +86,6 @@ const UpdateModal = ({ visible, onClose, data }) => {
           visible ? "opacity-100" : "opacity-0 pointer-events-none"
         } transition-opacity duration-300`}
       >
-        
         <div className="w-full flex justify-center">
           <div className="bg-white border rounded-lg overflow-hidden w-full max-w-md p-6">
             <div className="flex justify-end">
@@ -215,79 +209,7 @@ const UpdateModal = ({ visible, onClose, data }) => {
       </div>
     </div>
 
-    //     <div>
-
-    // <div
-    //         id="container"
-    //         onClick={handleClose}
-    //         className={`fixed inset-0 flex justify-center  items-center z-50 ${
-    //           visible ? "opacity-100" : ""
-    //         } transition-opacity duration-300`}
-    //       >
-
-    //           <div className="w-full flex justify-center bg-white">
-    //             <div className="shadow rounded-lg overflow-hidden w-96 h-max p-6">
-    //               <h1 className="text-center underline p-2 font-semibold font-serif">
-    //                 Update Here
-    //               </h1>
-    //               <form  className="space-y-4" onSubmit={updatestatus}>
-    //                 <form>
-    //                   <div className="relative flex">
-    //                     <input
-    //                       className="w-full px-3 py-2 border-b-2 border-gray-300 rounded-md placeholder-gray-400 "
-    //                       placeholder="TrackID"
-    //                       type="text"
-    //                       name="trackid"
-
-    //                       onChange={(e) => setTrackidInput(e.target.value)}
-    //                     />
-    //                     <a href="#" onClick={(e) => verify(e, trackidInput)}>
-    //                       verify
-    //                     </a>
-    //                   </div>
-    //                 </form>
-
-    //                 <div className="relative">
-    //                   <label>Status Update</label>
-
-    //                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-700">
-    //                     <svg
-    //                       className="fill-current h-4 w-4"
-    //                       xmlns="http://www.w3.org/2000/svg"
-    //                       viewBox="0 0 20 20"
-    //                     >
-    //                       {/* Dropdown icon */}
-    //                       <path
-    //                         fillRule="evenodd"
-    //                         d="M6.293 6.293a1 1 0 011.414 0L10 8.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-    //                         clipRule="evenodd"
-    //                       />
-    //                     </svg>
-    //                   </div>
-    //                 </div>
-
-    //                 <div className="relative">
-    //                   <input
-    //                     className="w-full px-3 py-2 border-b-2 border-gray-300 rounded-md placeholder-gray-400 "
-    //                     placeholder="Comments....."
-    //                     type="text"
-    //                     name="comments"
-    //                     onChange={inputchange}
-    //                   />
-    //                 </div>
-
-    //                 <button
-    //                   type="submit"
-    //                   className=" w-full px-8 py-3 font-semibold rounded  text-white bg-indigo-600"
-    //                 >
-    //                   Update
-    //                 </button>
-    //               </form>
-    //             </div>
-    //           </div>
-
-    //       </div>
-    //     </div>
+    
   );
 };
 

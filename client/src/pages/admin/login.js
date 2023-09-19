@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { adminloginvalidate } from "../../Helper/Validations/validation";
 import { Alert } from "@mui/material";
 import { useUserContext } from "../../Helper/context/userContext";
+import { RouteObjects } from "../../Routes/RouteObject";
 
 const Login = () => {
   const { setUserName } = useUserContext()
@@ -38,7 +39,7 @@ const Login = () => {
         localStorage.setItem("admintoken", response.data.data);
         const name=response.data.name
         setUserName(name)
-        navigate("/adminhome");
+        navigate(RouteObjects.AdminDashboard);
       } else {
         toast.error(response.data.message);
       }
@@ -90,7 +91,7 @@ const Login = () => {
                     {errors.password}
                   </Alert>
                 )}
-              <Link to="/forget"><span className="ml-6 text-sm
+              <Link to={RouteObjects.ForgetPassword}><span className="ml-6 text-sm
 		 ">Forget password</span></Link>
                   
             </div>

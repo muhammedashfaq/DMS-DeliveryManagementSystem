@@ -1,4 +1,3 @@
-// 
 
 const jwt = require("jsonwebtoken");
 
@@ -12,12 +11,12 @@ module.exports = (req, res, next) => {
     const tokenValue = token.split(" ")[1];
 
     jwt.verify(tokenValue, process.env.JWT_SECRET_USER, (err, decoded) => {
-      if (err) {
-        return res.status(401).send({ message: "Authentication failed", success: false });
-      } else {
-        req.userId = decoded.id;
-        next();
+      if (err || decoded.role !== "USER") {
+        return res.status(401).json({ message: "Authentication failed", success: false });
       }
+
+      req.userId = decoded.id;
+      next();
     });
   } catch (error) {
     console.error(error);

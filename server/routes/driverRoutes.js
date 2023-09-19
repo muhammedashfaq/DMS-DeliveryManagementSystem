@@ -15,12 +15,13 @@ driver_router.post(
   driverController.getdashboardjobs
 );
 driver_router.post(
-  "/updateShipmentStatus",authmiddleware,
+  "/updateShipmentStatus",
+  authmiddleware,
   driverController.updateShipmentStatus
 );
 
-driver_router.post("/idverify", driverController.idverify);
-driver_router.post("/approveShipment", driverController.approveShipment);
-driver_router.post("/transistshipment", driverController.transistshipment);
+driver_router.post("/idverify", authmiddleware,driverController.idverify);
+driver_router.post("/approveShipment",authmiddleware, driverController.approveShipment);
+driver_router.post("/transistshipment",authmiddleware, driverController.transistshipment);
 
 module.exports = driver_router;

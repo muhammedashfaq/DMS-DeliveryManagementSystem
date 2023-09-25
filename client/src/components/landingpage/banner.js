@@ -1,15 +1,17 @@
 import React, { useState } from "react";
-import { Link, useAsyncValue } from "react-router-dom";
+import { Link, useAsyncValue, useNavigate } from "react-router-dom";
 import { LoginModal } from "./LoginModal";
 import TrackdetailsModal from "./TrackdetailsModal";
 import { useUserContext } from "../../Helper/context/userContext";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { trackshipmentdetails } from "./Userutil/api";
 // import { GoogleOAuthProvider } from "@react-oauth/google";
 // import { GoogleLogin ,googleLogout} from "@react-oauth/google";
 // import jwt_decode from 'jwt-decode'
 
 const Banner = () => {
+  const navigate=useNavigate()
   const [showtrackModal, setshowtrackModal] = useState(false);
   const [shipmentdetails, setShipmentdetails] = useState("");
   const [updates, setUpdates] = useState("");
@@ -21,7 +23,8 @@ const Banner = () => {
     try {
       e.preventDefault();
 
-      const response = await axios.post("/trackshipment", { id: trackid });
+      const response = await trackshipmentdetails(trackid)
+      
 
       if (response.data.success) {
         toast.success(response.data.message);
@@ -34,7 +37,12 @@ const Banner = () => {
       } else {
         toast.error(response.data.message);
       }
-    } catch (error) {}
+    } catch (error) {
+      toast.error("something went wrong");
+        console.log(error);
+        localStorage.removeItem("token");
+        navigate("/");
+    }
   };
 
   const handleclose = () => {

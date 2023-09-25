@@ -9,6 +9,11 @@ import { SliderThumb } from "@mui/material";
 import { toast } from "react-hot-toast";
 import { userRequest } from "../../Helper/interceptor/axois";
 import { useNavigate } from "react-router-dom";
+import {
+  UpdateProfilepic,
+  editUserdetails,
+  getShipmentDetails,
+} from "./Userutil/api";
 
 const Userprofile = () => {
   const navigate = useNavigate();
@@ -42,37 +47,31 @@ const Userprofile = () => {
   });
 
   const submitimage = async (e) => {
+    try {
+    e.preventDefault();
     if (profileimage) {
-      const formdata = new FormData();
-      formdata.append("profileimage", profileimage);
-      e.preventDefault();
+        const formdata = new FormData();
+        formdata.append("profileimage", profileimage);
 
-      dispatch(showloading());
-
-      userRequest({
-        url: "/updateprofileimage",
-        method: "POST",
-        data: formdata,
-      })
-        .then((response) => {
-          dispatch(hideloading());
-          if (response.data.success) {
-            toast.success(response.data.message);
-            getData();
-          } else {
-            toast.error(response.data.message);
-          }
-        })
-        .catch((err) => {
-          dispatch(hideloading());
-          toast.error("something went wrong in catch");
-          console.log(err);
-          localStorage.removeItem("token");
-          navigate("/");
-        });
-    } else {
-      alert("no image");
-    }
+        dispatch(showloading());
+        const response = await UpdateProfilepic(formdata);
+        dispatch(hideloading());
+        if (response.data.success) {
+          toast.success(response.data.message);
+          getData();
+        } else {
+          toast.error(response.data.message);
+        }
+      } else {
+        alert("no image");
+      }
+      } catch (error) {
+        dispatch(hideloading());
+        toast.error("something went wrong in catch");
+        console.log(error);
+        localStorage.removeItem("token");
+        navigate("/");
+      }
   };
 
   const changeimage = (event) => {
@@ -97,47 +96,34 @@ const Userprofile = () => {
   };
 
   const updateform = async (input, field) => {
-    userRequest({
-      url: "/updateUserDetails",
-      method: "POST",
-      data: {
-        input: input,
+    try {
+      dispatch(showloading());
 
-        field: field,
-      },
-    })
-      .then((response) => {
-        if (response.data.success) {
-          toast.success(response.data.message);
-          setEditmobile(false);
-          setEditname(false);
-          getData();
-        } else {
-          toast.error(response.data.message);
-        }
-      })
-      .catch((err) => {
-        dispatch(hideloading());
+      const response = await editUserdetails(input, field);
+      dispatch(hideloading());
 
-        toast.error("something went wrong");
-        console.log(err);
-        localStorage.removeItem("token");
-        navigate("/");
-      });
+      if (response.data.success) {
+        toast.success(response.data.message);
+        setEditmobile(false);
+        setEditname(false);
+        getData();
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      dispatch(hideloading());
+      console.log(error);
+
+      toast.error("something went wrong");
+      localStorage.removeItem("token");
+      navigate("/");
+    }
   };
   const getData = async (req, res) => {
     try {
       dispatch(showloading());
 
-      const response = await axios.post(
-        "/get-dataprofils",
-        {},
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        }
-      );
+      const response = await getShipmentDetails();
       dispatch(hideloading());
 
       if (response.data.success) {

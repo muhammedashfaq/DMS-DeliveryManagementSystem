@@ -1,6 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useUserContext } from "../../Helper/context/userContext";
-import axios from "axios";
+import React, {  useEffect, useState } from "react";
 import { RouteObjects } from "../../Routes/RouteObject";
 import { getAdminDetails } from "./adminutil/api";
 

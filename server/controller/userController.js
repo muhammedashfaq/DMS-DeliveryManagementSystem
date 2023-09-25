@@ -416,45 +416,60 @@ const getLocationData = async (req, res) => {
 
 const bookshipment = async (req, res) => {
   try {
-    const id = req.userId;
+    console.log(req.body, "hh");
+    const {
+      fromcity,
+      fromplace,
+      tocity,
+      toplace,
+      fromname,
+      frommobile,
+      frompin,
+      fromaddress,
+      fromdescription,
+      toname,
+      tomobile,
+      toaddress,
+      topin,
+    } = req.body;
+    const bodyid = req.userId;
 
-    const user = await User.findById({ _id: id });
+    const user = await User.findById({ _id: bodyid });
 
     if (user) {
-      const shipmentdata = new shipmentModel({
-        user: user._id,
+      const newshipmetdata = new shipmentModel({
+        user:user._id,
         username: user.username,
-        fromhub: req.body.fromcity,
-        tohub: req.body.tocity,
+        fromhub: fromcity,
+        tohub: tocity,
         shipment: [
           {
-            fromcity: req.body.fromcity,
-            fromplace: req.body.fromplace,
-            fromname: req.body.fromname,
-            frommobile: req.body.frommobile,
-            fromaddress: req.body.fromaddress,
-            fromdescripyion: req.body.fromdescription,
-            frompin: req.body.frompin,
-            toname: req.body.toname,
-            tomobile: req.body.tomobile,
-            toaddress: req.body.toaddress,
-            topin: req.body.topin,
-            tocity: req.body.tocity,
-            toplace: req.body.toplace,
+            fromcity: fromcity,
+            fromplace: fromplace,
+            fromname: fromname,
+            frommobile: frommobile,
+            fromaddress: fromaddress,
+            frompin: frompin,
+            fromdescription: fromdescription,
+            toname: toname,
+            tomobile: tomobile,
+            toaddress: toaddress,
+            topin: topin,
+            tocity: tocity,
+            toplace: toplace,
           },
         ],
       });
+      const newsaveddata = await newshipmetdata.save();
 
-      const saveddata = await shipmentdata.save();
-
-      const shipmantdata = saveddata.shipment[0];
-      const id = saveddata._id;
+      const shipmentData = newsaveddata.shipment[0];
+      const shipmentid = newsaveddata._id;
 
       res.status(200).send({
         message: "Shipment Booked",
         success: true,
-        data: shipmantdata,
-        id: id,
+        data: shipmentData,
+        id: shipmentid,
       });
     } else {
       res.status(200).send({ message: "user does no exist", success: false });

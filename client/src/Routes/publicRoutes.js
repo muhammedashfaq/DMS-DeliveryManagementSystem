@@ -12,7 +12,7 @@ export const PublicRoutesUser = (props) => {
 
 export const PublicRoutesAdmin = (props) => {
     if(localStorage.getItem('admintoken')){
-        return <Navigate to={RouteObjects.Adminhome} />
+        return <Navigate to={RouteObjects.AdminDashboard} />
     }else{
         return props.children 
     }

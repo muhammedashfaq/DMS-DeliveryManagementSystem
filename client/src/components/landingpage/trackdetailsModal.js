@@ -6,7 +6,6 @@ const UpdateModal = ({ visible, onClose, data }) => {
 
   const updates =data.updates
 
-  console.log(updates,'ddd');
   const shipmentdetails =data.shipment
 
 

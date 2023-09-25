@@ -4,6 +4,7 @@ import { hideloading, showloading } from "../../Helper/redux/alertSlice";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
+import { Blocktheuser, UnBlocktheuser, UserDetails } from "./adminutil/api";
 
 const Userlist = () => {
   const dispatch = useDispatch();
@@ -20,11 +21,8 @@ const Userlist = () => {
     try {
       dispatch(showloading());
 
-      const response = await axios.get("/admin/get-useDetials", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("admintoken")}`,
-        },
-      });
+      const response = await UserDetails();
+
       dispatch(hideloading());
       setUser(response.data.data);
     } catch (error) {
@@ -34,42 +32,19 @@ const Userlist = () => {
 
   const handleclick = async (email, status) => {
     try {
+      let response;
+
       if (status === false) {
-        const response = await axios.post(
-          "/admin/blockuser",
-          { email: email },
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("admintoken")}`,
-            },
-          }
-        );
-        if (response.data.success) {
-          toast.success(response.data.message);
-
-          getUserData();
-        } else {
-          toast.error(response.data.message);
-        }
+        response = await Blocktheuser(email);
       } else {
-        const response = await axios.post(
-          "/admin/unblockuser",
-          {
-            email: email,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("admintoken")}`,
-            },
-          }
-        );
-        if (response.data.success) {
-          toast.success(response.data.message);
+        response = await UnBlocktheuser(email);
+      }
 
-          getUserData();
-        } else {
-          toast.error(response.data.message);
-        }
+      if (response.data.success) {
+        toast.success(response.data.message);
+        getUserData();
+      } else {
+        toast.error(response.data.message);
       }
     } catch (error) {
       toast.error("something went wrong");

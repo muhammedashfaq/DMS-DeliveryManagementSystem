@@ -1,7 +1,7 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
+import { getshipmentData } from "./adminutil/api";
 
 const Shipmentlist = () => {
   const [shipmentdata, setshipmentdata] = useState([]);
@@ -13,15 +13,7 @@ const Shipmentlist = () => {
 
   const getjobs = async (req, res) => {
     try {
-      const response = await axios.post(
-        "/admin/getshipmentdata",
-        {},
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("admintoken"),
-          },
-        }
-      );
+      const response = await getshipmentData();
 
       if (response.data.success) {
         toast.success(response.data.message);
@@ -53,8 +45,7 @@ const Shipmentlist = () => {
                     fill="currentColor"
                     viewBox="0 0 512 512"
                     className="w-4 h-4 dark:text-gray-100"
-                  >
-                  </svg>
+                  ></svg>
                 </button>
               </span>
               <input

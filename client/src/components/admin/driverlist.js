@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { hideloading, showloading } from "../../Helper/redux/alertSlice";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { adminRequest } from "../../Helper/interceptor/axois";
 import toast from "react-hot-toast";
@@ -13,7 +12,7 @@ const Driverlist = () => {
 
   const [driver, setDriver] = useState([]);
   const dispatch = useDispatch();
-  
+
   const filtereddriver = driver.filter((user) => {
     const lowerCaseSearchInput = search.toLowerCase();
     return user.fname.toLowerCase().includes(lowerCaseSearchInput);
@@ -22,31 +21,27 @@ const Driverlist = () => {
   });
 
   const getDriverrData = async () => {
-
     try {
       dispatch(showloading());
-    adminRequest({
-      url: "/admin/get-driverDetials",
-      method: "GET",
-    })
-      .then((response) => {
-        dispatch(hideloading());
-        if (response.data.success) {
-          toast.success(response.data.message);
-          setDriver(response.data.data);
-
-        } else {
-          toast.error(response.data.message);
-        }
+      adminRequest({
+        url: "/admin/get-driverDetials",
+        method: "GET",
       })
-      .catch((err) => {
-        toast.error("Something went wrong");
-        console.log(err);
-        localStorage.removeItem("admintoken");
-        navigate(RouteObjects.AdminLogin);
-      });
-
-
+        .then((response) => {
+          dispatch(hideloading());
+          if (response.data.success) {
+            toast.success(response.data.message);
+            setDriver(response.data.data);
+          } else {
+            toast.error(response.data.message);
+          }
+        })
+        .catch((err) => {
+          toast.error("Something went wrong");
+          console.log(err);
+          localStorage.removeItem("admintoken");
+          navigate(RouteObjects.AdminLogin);
+        });
     } catch (error) {
       dispatch(hideloading());
     }
@@ -114,7 +109,7 @@ const Driverlist = () => {
                 Contact Number
               </th>
               <th scope="col" class="px-6 py-3">
-               Hub Status
+                Hub Status
               </th>
             </tr>
           </thead>
@@ -129,7 +124,9 @@ const Driverlist = () => {
                     scope="row"
                     className="px-6 py-3   font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    <Link to={`{RouteObjects.DriverProfile}/?id=${driver?._id}`}>
+                    <Link
+                      to={`{RouteObjects.DriverProfile}/?id=${driver?._id}`}
+                    >
                       {driver?.fname + " " + driver?.lname}
                     </Link>
                   </th>

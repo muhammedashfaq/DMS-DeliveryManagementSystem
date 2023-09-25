@@ -5,8 +5,7 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { userRequest } from "../../Helper/interceptor/axois";
 import { RouteObjects } from "../../Routes/RouteObject";
-
-// import { loadScript } from "https://checkout.razorpay.com/v1/checkout.js";
+import { bookshipmentform, getlocation } from "./Userutil/api";
 
 const BookShipment = () => {
   const rupeeSymbol = "\u20B9";
@@ -43,36 +42,35 @@ const BookShipment = () => {
       toplace: toselectedPlace,
     }));
   };
-
+  
   const formSubmit = async (e) => {
     try {
       e.preventDefault();
-
+      
+      
       const error = bookshipmentvalidation(formdata);
       setErrors(error);
-
+      
       if (Object.keys(error).length === 0) {
-        alert("done");
-      }
-
-      const response = await axios.post("/bookshipment", formdata, {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
-      });
-
-      if (response.data.success) {
-        razorpayPayment(response.data.data, response.data.id);
-
-        toast.success(response.data.message);
-      } else {
-        toast.error(response.data.message);
-      }
+        alert('done')
+      } 
+        const response = await bookshipmentform(formdata)
+        if (response.data.success) {
+          razorpayPayment(response.data.data, response.data.id);
+          
+          toast.success(response.data.message);
+        } else {
+          toast.error(response.data.message);
+        }
+        
     } catch (error) {
       toast.error("seomthing went wrong");
-    }
-  };
-
+        console.log(error);
+        localStorage.removeItem("token");
+        navigate("/");
+      }
+    };
+    
   function razorpayPayment(order, id) {
     console.log("amount", order.advanceamount);
     var options = {
@@ -109,7 +107,7 @@ const BookShipment = () => {
   const PaymentUpdate = async (payment, order, id) => {
     try {
       userRequest({
-        url: "/advancepaymentUpdate",
+        url: "http://localhost:5000/advancepaymentUpdate",
         method: "post",
         data: {
           payment: payment,
@@ -138,11 +136,9 @@ const BookShipment = () => {
   };
 
   const getData = async (req, res) => {
-    userRequest({
-      url: "/getLocationData",
-      method: "get",
-    })
-      .then((response) => {
+    try {
+        const response = await getlocation()
+
         if (response.data.success) {
           toast.success(response.data.message);
           const city = response.data.data;
@@ -150,14 +146,14 @@ const BookShipment = () => {
         } else {
           toast.error(response.data.message);
         }
-      })
 
-      .catch((err) => {
-        toast.error("something went wrong");
-        console.log(err);
-        localStorage.removeItem("token");
-        navigate("/");
-      });
+    } catch (error) {
+      console.log(error);
+      toast.error("something went wrong");
+      localStorage.removeItem("token");
+      navigate("/");
+    }
+    
   };
 
   useEffect(() => {

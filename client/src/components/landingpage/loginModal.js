@@ -14,6 +14,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
 import jwt_decode from "jwt-decode";
 import { RouteObjects } from "../../Routes/RouteObject";
+import { logintouserhome, signwithgoogle } from "./Userutil/api";
 
 export const LoginModal = ({ visible, onClose }) => {
   const dispatch = useDispatch();
@@ -44,7 +45,8 @@ export const LoginModal = ({ visible, onClose }) => {
         alert("done");
       }
       dispatch(showloading());
-      const response = await axios.post("/login ", formData);
+      const response = await logintouserhome(formData)
+      
       dispatch(hideloading());
       if (response.data.success) {
         toast.success(response.data.message);
@@ -60,7 +62,9 @@ export const LoginModal = ({ visible, onClose }) => {
       dispatch(hideloading());
 
       console.log(error);
-      toast.error("somthing went wrong");
+      toast.error("something went wrong");
+        localStorage.removeItem("token");
+        navigate("/");
     }
   };
 
@@ -74,8 +78,7 @@ export const LoginModal = ({ visible, onClose }) => {
         password,
       };
       if (formData) {
-        const response = await axios.post("/googlelogin", formData);
-
+        const response = await signwithgoogle(formData)
         if (response.data.success) {
           toast.success(response.data.message);
           localStorage.setItem("token", response.data.data);
@@ -91,6 +94,9 @@ export const LoginModal = ({ visible, onClose }) => {
       }
     } catch (error) {
       console.log(error);
+      toast.error("something went wrong");
+        localStorage.removeItem("token");
+        navigate("/");
     }
   };
 

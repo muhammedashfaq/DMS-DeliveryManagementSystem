@@ -1,8 +1,8 @@
-import axios from "axios";
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
+import { trackusershipment } from "./adminutil/api";
 
-const   Admintrack = () => {
+const Admintrack = () => {
   const [trackDetails, setTrackDetails] = useState(false);
 
   const [trackinput, settrackininput] = useState("");
@@ -13,7 +13,7 @@ const   Admintrack = () => {
     try {
       e.preventDefault();
 
-      const response = await axios.post("/trackshipment", { id: trackinput });
+      const response = await trackusershipment(trackinput);
 
       if (response.data.success) {
         toast.success(response.data.message);
@@ -124,11 +124,13 @@ const   Admintrack = () => {
                 <p className="text-white text-lg font-semibold mb-2">
                   From Address:
                 </p>
-                <p className="text-white text-xl ">{shipmentdetails?.fromaddress}</p>
+                <p className="text-white text-xl ">
+                  {shipmentdetails?.fromaddress}
+                </p>
               </div>
               <div className="mb-4">
                 <p className="text-white text-lg  font-semibold mb-2">
-                 To Address:
+                  To Address:
                 </p>
                 <p className="text-white">{shipmentdetails?.toaddress} </p>
               </div>
@@ -137,7 +139,9 @@ const   Admintrack = () => {
                 <p className="text-white text-lg font-semibold mb-2">
                   Shipment Status:
                 </p>
-                <p className="text-indigo-600 font-semibold">{updates?.status}</p>
+                <p className="text-indigo-600 font-semibold">
+                  {updates?.status}
+                </p>
               </div>
             </div>
             <div className="w-full  border-gray-200 mt-4 border-t-4 rounded-md h-28">

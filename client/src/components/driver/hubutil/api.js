@@ -3,7 +3,7 @@ import { hubRequest } from "../../../Helper/interceptor/axois";
 export const HubDetails = async () => {
   try {
     const response = await hubRequest({
-      url: "/hub/get-driverinfo-id",
+      url: "http://localhost:5000/hub/get-driverinfo-id",
       method: "post",
     });
     if (response.data.success) {
@@ -19,7 +19,7 @@ export const HubDetails = async () => {
 export const transistsend = async (trackid) => {
   try {
     const response = await hubRequest({
-      url: "/hub/transistshipment",
+      url: "http://localhost:5000/hub/transistshipment",
       method: "post",
       data: { trackid: trackid },
     });
@@ -36,7 +36,7 @@ export const transistsend = async (trackid) => {
 export const shipmentAproving = async (trackid) => {
   try {
     const response = await hubRequest({
-      url: "/hub/approveShipment",
+      url: "http://localhost:5000/hub/approveShipment",
       method: "post",
       data: { trackid: trackid },
     });
@@ -53,7 +53,7 @@ export const shipmentAproving = async (trackid) => {
 export const getHubJobs = async (trackid) => {
   try {
     const response = await hubRequest({
-      url: "/hub/getjobs",
+      url: "http://localhost:5000/hub/getjobs",
       method: "post",
     });
     if (response.data.success) {

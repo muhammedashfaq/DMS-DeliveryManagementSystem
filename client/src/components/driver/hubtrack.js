@@ -13,7 +13,7 @@ const Hubtrack = () => {
     try {
       e.preventDefault();
 
-      const response = await axios.post("/trackshipment", { id: trackinput });
+      const response = await axios.post("http://localhost:5000/trackshipment", { id: trackinput });
 
       if (response.data.success) {
         toast.success(response.data.message);

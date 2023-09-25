@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
-import { adminRequest } from "../../Helper/interceptor/axois";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { RouteObjects } from "../../Routes/RouteObject";

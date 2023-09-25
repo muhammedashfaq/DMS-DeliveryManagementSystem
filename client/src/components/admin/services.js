@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { toast } from "react-hot-toast";
 import { adminRequest } from "../../Helper/interceptor/axois";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +15,6 @@ const CityPlaces = () => {
     try {
       e.preventDefault();
 
-
       adminRequest({
         url: "/admin/addserviceCity",
         method: "POST",
@@ -28,7 +26,6 @@ const CityPlaces = () => {
             window.location.reload();
 
             getData();
-
           } else {
             toast.error(response.data.message);
           }
@@ -39,30 +36,25 @@ const CityPlaces = () => {
           localStorage.removeItem("admintoken");
           navigate(RouteObjects.AdminLogin);
         });
-
-
     } catch (error) {
       console.log(error);
       toast.success("something wrong");
     }
   };
-  
+
   const submitplaceform = async (e) => {
     try {
-      
       e.preventDefault();
       adminRequest({
         url: "/admin/addservicePlace",
         method: "POST",
-        data: { place: place,
-          city: selectedcity, },
+        data: { place: place, city: selectedcity },
       })
         .then((response) => {
           if (response.data.success) {
             toast.success(response.data.message);
             window.location.reload();
             getData();
-  
           } else {
             toast.error(response.data.message);
           }
@@ -73,8 +65,6 @@ const CityPlaces = () => {
           localStorage.removeItem("admintoken");
           navigate(RouteObjects.AdminLogin);
         });
-
-      
     } catch (error) {
       console.log(error);
       toast.success("something wrong");

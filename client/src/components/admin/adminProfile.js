@@ -4,7 +4,6 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { hideloading, showloading } from "../../Helper/redux/alertSlice";
-import axios from "axios";
 import { RouteObjects } from "../../Routes/RouteObject";
 
 const AdminProfile = () => {

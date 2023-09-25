@@ -101,7 +101,9 @@ const userlistLoad = async (req, res) => {
 
 const blockuser = async (req, res) => {
   try {
+
     const id = req.adminId;
+    console.log(id,'m,bkb');
     const user = await User.findOne({ _id: id });
     if (!user) {
       return res
@@ -164,6 +166,7 @@ const unblockuser = async (req, res) => {
 
 const addDriver = async (req, res) => {
   try {
+    console.log('reached')
     const id = req.adminId;
     const user = await User.findOne({ _id: id });
     if (!user) {
@@ -184,7 +187,7 @@ const addDriver = async (req, res) => {
       //     success: false
       //   });
       // }
-
+      console.log(req.body,'hh')
       await sharp("./public/multer/" + req.files[0].filename)
         .resize(500, 500)
         .toFile("./public/cloudinary/" + req.files[0].filename);

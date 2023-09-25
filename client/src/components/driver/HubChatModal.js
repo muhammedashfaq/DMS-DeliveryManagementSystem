@@ -43,7 +43,7 @@ const HubChat = ({ visible, onClose, data }) => {
       hubid,
     };
     try {
-      const response = await axios.post("/getchathistory", requestData);
+      const response = await axios.post("http://localhost:5000/getchathistory", requestData);
       if (response.data.success) {
         const chat = response.data.chat;
         for (let i = 0; i < chat.length; i++) {

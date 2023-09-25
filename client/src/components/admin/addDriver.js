@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import myimage from "../../components/images/def.jpg";
-import axios from "axios";
 import { useDispatch } from "react-redux";
 import { hideloading, showloading } from "../../Helper/redux/alertSlice";
 import { drivervalidate } from "../../Helper/Validations/validation";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { adminRequest } from "../../Helper/interceptor/axois";
 import { RouteObjects } from "../../Routes/RouteObject";
-import { getCityDetails } from "./adminutil/api";
+import { AddHubDetails, getCityDetails } from "./adminutil/api";
 
 const AddDriver = () => {
   const [hubcity, sethubcity] = useState([]);
@@ -31,8 +29,6 @@ const AddDriver = () => {
   });
 
   console.log(formData);
-  console.log("Error message:", errors.lname);
-
   const handleinputchange = (event) => {
     const { name, value } = event.target;
     setformData((pformData) => ({
@@ -46,36 +42,32 @@ const AddDriver = () => {
       e.preventDefault();
 
       const error = drivervalidate(formData);
+      setError(error);
 
       if (Object.keys(error).length === 0) {
-        dispatch(showloading());
-        const formDataToSend = new FormData();
+        alert("done");
+      }
 
-        for (const key in formData) {
-          if (formData.hasOwnProperty(key)) {
-            formDataToSend.append(key, formData[key]);
-          }
+      dispatch(showloading());
+      const formDataToSend = new FormData();
+
+      for (const key in formData) {
+        if (formData.hasOwnProperty(key)) {
+          formDataToSend.append(key, formData[key]);
         }
+      }
 
-        if (formData.profileimage) {
-          formDataToSend.append("profileimage", formData.profileimage);
-        }
+      if (formData.profileimage) {
+        formDataToSend.append("profileimage", formData.profileimage);
+      }
 
-        const response = await axios.post("/admin/add_driver", formDataToSend, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("admintoken"),
+      const response = await AddHubDetails(formDataToSend);
 
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        dispatch(hideloading());
-        if (response.data.success) {
-          navigate(RouteObjects.DriverList);
-        } else {
-          toast.error(response.data.message);
-        }
+      dispatch(hideloading());
+      if (response.data.success) {
+        navigate(RouteObjects.DriverList);
       } else {
-        setError(error);
+        toast.error(response.data.message);
       }
     } catch (error) {
       dispatch(hideloading());

@@ -81,7 +81,7 @@ export const adminloginvalidate = (email, password) => {
     }
   
     if (!formData.city) {
-      errors.city = "Please select a gender";
+      errors.city = "Please select a city";
     }
   
     if (!formData.address || formData.address.trim() === "") {
@@ -134,19 +134,21 @@ export const adminloginvalidate = (email, password) => {
 
   }
 
-  export const bookshipmentvalidation=(formdata)=>{
-    const error={}
-
-    error.fromname =!formdata.fromname || formdata.fromname.trim() === "" ? "Name is required" : "";
-    error.frommobile=formdata.frommobile.length !== 10  ? "Enter Valid Mobile Number " : formdata.frommobile.trim() === ""   ? " Mobile Number is required": "";
-    error.fromaddress=formdata.fromaddress.trim() === "" ? "Addrress is required" : "";
-    error.frompin=formdata.frompin.trim() === "" ? "field is required" : "";
-
-    error.fromdescription=formdata.fromdescription.trim() === "" ? " required" : "";
-    error.toname=!formdata.toname || formdata.toname.trim() === "" ? "Name is required" : "";
-    error.tomobile=formdata.tomobile.length !== 10  ? "Enter Valid Mobile Number " : formdata.tomobile.trim() === ""   ? " Mobile Number is required": "";
-    error.toaddress=formdata.fromaddress.trim() === "" ? "Addrress is required" : "";
-    error.topin=formdata.topin.trim() === "" ? "Field is required" : "";
-
-    return error
-  }
+  export const bookshipmentvalidation = (formdata) => {
+    const errors = {};
+  
+    errors.fromname = !formdata.fromname || formdata.fromname.trim() === "" ? "Name is required" : "";
+    errors.frommobile =
+      formdata.frommobile.length !== 10 ? "Enter a Valid 10-digit Mobile Number" : formdata.frommobile.trim() === "" ? "Mobile Number is required" : "";
+    errors.fromaddress = formdata.fromaddress.trim() === "" ? "Address is required" : "";
+    errors.frompin = formdata.frompin.trim() === "" ? "Field is required" : "";
+    errors.fromdescription = formdata.fromdescription.trim() === "" ? "Field is required" : "";
+    errors.toname = !formdata.toname || formdata.toname.trim() === "" ? "Name is required" : "";
+    errors.tomobile =
+      formdata.tomobile.length !== 10 ? "Enter a Valid 10-digit Mobile Number" : formdata.tomobile.trim() === "" ? "Mobile Number is required" : "";
+    errors.toaddress = formdata.toaddress.trim() === "" ? "Address is required" : "";
+    errors.topin = formdata.topin.trim() === "" ? "Field is required" : "";
+  
+    return errors;
+  };
+  

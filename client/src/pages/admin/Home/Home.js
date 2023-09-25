@@ -18,7 +18,7 @@ const Home = () => {
   const getData = async (req, res) => {
     try {
       const response = await axios.post(
-        "/admin/get-admininfo-id",
+        "http://localhost:5000/admin/get-admininfo-id",
         {},
         {
           headers: {

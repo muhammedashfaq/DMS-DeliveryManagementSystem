@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 import { formatDistanceToNow } from "date-fns";
 
-const socket = io.connect("http://localhost:5000");
+const socket = io.connect("https://hrlogistics.online");
 
 const ChatModal = ({ visible, onClose, data }) => {
   const trackid = data.trackID;
@@ -13,8 +13,6 @@ const ChatModal = ({ visible, onClose, data }) => {
   const [hubName, setHubName] = useState("");
 
   const sendmessage = async () => {
-    // socket.emit("send",{essage:trackid})
-
     if (currentMessage.length !== 0) {
       const messageData = {
         room: trackid,
@@ -24,16 +22,14 @@ const ChatModal = ({ visible, onClose, data }) => {
 
       socket.emit("send_message", messageData);
 
-      console.log("emit");
-
       setMessagelist((list) => [
         ...list,
         { currentmessage: currentMessage, time: new Date() },
       ]);
       setCurrentMessage("");
+      socket.emit("typing", { room: trackid, typing: false });
     }
   };
-
   useEffect(() => {
     socket.emit("join-room", trackid);
   }, [trackid, shipmentid]);
@@ -45,7 +41,7 @@ const ChatModal = ({ visible, onClose, data }) => {
     };
     try {
       const response = await axios.post(
-        "http://localhost:5000/getchathistory",
+        "https://hrlogistics.online/getchathistory",
         requestData
       );
       if (response.data.success) {

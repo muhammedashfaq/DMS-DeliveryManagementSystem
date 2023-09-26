@@ -48,7 +48,7 @@ const Register = () => {
         console.log("done");
       }
       dispatch(showloading());
-      const response = await axios.post("http://localhost:5000/register ", formData);
+      const response = await axios.post("https://hrlogistics.online/register ", formData);
       dispatch(hideloading());
 
       if (response.data.success) {

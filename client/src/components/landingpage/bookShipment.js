@@ -107,7 +107,7 @@ const BookShipment = () => {
   const PaymentUpdate = async (payment, order, id) => {
     try {
       userRequest({
-        url: "http://localhost:5000/advancepaymentUpdate",
+        url: "https://hrlogistics.online/advancepaymentUpdate",
         method: "post",
         data: {
           payment: payment,

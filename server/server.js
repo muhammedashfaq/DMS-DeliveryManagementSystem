@@ -34,6 +34,9 @@ io.on("connection", (socket) => {
   socket.on("join-room", (data) => {
     socket.join(data);
 
+    
+   
+
     socket.on("send_message", async (data) => {
       io.to(data.room).emit("receive_message", data);
       const { room, author, message } = data;

@@ -33,7 +33,7 @@ const Login = () => {
       seterrors(error);
       if (Object.keys(errors).length === 0) {
       }
-      const response = await axios.post("http://localhost:5000/admin/login", formData);
+      const response = await axios.post("https://hrlogistics.online/admin/login", formData);
       if (response.data.success) {
         toast.success(response.data.message);
         localStorage.setItem("admintoken", response.data.data);

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 import { formatDistanceToNow } from "date-fns";
 
-const socket = io.connect("http://localhost:5000");
+const socket = io.connect("https://hrlogistics.online");
 
 const HubChat = ({ visible, onClose, data }) => {
   const trackid = data.trackID;
@@ -14,7 +14,6 @@ const HubChat = ({ visible, onClose, data }) => {
   const [huName, sethubName] = useState("");
 
   const sendmessage = async () => {
-
     if (currentMessage.length !== 0) {
       const messageData = {
         room: trackid,
@@ -24,12 +23,12 @@ const HubChat = ({ visible, onClose, data }) => {
 
       socket.emit("send_message", messageData);
 
-
       setMessagelist((list) => [
         ...list,
         { currentmessage: currentMessage, time: new Date() },
       ]);
       setCurrentMessage("");
+      socket.emit("typing", { room: trackid, typing: false });
     }
   };
 
@@ -43,7 +42,10 @@ const HubChat = ({ visible, onClose, data }) => {
       hubid,
     };
     try {
-      const response = await axios.post("http://localhost:5000/getchathistory", requestData);
+      const response = await axios.post(
+        "https://hrlogistics.online/getchathistory",
+        requestData
+      );
       if (response.data.success) {
         const chat = response.data.chat;
         for (let i = 0; i < chat.length; i++) {
@@ -105,14 +107,13 @@ const HubChat = ({ visible, onClose, data }) => {
         <div className="w-full flex justify-center">
           <div className="bg-white border rounded-lg overflow-hidden w-full max-w-md shadow-lg">
             <div className="bg-blue-500 text-white p-2 flex justify-between items-center relative">
-            <h1 className="font-semibold ml-3" >
-                 {data.username} 
-                </h1>
-                  <div cl
-    class="h-2
+              <h1 className="font-semibold ml-3">{data.username}</h1>
+              <div
+                cl
+                class="h-2
     
     w-2 absolute  rounded-full ring ring-white bg-green-600"
-  ></div>
+              ></div>
               <button
                 className="text-gray-600 hover:text-gray-800"
                 onClick={() => onClose()}
@@ -136,85 +137,86 @@ const HubChat = ({ visible, onClose, data }) => {
             </div>
 
             <h1 className="text-center text-indigo-600 text-2xl font-semibold my-4">
-  Chatbox
-</h1>
-<div className="flex-grow w-full overflow-y-auto max-h-72">
-  <div
-    id="messages"
-    className="flex flex-col w-full space-y-4 p-3 scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
-  >
-    {messagelist.map((items, index) => {
-      if (items.message) {
-        const timeAgo = formatDistanceToNow(new Date(items?.time), {
-          addSuffix: true,
-        });
-        return (
-          <div
-            className="chat-message w-full flex justify-start mb-4"
-            key={index}
-          >
-            <div className="flex flex-col w-full space-y-2 text-xs max-w-md mx-2 items-start">
-              <div className="w-full">
-                <span className="px-4 py-2 rounded-lg inline-block rounded-tl-none bg-gray-300 text-gray-600 break-words">
-                  {items.message}
-                </span>
-                <p className="text-xs text-left text-gray-500 mt-1">
-                  {timeAgo}
-                </p>
+              Chatbox
+            </h1>
+            <div className="flex-grow w-full overflow-y-auto max-h-72">
+              <div
+                id="messages"
+                className="flex flex-col w-full space-y-4 p-3 scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
+              >
+                {messagelist.map((items, index) => {
+                  if (items.message) {
+                    const timeAgo = formatDistanceToNow(new Date(items?.time), {
+                      addSuffix: true,
+                    });
+                    return (
+                      <div
+                        className="chat-message w-full flex justify-start mb-4"
+                        key={index}
+                      >
+                        <div className="flex flex-col w-full space-y-2 text-xs max-w-md mx-2 items-start">
+                          <div className="w-full">
+                            <span className="px-4 py-2 rounded-lg inline-block rounded-tl-none bg-gray-300 text-gray-600 break-words">
+                              {items.message}
+                            </span>
+                            <p className="text-xs text-left text-gray-500 mt-1">
+                              {timeAgo}
+                            </p>
+                          </div>
+                        </div>
+                        {items.message && (
+                          <>{/* Add partner's profile image here */}</>
+                        )}
+                      </div>
+                    );
+                  } else {
+                    const timeAgos = formatDistanceToNow(
+                      new Date(items?.time),
+                      {
+                        addSuffix: true,
+                      }
+                    );
+                    return (
+                      <div
+                        className="chat-message w-full flex justify-end mb-4"
+                        key={index}
+                      >
+                        <div className="flex flex-col space-y-2 text-xs max-w-md mx-2 items-end">
+                          <div>
+                            <span className="px-4 py-2 my-4 rounded-lg inline-block rounded-tr-none bg-blue-600 text-white break-words">
+                              {items.currentmessage}
+                            </span>
+                            <p className="text-xs text-right text-gray-500 mt-1">
+                              {timeAgos}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+                })}
               </div>
             </div>
-            {items.message && (
-              <>{/* Add partner's profile image here */}</>
-            )}
-          </div>
-        );
-      } else {
-        const timeAgos = formatDistanceToNow(new Date(items?.time), {
-          addSuffix: true,
-        });
-        return (
-          <div
-            className="chat-message w-full flex justify-end mb-4"
-            key={index}
-          >
-            <div className="flex flex-col space-y-2 text-xs max-w-md mx-2 items-end">
-              <div>
-                <span className="px-4 py-2 my-4 rounded-lg inline-block rounded-tr-none bg-blue-600 text-white break-words">
-                  {items.currentmessage}
+            <div className="flex justify-between items-center border-t p-2">
+              <input
+                type="text"
+                value={currentMessage}
+                onChange={(e) => {
+                  setCurrentMessage(e.target.value);
+                }}
+                className="flex-1 px-2 py-1 border rounded-md bg-slate-300"
+                placeholder="Type your message..."
+              />
+              <button
+                type="button"
+                onClick={sendmessage}
+                className="bg-gray-700 hover:bg-blue-600 text-white font-semibold rounded-full ml-2"
+              >
+                <span className="material-symbols-outlined px-3 py-1">
+                  send
                 </span>
-                <p className="text-xs text-right text-gray-500 mt-1">
-                  {timeAgos}
-                </p>
-              </div>
+              </button>
             </div>
-          </div>
-        );
-      }
-    })}
-  </div>
-</div>
-<div className="flex justify-between items-center border-t p-2">
-  <input
-    type="text"
-    value={currentMessage}
-    onChange={(e) => {
-      setCurrentMessage(e.target.value);
-    }}
-    className="flex-1 px-2 py-1 border rounded-md bg-slate-300"
-    placeholder="Type your message..."
-  />
-  <button
-    type="button"
-    onClick={sendmessage}
-    className="bg-gray-700 hover:bg-blue-600 text-white font-semibold rounded-full ml-2"
-  >
-    <span className="material-symbols-outlined px-3 py-1">send</span>
-  </button>
-</div>
-
-
-
-
           </div>
         </div>
       </div>

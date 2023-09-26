@@ -1,5 +1,5 @@
 import axios from "axios";
-const user = axios.create({ baseURL: "http://localhost:5000/" });
+const user = axios.create({ baseURL: "https://hrlogistics.online/" });
 
 
 export const userRequest = ({ ...options }) => {

@@ -9,7 +9,7 @@ const Landingpage = () => {
   const getData = async (req, res) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/get-userinfo-id",
+        "https://hrlogistics.online/get-userinfo-id",
         {},
         {
           headers: {

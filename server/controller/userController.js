@@ -416,7 +416,6 @@ const getLocationData = async (req, res) => {
 
 const bookshipment = async (req, res) => {
   try {
-    console.log(req.body, "hh");
     const {
       fromcity,
       fromplace,
@@ -545,7 +544,6 @@ const trackshipment = async (req, res) => {
 };
 
 const chatHistory = async (room, message, author) => {
-  console.log(room, message, author);
   const roomexist = await ChatModel.findOne({ chatRoom: room });
 
   if (roomexist) {
@@ -607,9 +605,7 @@ const updateUserDetails = async (req, res) => {
 
     const user = await User.findOne({ _id: id });
     if (user) {
-      console.log(id, "id");
       const { input, field } = req.body;
-      console.log(req.body, "body");
 
       const updatedUser = await User.updateOne(
         { _id: id },

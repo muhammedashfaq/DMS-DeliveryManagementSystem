@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 import { formatDistanceToNow } from "date-fns";
 
-const socket = io.connect("https://hrlogistics.online");
+const socket = io.connect("http://localhost:5000");
 
 const ChatModal = ({ visible, onClose, data }) => {
   const trackid = data.trackID;
@@ -11,8 +11,14 @@ const ChatModal = ({ visible, onClose, data }) => {
   const [currentMessage, setCurrentMessage] = useState("");
   const [messagelist, setMessagelist] = useState([]);
   const [hubName, setHubName] = useState("");
+  const [typingTimeout,setTypingTimeout]=useState(null)
+  const [typing ,setTyping]=useState(false)
 
-  const sendmessage = async () => {
+
+  const sendmessage = async (e) => {
+
+    e.preventDefault();
+
     if (currentMessage.length !== 0) {
       const messageData = {
         room: trackid,
@@ -41,7 +47,7 @@ const ChatModal = ({ visible, onClose, data }) => {
     };
     try {
       const response = await axios.post(
-        "https://hrlogistics.online/getchathistory",
+        "http://localhost:5000/getchathistory",
         requestData
       );
       if (response.data.success) {
@@ -92,8 +98,28 @@ const ChatModal = ({ visible, onClose, data }) => {
     };
   }, [shipmentid, trackid]);
 
-  if (!visible) return null;
 
+  const handlemessage = (e)=>{
+    setCurrentMessage(e.target.value);
+  socket.emit("typing-started")
+  if(typingTimeout) clearTimeout(typingTimeout)
+
+  setTypingTimeout ( setTimeout(()=>{
+    socket.emit("typing-stoped")
+
+  },1000))
+}
+
+  useEffect(()=>{
+    if(!socket) return
+  
+    socket.on("typing-started-from-server",()=>setTyping(true))
+    socket.on("typing-stoped-from-server",()=>setTyping(false))
+    
+  },[socket])
+
+
+  if (!visible) return null;
   return (
     <div>
       <div
@@ -195,13 +221,14 @@ const ChatModal = ({ visible, onClose, data }) => {
                 })}
               </div>
             </div>
+            {typing && (
+                <div className="text-gray-500">typing...</div>
+              )}
             <div className="flex justify-between items-center border-t p-2">
               <input
                 type="text"
                 value={currentMessage}
-                onChange={(e) => {
-                  setCurrentMessage(e.target.value);
-                }}
+                onChange={handlemessage}
                 className="flex-1 px-2 py-1 border rounded-md bg-slate-300"
                 placeholder="Type your message..."
               />

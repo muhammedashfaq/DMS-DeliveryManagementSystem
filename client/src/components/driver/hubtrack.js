@@ -12,8 +12,11 @@ const Hubtrack = () => {
   const trackshipment = async (e) => {
     try {
       e.preventDefault();
-
-      const response = await axios.post("https://hrlogistics.online/trackshipment", { id: trackinput });
+      if (trackinput === "") {
+        toast.error("Please enter a valid tracking ID")
+         return; 
+      }
+      const response = await axios.post("http://localhost:5000/trackshipment", { id: trackinput });
 
       if (response.data.success) {
         toast.success(response.data.message);

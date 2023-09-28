@@ -4,7 +4,7 @@ import { userRequest } from "../../../Helper/interceptor/axois";
 export const signwithgoogle = async (formData) => {
   try {
     const response = await axios.post(
-      "https://hrlogistics.online/googlelogin",
+      "http://localhost:5000/googlelogin",
       formData
     );
 
@@ -21,7 +21,7 @@ export const signwithgoogle = async (formData) => {
 export const logintouserhome = async (formData) => {
   try {
     const response = await axios.post(
-      "https://hrlogistics.online/login ",
+      "http://localhost:5000/login ",
       formData
     );
 
@@ -38,7 +38,7 @@ export const logintouserhome = async (formData) => {
 export const trackshipmentdetails = async (trackid) => {
   try {
     const response = await userRequest({
-      url: "https://hrlogistics.online/trackshipment",
+      url: "http://localhost:5000/trackshipment",
 
       method: "POST",
       data: { id: trackid },
@@ -55,8 +55,9 @@ export const trackshipmentdetails = async (trackid) => {
 
 export const bookshipmentform = async (formdata) => {
   try {
+    console.log('resss');
     const response = await userRequest({
-      url: "https://hrlogistics.online/bookshipment",
+      url: "http://localhost:5000/bookshipment",
       method: "POST",
       data: formdata
     });
@@ -73,7 +74,7 @@ export const bookshipmentform = async (formdata) => {
 export const getlocation = async () => {
   try {
     const response = await userRequest({
-      url: "https://hrlogistics.online/getLocationData",
+      url: "http://localhost:5000/getLocationData",
       method: "get",
     });
     if (response.data.success) {
@@ -110,7 +111,7 @@ export const editUserdetails = async (input, field) => {
 export const getShipmentDetails = async () => {
   try {
     const response = await userRequest({
-      url: "https://hrlogistics.online/get-dataprofils",
+      url: "http://localhost:5000/get-dataprofils",
       method: "POST",
     });
     if (response.data.success) {
@@ -125,19 +126,3 @@ export const getShipmentDetails = async () => {
 
 
 
-export const UpdateProfilepic = async (formdata) => {
-  try {
-    const response = await userRequest({
-      url: "https://hrlogistics.online/updateprofileimage",
-      method: "POST",
-      data:formdata
-    });
-    if (response.data.success) {
-      return response;
-    } else {
-      throw new Error(response.data.message);
-    }
-  } catch (error) {
-    throw error;
-  }
-};

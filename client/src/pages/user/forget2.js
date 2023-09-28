@@ -31,7 +31,7 @@ const Forget2 = () => {
       }
 
       dispatch(showloading());
-      const response = await axios.post(`https://hrlogistics.online/reset/${randomString}`, {
+      const response = await axios.post(`http://localhost:5000/reset/${randomString}`, {
         password: password,
         cpassword: cpassword,
       });

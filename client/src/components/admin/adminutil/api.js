@@ -4,7 +4,7 @@ import { adminRequest } from "../../../Helper/interceptor/axois";
 export const getCityDetails = async () => {
   try {
     const response = await adminRequest({
-      url: "https://hrlogistics.online/admin/getcitydetails",
+      url: "http://localhost:5000/admin/getcitydetails",
       method: "GET",
     });
     if (response.data.success) {
@@ -22,7 +22,7 @@ export const getCityDetails = async () => {
 export const adminreports = async (city) => {
   try {
     const response = await adminRequest({
-      url: "https://hrlogistics.online/admin/adminReportByHub",
+      url: "http://localhost:5000/admin/adminReportByHub",
       method: "POST",
       data: { city: city },
     });
@@ -39,7 +39,7 @@ export const adminreports = async (city) => {
 export const getAllDashboardData = async () => {
   try {
     const response = await adminRequest({
-      url: "https://hrlogistics.online/admin/getAllData",
+      url: "http://localhost:5000/admin/getAllData",
       method: "POST",
     });
     if (response.data.success) {
@@ -57,7 +57,7 @@ export const getAllDashboardData = async () => {
 export const getAdminDetails = async () => {
   try {
     const response = await adminRequest({
-      url: "https://hrlogistics.online/admin/get-admininfo-id",
+      url: "http://localhost:5000/admin/get-admininfo-id",
 
       method: "POST",
     });
@@ -74,7 +74,7 @@ export const getAdminDetails = async () => {
 export const AddHubDetails = async (formDataToSend) => {
   try {
     const response = await adminRequest({
-      url: "https://hrlogistics.online/admin/add_driver",
+      url: "http://localhost:5000/admin/add_driver",
 
       method: "POST",
       data: formDataToSend 
@@ -92,7 +92,7 @@ export const AddHubDetails = async (formDataToSend) => {
 export const trackusershipment = async (trackinput) => {
   try {
     const response = await adminRequest({
-      url: "https://hrlogistics.online/trackshipment",
+      url: "http://localhost:5000/trackshipment",
 
       method: "POST",
       data: { id: trackinput },
@@ -110,7 +110,7 @@ export const trackusershipment = async (trackinput) => {
 export const getshipmentData = async () => {
   try {
     const response = await adminRequest({
-      url: "https://hrlogistics.online/admin/getshipmentdata",
+      url: "http://localhost:5000/admin/getshipmentdata",
 
       method: "POST",
     });
@@ -127,7 +127,7 @@ export const getshipmentData = async () => {
 export const UserDetails = async () => {
   try {
     const response = await adminRequest({
-      url: "https://hrlogistics.online/admin/get-useDetials",
+      url: "http://localhost:5000/admin/get-useDetials",
 
       method: "GET",
     });
@@ -144,7 +144,7 @@ export const UserDetails = async () => {
 export const Blocktheuser = async (email) => {
   try {
     const response = await adminRequest({
-      url: "https://hrlogistics.online/admin/blockuser",
+      url: "http://localhost:5000/admin/blockuser",
 
       method: "POST",
 
@@ -163,7 +163,7 @@ export const Blocktheuser = async (email) => {
 export const UnBlocktheuser = async (email) => {
   try {
     const response = await adminRequest({
-      url: "https://hrlogistics.online/admin/unblockuser",
+      url: "http://localhost:5000/admin/unblockuser",
 
       method: "POST",
 

@@ -24,6 +24,7 @@
     "ionicons": "^7.1.2",
     "jsonwebtoken": "^9.0.1",
     "jwt-decode": "^3.1.2",
+    "material-react-toastify": "^2.0.1",
     "mdb-react-ui-kit": "^6.2.0",
     "primereact": "^9.6.2",
     "react": "^18.2.0",
@@ -71,5 +72,5 @@
   "devDependencies": {
     "tailwindcss": "^3.3.3"
   },
-  "proxy": "https://hrlogistics.online/"
+  "proxy": "http://localhost:5000/"
 }

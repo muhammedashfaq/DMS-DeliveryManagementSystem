@@ -47,9 +47,7 @@ const Driverlist = () => {
     }
   };
 
-  // useEffect(()=>{
-  //   // console.log(user,"hahhaa");
-  // },[user])
+
   useEffect(() => {
     getDriverrData();
   }, []);
@@ -125,7 +123,9 @@ const Driverlist = () => {
                     className="px-6 py-3   font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
                     <Link
-                      to={`{RouteObjects.DriverProfile}/?id=${driver?._id}`}
+                      to={`/adminhome/driver_profile/?id=${driver?._id}`}
+                      
+                      
                     >
                       {driver?.fname + " " + driver?.lname}
                     </Link>

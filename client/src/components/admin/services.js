@@ -14,6 +14,10 @@ const CityPlaces = () => {
   const submitcityform = async (e) => {
     try {
       e.preventDefault();
+      if (city === "") {
+        toast.error("Please enter a valid city")
+         return; 
+      }
 
       adminRequest({
         url: "/admin/addserviceCity",
@@ -45,6 +49,11 @@ const CityPlaces = () => {
   const submitplaceform = async (e) => {
     try {
       e.preventDefault();
+
+      if (place === "") {
+        toast.error("Please enter a valid place")
+         return; 
+      }
       adminRequest({
         url: "/admin/addservicePlace",
         method: "POST",

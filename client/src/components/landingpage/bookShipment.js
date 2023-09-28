@@ -6,8 +6,12 @@ import { useNavigate } from "react-router-dom";
 import { userRequest } from "../../Helper/interceptor/axois";
 import { RouteObjects } from "../../Routes/RouteObject";
 import { bookshipmentform, getlocation } from "./Userutil/api";
+import { useDispatch } from "react-redux";
+import { hideloading, showloading } from "../../Helper/redux/alertSlice";
 
 const BookShipment = () => {
+  const dispatch = useDispatch();
+
   const rupeeSymbol = "\u20B9";
   const navigate = useNavigate();
   const [selectedCity, setSelectedCity] = useState("");
@@ -47,14 +51,16 @@ const BookShipment = () => {
     try {
       e.preventDefault();
       
-      
       const error = bookshipmentvalidation(formdata);
       setErrors(error);
+
       
-      if (Object.keys(error).length === 0) {
-        alert('done')
-      } 
+      if (Object.values(error).every(value => value === "")) {
+        dispatch(showloading());
+
         const response = await bookshipmentform(formdata)
+        dispatch(hideloading());
+
         if (response.data.success) {
           razorpayPayment(response.data.data, response.data.id);
           
@@ -62,8 +68,11 @@ const BookShipment = () => {
         } else {
           toast.error(response.data.message);
         }
+      } 
         
     } catch (error) {
+      dispatch(hideloading());
+
       toast.error("seomthing went wrong");
         console.log(error);
         localStorage.removeItem("token");
@@ -72,7 +81,6 @@ const BookShipment = () => {
     };
     
   function razorpayPayment(order, id) {
-    console.log("amount", order.advanceamount);
     var options = {
       key: process.env.REACT_APP_Razorid,
       amount: order.advanceamount * 100,
@@ -107,7 +115,7 @@ const BookShipment = () => {
   const PaymentUpdate = async (payment, order, id) => {
     try {
       userRequest({
-        url: "https://hrlogistics.online/advancepaymentUpdate",
+        url: "http://localhost:5000/advancepaymentUpdate",
         method: "post",
         data: {
           payment: payment,

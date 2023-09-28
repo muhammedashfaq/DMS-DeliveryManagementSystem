@@ -42,7 +42,7 @@ const Forget = () => {
           alert("done");
         }
       dispatch(showloading());
-      const response = await axios.post("https://hrlogistics.online/forget", {
+      const response = await axios.post("http://localhost:5000/forget", {
         email: forget,
         token: randomString,
       });

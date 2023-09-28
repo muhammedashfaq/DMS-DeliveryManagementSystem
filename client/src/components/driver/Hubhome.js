@@ -110,7 +110,6 @@ function Body() {
         setJobs(response.data.data);
         setHubid(response.data.hubid);
 
-        console.log(response, "hub ");
       } else {
       }
     } catch (error) {}

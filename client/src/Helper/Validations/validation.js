@@ -134,7 +134,7 @@ export const adminloginvalidate = (email, password) => {
 
   }
 
-  export const bookshipmentvalidation = (formdata) => {
+  export const  bookshipmentvalidation = (formdata) => {
     const errors = {};
   
     errors.fromname = !formdata.fromname || formdata.fromname.trim() === "" ? "Name is required" : "";

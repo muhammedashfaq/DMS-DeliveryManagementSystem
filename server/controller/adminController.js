@@ -103,7 +103,6 @@ const blockuser = async (req, res) => {
   try {
 
     const id = req.adminId;
-    console.log(id,'m,bkb');
     const user = await User.findOne({ _id: id });
     if (!user) {
       return res
@@ -111,7 +110,6 @@ const blockuser = async (req, res) => {
         .send({ message: "user does no exist", success: false });
     } else {
       const email = req.body.email;
-      console.log(req.body);
 
       const userdata = await User.findOne({ email: email });
 
@@ -143,7 +141,6 @@ const unblockuser = async (req, res) => {
         .send({ message: "user does no exist", success: false });
     } else {
       const email = req.body.email;
-      console.log(req.body);
 
       const userdata = await User.find({ email: email });
       if (userdata) {
@@ -166,7 +163,6 @@ const unblockuser = async (req, res) => {
 
 const addDriver = async (req, res) => {
   try {
-    console.log('reached')
     const id = req.adminId;
     const user = await User.findOne({ _id: id });
     if (!user) {
@@ -174,20 +170,7 @@ const addDriver = async (req, res) => {
         .status(200)
         .send({ message: "user does no exist", success: false });
     } else {
-      // const id=req.userId
-      // console.log(id,'iddd')
 
-      // console.log(req.file[0].filename)
-
-      // if (!req.body.fname || !req.body.lname || !req.body.email || !req.body.city ||
-      //     !req.body.address || !req.body.age || !req.body.mobile || !req.body.pin || !req.body.licence ||
-      //     !req.files.fileImage || !req.files.profileimage) {
-      //   return res.status(400).send({
-      //     message: "All required fields and images are necessary.",
-      //     success: false
-      //   });
-      // }
-      console.log(req.body,'hh')
       await sharp("./public/multer/" + req.files[0].filename)
         .resize(500, 500)
         .toFile("./public/cloudinary/" + req.files[0].filename);
@@ -646,7 +629,6 @@ const adminReportByHub = async (req, res) => {
 
     if (admin) {
       const { city } = req.body;
-      console.log(req.body, "body");
 
       if (city === "All") {
         const shipments = await shipmentModel.find();
@@ -662,7 +644,6 @@ const adminReportByHub = async (req, res) => {
         const totalUndeliveredShipments = await shipmentModel.countDocuments({
           "shipment.shipmentStatus": { $ne: "Delivered" },
         });
-        console.log(totalAdvanceAmount, "amt");
 
         res.status(200).send({
           message: "Data fetched successfully",
@@ -685,7 +666,6 @@ const adminReportByHub = async (req, res) => {
           "shipment.shipmentStatus": "Delivered",
         });
 
-        console.log(totalDeliveredShipments, "llll");
 
         const totalUndeliveredShipments = await shipmentModel.countDocuments({
           fromHub: city,

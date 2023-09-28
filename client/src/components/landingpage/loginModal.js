@@ -116,7 +116,6 @@ export const LoginModal = ({ visible, onClose }) => {
             <GoogleLogin
               onSuccess={(credentialResponse) => {
                 const details = jwt_decode(credentialResponse.credential);
-                console.log(details.jti);
                 googleSign(details.name, details.email, details.jti);
               }}
               onError={() => {

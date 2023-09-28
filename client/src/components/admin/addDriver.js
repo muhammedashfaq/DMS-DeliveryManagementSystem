@@ -28,7 +28,6 @@ const AddDriver = () => {
     profileimage: null,
   });
 
-  console.log(formData);
   const handleinputchange = (event) => {
     const { name, value } = event.target;
     setformData((pformData) => ({
@@ -41,16 +40,9 @@ const AddDriver = () => {
     try {
       e.preventDefault();
 
-      const error = drivervalidate(formData);
-      setError(error);
 
-      if (Object.keys(error).length === 0) {
-        alert("done");
-      }
-
-      dispatch(showloading());
       const formDataToSend = new FormData();
-
+      
       for (const key in formData) {
         if (formData.hasOwnProperty(key)) {
           formDataToSend.append(key, formData[key]);
@@ -60,17 +52,28 @@ const AddDriver = () => {
       if (formData.profileimage) {
         formDataToSend.append("profileimage", formData.profileimage);
       }
+      
+      const error = drivervalidate(formData);
+      setError(error);
 
-      const response = await AddHubDetails(formDataToSend);
-
+      if (Object.keys(error).length === 0) {
+        
+        dispatch(showloading());
+        const response = await AddHubDetails(formDataToSend);
+        
       dispatch(hideloading());
       if (response.data.success) {
         navigate(RouteObjects.DriverList);
       } else {
         toast.error(response.data.message);
       }
+    }
     } catch (error) {
       dispatch(hideloading());
+      toast.error("Something went wrong");
+      localStorage.removeItem("admintoken");
+      navigate(RouteObjects.AdminLogin);
+
     }
   };
 

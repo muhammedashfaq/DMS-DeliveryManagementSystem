@@ -13,6 +13,10 @@ const Admintrack = () => {
     try {
       e.preventDefault();
 
+      if (trackinput === "") {
+        toast.error("Please enter a valid tracking ID")
+         return; 
+      }
       const response = await trackusershipment(trackinput);
 
       if (response.data.success) {

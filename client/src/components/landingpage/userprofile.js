@@ -10,7 +10,6 @@ import { toast } from "react-hot-toast";
 import { userRequest } from "../../Helper/interceptor/axois";
 import { useNavigate } from "react-router-dom";
 import {
-  UpdateProfilepic,
   editUserdetails,
   getShipmentDetails,
 } from "./Userutil/api";
@@ -47,36 +46,39 @@ const Userprofile = () => {
   });
 
   const submitimage = async (e) => {
-    try {
-    e.preventDefault();
     if (profileimage) {
-        const formdata = new FormData();
-        formdata.append("profileimage", profileimage);
+      const formdata = new FormData();
+      formdata.append("profileimage", profileimage);
+      e.preventDefault();
+      
+      dispatch(showloading());
 
-        dispatch(showloading());
-        const response = await UpdateProfilepic(formdata);
-        dispatch(hideloading());
-        if (response.data.success) {
-          toast.success(response.data.message);
-          getData();
-        } else {
-          toast.error(response.data.message);
-        }
-      } else {
-        alert("no image");
-      }
-      } catch (error) {
-        dispatch(hideloading());
-        toast.error("something went wrong in catch");
-        console.log(error);
-        localStorage.removeItem("token");
-        navigate("/");
+      userRequest({
+        url: "http://localhost:5000/updateprofileimage",
+        method: "POST",
+        data: formdata,
+      })
+        .then((response) => {
+          dispatch(hideloading());
+          if (response.data.success) {
+            getData();
+          }
+        })
+        .catch((err) => {
+          dispatch(hideloading());
+          toast.error("something went wrong in catch");
+          console.log(err);
+          localStorage.removeItem("token");
+          navigate("/");
+        });
       }
   };
 
   const changeimage = (event) => {
     const file = event.target.files[0];
     if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setImage(imageUrl);
       setProfileimage(file);
     }
   };
@@ -162,13 +164,15 @@ const Userprofile = () => {
                     {user?.email}
                   </p>
 
-                  <div className="flex justify-center space-x-2">
-                    <label
-                      for="imageUpload"
-                      className="block mb-2 cursor-pointer text-white"
-                    >
-                      Click to Upload Image
-                    </label>
+                  <div className="flex justify-center space-x-2 mb-2">
+                    <button className="bg-blue-700 rounded-sm p-2 ">
+                      <label
+                        for="imageUpload"
+                        className="block mb-2 cursor-pointer text-white"
+                      >
+                        Choose Image
+                      </label>
+                    </button>
                     <input
                       type="file"
                       id="imageUpload"
@@ -176,12 +180,14 @@ const Userprofile = () => {
                       className="hidden"
                       onChange={changeimage}
                     />
-                    <button
-                      type="submit"
-                      onClick={submitimage}
-                      className="bg-blue-500 mb-2 ml-2 h-10 text-white py-2 px-4 rounded text-sm md:text-base lg:text-lg "
-                    >
-                      Upload
+                    <button className="bg-green-700 rounded-sm p-2 ml-2">
+                      <button
+                        type="submit"
+                        onClick={submitimage}
+                        class="material-symbols-outlined"
+                      >
+                        upload
+                      </button>
                     </button>
                   </div>
                 </div>

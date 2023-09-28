@@ -42,7 +42,19 @@ io.on("connection", (socket) => {
       const { room, author, message } = data;
       await userController.chatHistory(room, message, author);
     });
+
+    socket.on("typing-started",()=>{
+      socket.broadcast.emit("typing-started-from-server")
+      })
+
+      socket.on("typing-stoped",()=>{
+        socket.broadcast.emit("typing-stoped-from-server")
+        })
+  
+
   });
+
+
 });
 const port = process.env.PORT || 5000;
 

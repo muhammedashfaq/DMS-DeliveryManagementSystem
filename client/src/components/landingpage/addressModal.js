@@ -34,7 +34,7 @@ export const AddressModal = ({ visible, onClose }) => {
         alert("done");
       }
 
-      const response = await axios.post("https://hrlogistics.online/add_address", formdata, {
+      const response = await axios.post("http://localhost:5000/add_address", formdata, {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },

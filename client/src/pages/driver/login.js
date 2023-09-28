@@ -28,7 +28,6 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     try {
-      console.log(formData, "data");
       e.preventDefault();
 
       const error = driverloginvalidate(formData);
@@ -37,7 +36,7 @@ const Login = () => {
       if (Object.keys(errors).length === 0) {
       }
       dispatch(showloading());
-      const response = await axios.post("https://hrlogistics.online/hub/login", formData);
+      const response = await axios.post("http://localhost:5000/hub/login", formData);
       dispatch(hideloading());
 
       if (response.data.success) {

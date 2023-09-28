@@ -6,9 +6,7 @@ import { useUserContext } from "../../Helper/context/userContext";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { trackshipmentdetails } from "./Userutil/api";
-// import { GoogleOAuthProvider } from "@react-oauth/google";
-// import { GoogleLogin ,googleLogout} from "@react-oauth/google";
-// import jwt_decode from 'jwt-decode'
+
 
 const Banner = () => {
   const navigate=useNavigate()
@@ -18,11 +16,14 @@ const Banner = () => {
   const [trackid, settrackininput] = useState("");
   const { userName } = useUserContext();
   const [showMymodal, setshowMymodal] = useState(false);
-  console.log(shipmentdetails, "kkk");
   const trackshipment = async (e) => {
     try {
       e.preventDefault();
 
+      if (trackid === "") {
+        toast.error("Please enter a valid tracking ID")
+         return; 
+      }
       const response = await trackshipmentdetails(trackid)
       
 
@@ -71,6 +72,7 @@ const Banner = () => {
         <div className="grid grid-cols-1 gap-3 items-center p-4 md:p-8 bg-white rounded-lg  bg-transparent shadow-lg absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <div className="grid grid-cols-2 gap-1 md:grid-cols-2  md:gap-1 w-96 md:w-full bg-white p-4 md:p-8 rounded-lg shadow-lg mx-2 my-8">
             <input
+              required
               type="text"
               placeholder="Shipment ID"
               value={trackid}
@@ -121,19 +123,7 @@ const Banner = () => {
               Login
             </button>
 
-            {/* <GoogleOAuthProvider clientId={process.env.REACT_APP_ClientID}>
-            <GoogleLogin
-              onSuccess={(credentialResponse) => {
-                const details =jwt_decode(credentialResponse.credential)
-                console.log(details)
-                console.log(credentialResponse);
-              }}
-              onError={() => {
-                console.log("Login Failed");
-              }}
-            />
-            
-          </GoogleOAuthProvider> */}
+         
           </div>
         </div>
       )}

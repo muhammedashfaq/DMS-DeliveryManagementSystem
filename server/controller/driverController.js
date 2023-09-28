@@ -277,7 +277,6 @@ const idverify = async (req, res) => {
       });
 
       if (verifytrackid) {
-        console.log(req.body, "body");
 
         const updatestatus = await updatesModel.findOne({ TrackID: trackid });
 
@@ -302,7 +301,6 @@ const idverify = async (req, res) => {
 
 const approveShipment = async (req, res) => {
   try {
-    console.log(req.body, "ff");
     const id = req.driverId;
     const hubdata = await Hub.findOne({ _id: id });
 

@@ -31,7 +31,7 @@ const AdminProfile = () => {
       dispatch(showloading());
 
       adminRequest({
-        url: "/admin/updateadminprofileimage",
+        url: "http://localhost:5000/admin/updateadminprofileimage",
         method: "POST",
         data: formdata,
       })
@@ -62,6 +62,7 @@ const AdminProfile = () => {
   };
 
   const updateform = async (input, field) => {
+    
     adminRequest({
       url: "/admin/updateadminDetails",
       method: "POST",

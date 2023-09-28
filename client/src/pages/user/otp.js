@@ -20,7 +20,7 @@ const Otp = () => {
       }
 
       dispatch(showloading());
-      const response = await axios.post("https://hrlogistics.online/otp", { otp: otp });
+      const response = await axios.post("http://localhost:5000/otp", { otp: otp });
       dispatch(hideloading());
       if (response.data.success) {
         toast.success(response.data.message);

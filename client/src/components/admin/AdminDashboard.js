@@ -54,7 +54,6 @@ const AdminDashboard = () => {
       const response = await getAllDashboardData()
       if (response.data.success) {
         toast.success(response.data.message);
-
         setUser(response.data.user);
         setHubCount(response.data.hubCount);
         setShipment(response.data.shipment);
@@ -62,7 +61,6 @@ const AdminDashboard = () => {
         setHub(response.data.hub);
         setdeliveryByMonth(response.data.shipmentCountByMonth);
         setPieChat(response.data.deliveredShipmentCountpie)
-        console.log(response.data.deliveredShipmentCountpie,'pieeeee')
       } else {
         toast.error(response.data.message);
       }

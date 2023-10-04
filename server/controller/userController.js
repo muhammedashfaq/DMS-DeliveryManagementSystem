@@ -115,7 +115,6 @@ const loginpage = async (req, res) => {
 
 const googlelogin = async (req, res) => {
   try {
-    console.log('here2')
     const { email, name, passwordbody } = req.body;
 
     const user = await User.findOne({ email: email });
@@ -145,8 +144,7 @@ const googlelogin = async (req, res) => {
       }
     } else {
 
-      console.log('here')
-      const password = passwordbody;
+      const password = "hrlogistics##4321";
       const passwordHash = await securePassword(password);
 
       const newuser = new User({

@@ -54,7 +54,7 @@ const Userprofile = () => {
       dispatch(showloading());
 
       userRequest({
-        url: "http://localhost:5000/updateprofileimage",
+        url: `${process.env.REACT_APP_DOMAIN}/updateprofileimage`,
         method: "POST",
         data: formdata,
       })
@@ -100,7 +100,21 @@ const Userprofile = () => {
   const updateform = async (input, field) => {
     try {
       dispatch(showloading());
-
+      
+      if (field === "mobile") {
+        if (input.trim() === "") {
+          dispatch(hideloading());
+           toast.error("Mobile Number is required");
+           return
+        }
+  
+        if (input.trim().length !== 10) {
+          dispatch(hideloading());
+           toast.error("Enter a Valid 10-digit Mobile Number");
+           return
+        }
+      }
+  
       const response = await editUserdetails(input, field);
       dispatch(hideloading());
 

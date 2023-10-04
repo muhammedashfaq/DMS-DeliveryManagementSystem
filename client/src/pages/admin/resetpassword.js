@@ -7,8 +7,9 @@ import { hideloading, showloading } from "../../Helper/redux/alertSlice";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { BiSolidLock } from "react-icons/bi";
+import { RouteObjects } from "../../Routes/RouteObject";
 
-const Forget2 = () => {
+const Resetadmin = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const randomString = searchParams.get("randomstring");
@@ -31,14 +32,14 @@ const Forget2 = () => {
       }
 
       dispatch(showloading());
-      const response = await axios.post(`${process.env.REACT_APP_DOMAIN}/reset/${randomString}`, {
+      const response = await axios.post(`${process.env.REACT_APP_DOMAIN}/resetadmin/${randomString}`, {
         password: password,
         cpassword: cpassword,
       });
       dispatch(hideloading());
       if (response.data.success) {
         toast.success(response.data.message);
-        navigate("/");
+        navigate(RouteObjects.AdminLogin);
       } else {
         toast.error(response.data.message);
       }
@@ -115,4 +116,4 @@ const Forget2 = () => {
   );
 };
 
-export default Forget2;
+export default Resetadmin;

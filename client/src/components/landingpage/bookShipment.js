@@ -115,7 +115,7 @@ const BookShipment = () => {
   const PaymentUpdate = async (payment, order, id) => {
     try {
       userRequest({
-        url: "http://localhost:5000/advancepaymentUpdate",
+        url: `${process.env.REACT_APP_DOMAIN}/advancepaymentUpdate`,
         method: "post",
         data: {
           payment: payment,

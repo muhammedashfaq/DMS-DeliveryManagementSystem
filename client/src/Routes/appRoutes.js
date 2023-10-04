@@ -17,7 +17,6 @@ import Landingpage from "../pages/user/Homepage/landingpage";
 import Register from "../pages/user/register";
 import Otp from "../pages/user/otp";
 import Forget from "../pages/user/forget";
-
 import Hublogin from "../pages/driver/login";
 import Adminlogin from "../pages/admin/login";
 import AdminHome from "../pages/admin/Home/Home";
@@ -27,6 +26,10 @@ import UserProfile from "../pages/user/UserProfile/userProfile";
 import BookShipment from "../pages/user/Bookshipment/BookShipment";
 import UserContactForm from "../pages/user/UserContactform/userContactform";
 import Reset from "../pages/user/forget2";
+import NotFound from "../pages/404/404"
+import AdminReset from "../pages/admin/resetpassword"
+import AdminForget from "../pages/admin/forgetpassword"
+
 
 import { RouteObjects } from "./RouteObject";
 
@@ -45,11 +48,12 @@ const AppRoutes = () => {
 
       <Toaster position="bottom-center" reverseOrder={false} />
       <Routes>
+        
         {/* USER_SIDE ----------------------------------------------------------------------- */}
 
 
         <Route
-          path={RouteObjects.Register}
+         path={RouteObjects.Register}
           element={
             <PublicRoutesUser>
               <Register />{" "}
@@ -118,6 +122,23 @@ const AppRoutes = () => {
             </PublicRoutesAdmin>
           }
         />
+
+<Route
+          path={RouteObjects.AdminForget}
+          element={
+            <PublicRoutesAdmin>
+              <AdminForget />
+            </PublicRoutesAdmin>
+          }
+        />
+        <Route
+          path={RouteObjects.AdminReset}
+          element={
+            <PublicRoutesAdmin>
+              <AdminReset />
+            </PublicRoutesAdmin>
+          }
+        />
         <Route
           path={RouteObjects.Adminhome}
           element={
@@ -155,6 +176,8 @@ const AppRoutes = () => {
             </ProtectedRoutesdriver>
           }
         />
+                <Route path="*" element={<NotFound/>} />
+          
       </Routes>
     </div>
   );

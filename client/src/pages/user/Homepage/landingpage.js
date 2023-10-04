@@ -9,7 +9,7 @@ const Landingpage = () => {
   const getData = async (req, res) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/get-userinfo-id",
+        `${process.env.REACT_APP_DOMAIN}/get-userinfo-id`,
         {},
         {
           headers: {

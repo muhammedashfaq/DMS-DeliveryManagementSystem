@@ -3,7 +3,7 @@ import { toast } from "react-hot-toast";
 import UpdateModal from "./UpdateModal";
 import TransistUpdateModal from "./TransistUpdateModal";
 import ChatIcon from "@mui/icons-material/Chat";
-
+import Swal from 'sweetalert2'
 import HubChatModal from "./HubChatModal";
 
 import axios from "axios";
@@ -78,25 +78,51 @@ function Body() {
   };
 
   const aproveShipment = async (e, trackid) => {
-
     try {
       e.preventDefault();
-      const response = await shipmentAproving(trackid)
-      if (response.data.success) {
-        toast.success(response.data.message);
-        getjobs();
+  
+      const shouldApprove = await Swal.fire({
+        icon: 'question',
+        title: 'Are you sure?',
+        text: 'Do you want to approve this shipment?',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, approve it!',
+      });
+  
+      if (shouldApprove.isConfirmed) {
+        const response = await shipmentAproving(trackid);
+        if (response.data.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: response.data.message,
+          });
+          getjobs();
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: response.data.message,
+          });
+        }
       } else {
-        toast.error(response.data.message);
+        Swal.fire({
+          icon: 'info',
+          title: 'Cancelled',
+          text: 'Shipment approval was cancelled.',
+        });
       }
-      
     } catch (error) {
-      toast.error("something went wrong");
-        localStorage.removeItem("drivertoken");
-        navigate(RouteObjects.HubLogin);
-      
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'Something went wrong. Please try again later.',
+      });
+      localStorage.removeItem("drivertoken");
+      navigate(RouteObjects.HubLogin);
     }
-
-    
   };
 
   const getjobs = async () => {

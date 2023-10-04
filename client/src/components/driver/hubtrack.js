@@ -16,7 +16,7 @@ const Hubtrack = () => {
         toast.error("Please enter a valid tracking ID")
          return; 
       }
-      const response = await axios.post("http://localhost:5000/trackshipment", { id: trackinput });
+      const response = await axios.post(`${process.env.REACT_APP_DOMAIN}/trackshipment`, { id: trackinput });
 
       if (response.data.success) {
         toast.success(response.data.message);

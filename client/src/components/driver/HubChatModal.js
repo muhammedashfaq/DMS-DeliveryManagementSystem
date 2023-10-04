@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 import { formatDistanceToNow } from "date-fns";
 
-const socket = io.connect("http://localhost:5000");
+const socket = io.connect(`${process.env.REACT_APP_DOMAIN}`);
 
 const HubChat = ({ visible, onClose, data }) => {
   const trackid = data.trackID;
@@ -46,7 +46,7 @@ const HubChat = ({ visible, onClose, data }) => {
     };
     try {
       const response = await axios.post(
-        "http://localhost:5000/getchathistory",
+        `${process.env.REACT_APP_DOMAIN}/getchathistory`,
         requestData
       );
       if (response.data.success) {

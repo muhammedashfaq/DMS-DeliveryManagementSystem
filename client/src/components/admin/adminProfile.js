@@ -31,7 +31,7 @@ const AdminProfile = () => {
       dispatch(showloading());
 
       adminRequest({
-        url: "http://localhost:5000/admin/updateadminprofileimage",
+        url:`${process.env.REACT_APP_DOMAIN}/admin/updateadminprofileimage`,
         method: "POST",
         data: formdata,
       })

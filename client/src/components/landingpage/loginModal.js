@@ -38,27 +38,26 @@ export const LoginModal = ({ visible, onClose }) => {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-      const errors = loginValidate(formData.email, formData.password);
+      const error = loginValidate(formData.email, formData.password);
 
-      setError(errors);
-      if (Object.keys(errors).length === 0) {
-        alert("done");
+      setError(error);
+      if (Object.values(error).every(value => value === "")) {
+        dispatch(showloading());
+        const response = await logintouserhome(formData)
+        
+        dispatch(hideloading());
+        if (response.data.success) {
+          toast.success(response.data.message);
+          localStorage.setItem("token", response.data.data);
+          const name = response.data.name;
+          setUserName(name);
+          onClose();
+          navigate("/");
+        } else {
+          toast.error(response.data.message);
+        }
       }
-      dispatch(showloading());
-      const response = await logintouserhome(formData)
-      
-      dispatch(hideloading());
-      if (response.data.success) {
-        toast.success(response.data.message);
-        localStorage.setItem("token", response.data.data);
-        const name = response.data.name;
-        setUserName(name);
-        onClose();
-        navigate("/");
-      } else {
-        toast.error(response.data.message);
-      }
-    } catch (error) {
+      } catch (error) {
       dispatch(hideloading());
 
       console.log(error);

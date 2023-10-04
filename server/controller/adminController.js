@@ -8,7 +8,7 @@ const sharp = require("sharp");
 const service = require("../models/servicesModel");
 const shipmentupdates = require("../models/shipmetUpdatesModel");
 
-const { sendmailtoDriver } = require("../config/nodemailer");
+const { sendmailtoDriver,sendadminForgetymail } = require("../config/nodemailer");
 const shipmentModel = require("../models/shipmentModel");
 
 cloudinary.config({
@@ -57,6 +57,77 @@ const adminLogin = async (req, res) => {
     res.status(500).send({ message: "something went wrong", success: false });
   }
 };
+
+const forgetMail = async (req, res) => {
+  try {
+    const token = req.body.token;
+    if (!req.body.email) {
+      return res
+        .status(400)
+        .send({ message: "Fields are required.", success: false });
+    }
+    const userData = await User.findOne({ email: req.body.email });
+    if (userData) {
+      if (userData.isVerified) {
+        await User.updateOne(
+          { email: req.body.email },
+          { $set: { token: token } }
+        );
+
+        sendadminForgetymail(userData.username, req.body.email, token);
+
+        res
+          .status(200)
+          .send({ message: "We Send ResetLink in Your Email", success: true });
+      } else {
+        res.status(200).send({ message: "error", success: false });
+      }
+    } else {
+      res.status(200).send({ message: "error", success: false });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "somthing went wrong ", success: false });
+  }
+};
+
+
+const resetPassword = async (req, res) => {
+  try {
+    if (!req.body.password || !req.body.cpassword) {
+      return res
+        .status(400)
+        .send({ message: "Fields are required.", success: false });
+    }
+
+    const token = req.params.token;
+    const userData = await User.findOne({ token: token });
+    if (userData) {
+      const newpassword = req.body.password;
+      const spassowrd = await securePassword(newpassword);
+
+      await User.findOneAndUpdate(
+        { email: userData.email },
+        { $set: { password: spassowrd, token: "" } }
+      );
+      res.status(200).send({ message: "done", success: true });
+    } else {
+      res.status(200).send({ message: "error", success: false });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "somthing went wrong ", success: false });
+  }
+};
+
+
+
+
+
+
+
+
+
 
 const admindetails = async (req, res) => {
   try {
@@ -736,6 +807,8 @@ const updateadminDetails = async (req, res) => {
 
 module.exports = {
   adminLogin,
+  forgetMail,
+  resetPassword,
   admindetails,
   userlistLoad,
   blockuser,

@@ -16,6 +16,8 @@ export const RouteObjects = {
 
   // ===========ADMIN============
   AdminLogin: "/admin",
+  AdminForget:"/adminforgetpassword",
+  AdminReset:"/adminresetpassword",
   Adminhome: "/adminhome*",
   UserList: "/adminhome/user_details",
   DriverList: "/adminhome/driver_details",

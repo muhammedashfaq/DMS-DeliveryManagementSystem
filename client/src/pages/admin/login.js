@@ -33,7 +33,7 @@ const Login = () => {
       seterrors(error);
       if (Object.keys(errors).length === 0) {
       }
-      const response = await axios.post("http://localhost:5000/admin/login", formData);
+      const response = await axios.post(`${process.env.REACT_APP_DOMAIN}/admin/login`, formData);
       if (response.data.success) {
         toast.success(response.data.message);
         localStorage.setItem("admintoken", response.data.data);
@@ -91,7 +91,7 @@ const Login = () => {
                     {errors.password}
                   </Alert>
                 )}
-              <Link to={RouteObjects.ForgetPassword}><span className="ml-6 text-sm
+              <Link to={RouteObjects.AdminForget}><span className="ml-6 text-sm
 		 ">Forget password</span></Link>
                   
             </div>

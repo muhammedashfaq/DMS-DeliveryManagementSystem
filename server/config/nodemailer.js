@@ -61,7 +61,7 @@ const bcrypt = require("bcrypt");
         html:
         "<p>hi " +
         name +
-        ' ,please click here to<a href="https://tiny-starlight-12e4a9.netlify.app/reset?randomstring=' +
+        ' ,please click here to<a href="https://hrlogistics.netlify.app/reset?randomstring=' +
         randomstring +
         '">Reset your password </a></p>',
       };
@@ -79,7 +79,44 @@ const bcrypt = require("bcrypt");
   };
   
 
+  const sendadminForgetymail = async (name, email, randomstring) => {
+    try {
+      const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false,
+        requireTLS: true,
+        auth: {
+          user: process.env.Email,
+          pass: process.env.Password,
+        },
+      });
+      const mailOption = {
+        from: process.env.Email,
+        to: email,
+        subject: "Your Reset Password Link",
+        html:
+        "<p>hi " +
+        name +
+        ' ,please click here to<a href="https://hrlogistics.netlify.app/adminresetpassword?randomstring=' +
+        randomstring +
+        '">Reset your password </a></p>',
+      };
   
+      transporter.sendMail(mailOption, (error, info) => {
+        if (error) {
+          console.log(error.message);
+        } else {
+          console.log("emai has been send to:", info.response);
+        }
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+  
+
+
  const sendmailtoDriver = async (name, email, empid) => {
     try {
       const transporter = nodemailer.createTransport({
@@ -136,6 +173,7 @@ const bcrypt = require("bcrypt");
 module.exports={
   sendForgetymail,
   sendVerifymail,
+  sendadminForgetymail,
   securePassword,
   sendmailtoDriver
 }

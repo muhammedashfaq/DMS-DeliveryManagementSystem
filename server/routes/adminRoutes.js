@@ -5,6 +5,8 @@ const adminController = require("../controller/adminController");
 const upload = require("../config/multer");
 
 admin_router.post("/login", adminController.adminLogin);
+admin_router.post("/forgetadmin", userController.forgetMail);
+admin_router.post("/resetadmin/:token", userController.resetPassword);
 
 admin_router.post(
   "/get-admininfo-id",

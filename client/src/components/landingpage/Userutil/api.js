@@ -4,7 +4,7 @@ import { userRequest } from "../../../Helper/interceptor/axois";
 export const signwithgoogle = async (formData) => {
   try {
     const response = await axios.post(
-      "http://localhost:5000/googlelogin",
+      `${process.env.REACT_APP_DOMAIN}/googlelogin`,
       formData
     );
 
@@ -21,7 +21,7 @@ export const signwithgoogle = async (formData) => {
 export const logintouserhome = async (formData) => {
   try {
     const response = await axios.post(
-      "http://localhost:5000/login ",
+      `${process.env.REACT_APP_DOMAIN}/login` ,
       formData
     );
 
@@ -38,7 +38,7 @@ export const logintouserhome = async (formData) => {
 export const trackshipmentdetails = async (trackid) => {
   try {
     const response = await userRequest({
-      url: "http://localhost:5000/trackshipment",
+      url: `${process.env.REACT_APP_DOMAIN}/trackshipment`,
 
       method: "POST",
       data: { id: trackid },
@@ -57,7 +57,7 @@ export const bookshipmentform = async (formdata) => {
   try {
     console.log('resss');
     const response = await userRequest({
-      url: "http://localhost:5000/bookshipment",
+      url: `${process.env.REACT_APP_DOMAIN}/bookshipment`,
       method: "POST",
       data: formdata
     });
@@ -74,7 +74,7 @@ export const bookshipmentform = async (formdata) => {
 export const getlocation = async () => {
   try {
     const response = await userRequest({
-      url: "http://localhost:5000/getLocationData",
+      url: `${process.env.REACT_APP_DOMAIN}/getLocationData`,
       method: "get",
     });
     if (response.data.success) {
@@ -111,7 +111,7 @@ export const editUserdetails = async (input, field) => {
 export const getShipmentDetails = async () => {
   try {
     const response = await userRequest({
-      url: "http://localhost:5000/get-dataprofils",
+      url: `${process.env.REACT_APP_DOMAIN}/get-dataprofils`,
       method: "POST",
     });
     if (response.data.success) {

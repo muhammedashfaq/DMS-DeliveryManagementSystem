@@ -6,8 +6,9 @@ import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { hideloading, showloading } from "../../Helper/redux/alertSlice";
 import { toast } from "react-hot-toast";
 import { BiSolidLock } from "react-icons/bi";
+import { RouteObjects } from "../../Routes/RouteObject";
 
-const Forget = () => {
+const Forgetadmin = () => {
   const navigate = useNavigate();
   const [randomString, setRandomString] = useState("");
 
@@ -42,7 +43,7 @@ const Forget = () => {
           alert("done");
         }
       dispatch(showloading());
-      const response = await axios.post(`${process.env.REACT_APP_DOMAIN}/forget`, {
+      const response = await axios.post(`${process.env.REACT_APP_DOMAIN}/forgetadmin`, {
         email: forget,
         token: randomString,
       });
@@ -50,7 +51,7 @@ const Forget = () => {
 
       if (response.data.success) {
      toast.success(response.data.message);
-        navigate("/");
+        navigate(RouteObjects.AdminLogin);
 
       } else {
         toast.error(response.data.message);
@@ -118,4 +119,4 @@ const Forget = () => {
   );
 };
 
-export default Forget;
+export default Forgetadmin;

@@ -155,7 +155,7 @@ const googlelogin = async (req, res) => {
 
       if (newuserData) {
         const token = jwt.sign(
-          { id: newuserData._id, name: newuserData.username },
+          { id: newuserData._id, name: newuserData.username,role: "USER" },
           process.env.JWT_SECRET_USER,
           {
             expiresIn: "1d",

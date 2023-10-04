@@ -3,7 +3,7 @@ import { hubRequest } from "../../../Helper/interceptor/axois";
 export const HubDetails = async () => {
   try {
     const response = await hubRequest({
-      url: "http://localhost:5000/hub/get-driverinfo-id",
+      url: `${process.env.REACT_APP_DOMAIN}/hub/get-driverinfo-id`,
       method: "post",
     });
     if (response.data.success) {
@@ -19,7 +19,7 @@ export const HubDetails = async () => {
 export const transistsend = async (trackid) => {
   try {
     const response = await hubRequest({
-      url: "http://localhost:5000/hub/transistshipment",
+      url: `${process.env.REACT_APP_DOMAIN}/hub/transistshipment`,
       method: "post",
       data: { trackid: trackid },
     });
@@ -36,7 +36,7 @@ export const transistsend = async (trackid) => {
 export const shipmentAproving = async (trackid) => {
   try {
     const response = await hubRequest({
-      url: "http://localhost:5000/hub/approveShipment",
+      url: `${process.env.REACT_APP_DOMAIN}/hub/approveShipment`,
       method: "post",
       data: { trackid: trackid },
     });
@@ -53,7 +53,7 @@ export const shipmentAproving = async (trackid) => {
 export const getHubJobs = async (trackid) => {
   try {
     const response = await hubRequest({
-      url: "http://localhost:5000/hub/getjobs",
+      url: `${process.env.REACT_APP_DOMAIN}/hub/getjobs`,
       method: "post",
     });
     if (response.data.success) {

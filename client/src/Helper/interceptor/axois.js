@@ -1,5 +1,5 @@
 import axios from "axios";
-const user = axios.create({ baseURL: "http://localhost:5000/" });
+const user = axios.create({ baseURL: process.env.REACT_APP_DOMAIN });
 
 
 export const userRequest = ({ ...options }) => {

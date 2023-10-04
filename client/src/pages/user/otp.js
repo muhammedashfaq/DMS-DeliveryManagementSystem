@@ -20,7 +20,7 @@ const Otp = () => {
       }
 
       dispatch(showloading());
-      const response = await axios.post("http://localhost:5000/otp", { otp: otp });
+      const response = await axios.post(`${process.env.REACT_APP_DOMAIN}/otp`, { otp: otp });
       dispatch(hideloading());
       if (response.data.success) {
         toast.success(response.data.message);

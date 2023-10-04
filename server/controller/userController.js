@@ -115,9 +115,11 @@ const loginpage = async (req, res) => {
 
 const googlelogin = async (req, res) => {
   try {
+    console.log('here2')
     const { email, name, passwordbody } = req.body;
 
     const user = await User.findOne({ email: email });
+
     if (user) {
       if (user.isVerified) {
         if (!user.isBlocked) {
@@ -142,6 +144,8 @@ const googlelogin = async (req, res) => {
         res.status(200).send({ message: "user not verified", success: false });
       }
     } else {
+
+      console.log('here')
       const password = passwordbody;
       const passwordHash = await securePassword(password);
 
@@ -149,7 +153,7 @@ const googlelogin = async (req, res) => {
         username: name,
         email: email,
         password: passwordHash,
-        isVarified: true,
+        isVerified: true,
       });
       const newuserData = await newuser.save();
 

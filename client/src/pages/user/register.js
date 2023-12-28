@@ -22,12 +22,16 @@ const Register = () => {
     password: "",
     cpassword: "",
   });
+
+  
   const handleInputchange = (event) => {
     const { name, value } = event.target;
     setFormData((pformdata) => ({
       ...pformdata,
       [name]: value,
     }));
+
+    
   };
 
   const handleSubmit = async (e) => {

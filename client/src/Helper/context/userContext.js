@@ -4,6 +4,8 @@ const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [userName, setUserName] = useState(null);
+
+
   useEffect(() => {
     // Get token from local storage
     const token = localStorage.getItem("token");
@@ -22,6 +24,9 @@ export const UserProvider = ({ children }) => {
       }
     }
   }, []);
+
+
+  
   return (
     <UserContext.Provider value={{ userName,   }}>
       {children}

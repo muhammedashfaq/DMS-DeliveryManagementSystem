@@ -5,7 +5,6 @@ const http = require("http");
 const userController = require("./controller/userController");
 const mongodb = require("./config/authdb");
 require("dotenv").config();
-
 const app = express();
 const { Server } = require("socket.io");
 const server = http.createServer(app);

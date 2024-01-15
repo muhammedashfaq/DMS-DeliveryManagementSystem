@@ -69,7 +69,7 @@ const Banner = () => {
       </div>
 
       {userName ? (
-        <div className="grid grid-cols-1 gap-3 items-center p-4 md:p-8 bg-white rounded-lg  bg-transparent shadow-lg absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div className=":hidden grid grid-cols-1 gap-3 items-center p-4 md:p-8 bg-white rounded-lg  bg-transparent shadow-lg absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <div className="grid grid-cols-2 gap-1 md:grid-cols-2  md:gap-1 w-96 md:w-full bg-white p-4 md:p-8 rounded-lg shadow-lg mx-2 my-8">
             <input
               required

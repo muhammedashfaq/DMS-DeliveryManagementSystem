@@ -29,6 +29,7 @@ let savedOtp;
 let useremail;
 
 const registerpage = async (req, res) => {
+
   try {
     if (
       !req.body.email ||

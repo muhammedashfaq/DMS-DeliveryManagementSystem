@@ -29,7 +29,6 @@ let savedOtp;
 let useremail;
 
 const registerpage = async (req, res) => {
-
   try {
     if (
       !req.body.email ||
@@ -69,6 +68,7 @@ const registerpage = async (req, res) => {
 
 const loginpage = async (req, res) => {
   try {
+    console.log(req.body);
     if (!req.body.email || !req.body.password) {
       return res
         .status(400)
@@ -95,6 +95,7 @@ const loginpage = async (req, res) => {
             }
           );
 
+         
           res.status(200).send({
             message: "successfully logged",
             success: true,
@@ -113,6 +114,8 @@ const loginpage = async (req, res) => {
     res.status(500).send({ message: "something went wrong", success: false });
   }
 };
+
+
 
 const googlelogin = async (req, res) => {
   try {

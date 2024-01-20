@@ -20,6 +20,7 @@ export const signwithgoogle = async (formData) => {
 
 export const logintouserhome = async (formData) => {
   try {
+    
     const response = await axios.post(
       `${process.env.REACT_APP_DOMAIN}/login` ,
       formData
@@ -90,7 +91,7 @@ export const getlocation = async () => {
 export const editUserdetails = async (input, field) => {
   try {
     const response = await userRequest({
-      url: "/updateUserDetails",
+      url: `${process.env.REACT_APP_DOMAIN}/updateUserDetails`,
       method: "POST",
       data: {
         input: input,

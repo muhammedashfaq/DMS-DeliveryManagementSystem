@@ -49,7 +49,7 @@ const Register = () => {
 
       if (Object.values(error).every(value => value === "")) {
         dispatch(showloading());
-        const response = await axios.post(`${process.env.REACT_APP_DOMAIN}/register`, formData);
+        const response = await axios.post("http://localhost:5000/register", formData);
         dispatch(hideloading());
         
         if (response.data.success) {

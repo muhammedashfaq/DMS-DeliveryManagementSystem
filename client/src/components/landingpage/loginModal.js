@@ -51,6 +51,7 @@ export const LoginModal = ({ visible, onClose }) => {
           localStorage.setItem("token", response.data.data);
           const name = response.data.name;
           setUserName(name);
+          // console.log(response.data.data,'token')
           onClose();
           navigate("/");
         } else {
@@ -61,7 +62,7 @@ export const LoginModal = ({ visible, onClose }) => {
       dispatch(hideloading());
 
       console.log(error);
-      toast.error("something went wrong");
+      toast.error("something went wrong ");
         localStorage.removeItem("token");
         navigate("/");
     }
@@ -82,6 +83,7 @@ export const LoginModal = ({ visible, onClose }) => {
           toast.success(response.data.message);
           localStorage.setItem("token", response.data.data);
           const name = response.data.name;
+          
           setUserName(name);
           onClose();
           navigate("/");
@@ -184,7 +186,7 @@ export const LoginModal = ({ visible, onClose }) => {
           onError={() => {
             console.log("Login Failed");
           }}
-        />
+        />  
       </GoogleOAuthProvider>
     </div>
 

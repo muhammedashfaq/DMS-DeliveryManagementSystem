@@ -8,8 +8,8 @@ require("dotenv").config();
 const app = express();
 const { Server } = require("socket.io");
 const server = http.createServer(app);
-
 mongodb.mongoDB();
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

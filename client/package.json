@@ -72,7 +72,5 @@
   },
   "devDependencies": {
     "tailwindcss": "^3.3.3"
-  },
-
-  "proxy": "https://hrlogistics.online"
+  }
 }
